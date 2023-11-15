@@ -1,2 +1,3 @@
 # meltcd
-An argo-cd alternative for docker swarm.
+
+Argo-cd like GitDevOps Continuous Development platform for docker swarm.
