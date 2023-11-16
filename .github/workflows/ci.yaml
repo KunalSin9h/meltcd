@@ -1,0 +1,62 @@
+name: Test & Build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  frontend-lint:
+    runs-on: ubuntu:latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: Cd to ui directory
+        run: cd ui
+      - name: install frontend dependencies
+        run: pnpm install
+      - name: lint frontend
+        run: pnpm lint
+
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-go@v4
+  #       with:
+  #         go-version: "1.21"
+  #         cache: false
+  #     - name: golangci-lint
+  #       uses: golangci/golangci-lint-action@v3
+  #       with:
+  #         version: v1.54
+
+  test:
+    runs-on: ubuntu:latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+          cache: false
+      - name: Run go test
+        run: go test
+
+  build:
+    needs: [frontend-lint, lint, test]
+    runs-on: ubuntu:latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: build
+        run: |
+          docker build -t ghcr.io/meltred/meltcd:latest .
+      - name: publish
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "kunalsin9h" --password-stdin
+          docker push ghcr.io/meltred/meltcd/latest
