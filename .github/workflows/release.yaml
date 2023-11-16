@@ -12,14 +12,46 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
       - run: git fetch --force --tags
+
+      - name: Set outputs
+        id: vars
+        run: echo "::set-output name=latest_tag::$(git describe --tags --abbrev=0)"
+
+      - name: Check outputs
+        run: echo ${{ steps.vars.outputs.latest_tag }}
+
+      - name: Find and replace app version
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: "0.0.0"
+          replace: "${{ steps.vars.outputs.latest_tag }}"
+          include: "version/version.go"
+          regex: true
+
+      - name: build docker image
+        run: |
+          docker build -t ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }} .
+
+      - name: push
+        run: |
+          echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u "kunalsin9h" --password-stdin
+
+          docker push ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }}
+
+          docker image tag  ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }} ghcr.io/meltred/meltcd:latest
+          docker push ghcr.io/meltred/meltcd:latest
+
       - uses: actions/setup-go@v4
         with:
           go-version: stable
+
       - uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
