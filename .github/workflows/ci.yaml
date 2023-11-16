@@ -57,4 +57,4 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "kunalsin9h" --password-stdin
-          docker push ghcr.io/meltred/meltcd/latest
+          docker push ghcr.io/meltred/meltcd:latest
