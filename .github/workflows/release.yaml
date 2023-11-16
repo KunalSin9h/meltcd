@@ -35,6 +35,18 @@ jobs:
           include: "version/version.go"
           regex: true
 
+      - uses: actions/setup-go@v4
+        with:
+          go-version: stable
+
+      - uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean --skip-validate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
+
       - name: build docker image
         run: |
           docker build -t ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }} .
@@ -47,15 +59,3 @@ jobs:
 
           docker image tag  ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }} ghcr.io/meltred/meltcd:latest
           docker push ghcr.io/meltred/meltcd:latest
-
-      - uses: actions/setup-go@v4
-        with:
-          go-version: stable
-
-      - uses: goreleaser/goreleaser-action@v5
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
