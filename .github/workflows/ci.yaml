@@ -6,7 +6,7 @@ on:
 
 jobs:
   frontend-lint:
-    runs-on: ubuntu:latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: setup node
@@ -37,7 +37,7 @@ jobs:
           version: v1.54
 
   test:
-    runs-on: ubuntu:latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
@@ -49,7 +49,7 @@ jobs:
 
   build:
     needs: [frontend-lint, lint, test]
-    runs-on: ubuntu:latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: build
