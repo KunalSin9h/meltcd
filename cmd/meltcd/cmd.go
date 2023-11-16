@@ -28,7 +28,7 @@ import (
 // as well as a client
 func NewApplication() *cobra.Command {
 	// Log time, date, and file name
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.SetFlags(log.Ldate | log.Lshortfile)
 
 	rootCmd := &cobra.Command{
 		Use:           "metlcd",
@@ -51,6 +51,8 @@ func NewApplication() *cobra.Command {
 		Args:    cobra.ExactArgs(0),
 		RunE:    RunServer,
 	}
+
+	serveCmd.Flags().Bool("verbose", false, "verbose is used to get extra logs/info about process")
 
 	rootCmd.AddCommand(serveCmd)
 

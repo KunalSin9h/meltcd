@@ -17,9 +17,35 @@ limitations under the License.
 package meltcd
 
 import (
+	"meltred/meltcd/server"
+	"net"
+	"os"
+	"strings"
+
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )
 
-func RunServer(cmd *cobra.Command, _ []string) error { // nolint:all
-	return nil
+func RunServer(cmd *cobra.Command, _ []string) error {
+	baseUrl := os.Getenv("MELTCD_HOST")
+	verbose, _ := cmd.Flags().GetBool("verbose")
+
+	host, port, err := net.SplitHostPort(baseUrl)
+	if err != nil {
+		log.Warn(err)
+
+		host, port = "127.0.0.1", "11771"
+		if ip := net.ParseIP(strings.Trim(baseUrl, "[]")); ip != nil {
+			host = ip.String()
+		}
+	}
+
+	ln, err := net.Listen("tcp", net.JoinHostPort(host, port))
+	if err != nil {
+		return err
+	}
+
+	origins := os.Getenv("MELTCD_ORIGINS")
+
+	return server.Serve(ln, origins, verbose)
 }
