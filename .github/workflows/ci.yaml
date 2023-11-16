@@ -16,12 +16,10 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      - name: Cd to ui directory
-        run: cd ui
       - name: install frontend dependencies
-        run: pnpm install
+        run: cd ui && pnpm install
       - name: lint frontend
-        run: pnpm lint
+        run: cd ui && pnpm lint
 
   lint:
     runs-on: ubuntu-latest
