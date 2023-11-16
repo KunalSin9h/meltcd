@@ -17,9 +17,9 @@ jobs:
         with:
           version: 8
       - name: install frontend dependencies
-        run: cd ui && pnpm install
+        run: pnpm --prefix=./ui install
       - name: lint frontend
-        run: cd ui && pnpm lint
+        run: pnpm --prefix=./ui lint
 
   lint:
     runs-on: ubuntu-latest
@@ -43,18 +43,31 @@ jobs:
           go-version: "1.21"
           cache: false
       - name: Run go test
-        run: go test
+        run: go test ./..
 
   build:
     needs: [frontend-lint, lint, test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: build
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: install frontend dependencies
+        run: pnpm --prefix=./ui install
+      - name: build admin dashboard
+        run: pnpm --prefix=./ui build
+
+      - name: build docker image
         run: |
-          docker build -t ghcr.io/meltred/meltcd:latest .
-      - name: publish
+          docker build -t ghcr.io/meltred/meltcd:head .
+
+      - name: publish docker image
         if: github.ref == 'refs/heads/main'
         run: |
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "kunalsin9h" --password-stdin
-          docker push ghcr.io/meltred/meltcd:latest
+          docker push ghcr.io/meltred/meltcd:head
