@@ -35,6 +35,18 @@ jobs:
           include: "version/version.go"
           regex: true
 
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      - name: install frontend dependencies
+        run: pnpm --prefix=./ui install
+      - name: build admin dashboard
+        run: pnpm --prefix=./ui build
+
       - uses: actions/setup-go@v4
         with:
           go-version: stable
@@ -49,12 +61,22 @@ jobs:
 
       - name: build docker image
         run: |
-          docker build -t ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }} .
+          docker build -t meltred/meltcd:${{ steps.vars.outputs.latest_tag }} .
 
-      - name: push
+      - name: push docker image
         run: |
+          echo ${{ secrets.DOCKER_HUB }} | docker login -u "meltred" --password-stdin
+
+          docker push meltred/meltcd:${{ steps.vars.outputs.latest_tag }}
+
+          docker image tag  meltred/meltcd:${{ steps.vars.outputs.latest_tag }} meltred/meltcd:latest
+          docker push meltred/meltcd:latest
+
+          docker logout
+
           echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u "kunalsin9h" --password-stdin
 
+          docker image tag  meltred/meltcd:latest ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }}
           docker push ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }}
 
           docker image tag  ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }} ghcr.io/meltred/meltcd:latest
