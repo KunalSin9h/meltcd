@@ -32,8 +32,8 @@ builds:
 release:
   draft: true
   github:
-    owner: user
-    name: repo
+    owner: meltred
+    name: meltcd
   name_template: "{{.ProjectName}}-v{{.Version}}"
 
 archives:
