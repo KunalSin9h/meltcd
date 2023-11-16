@@ -48,7 +48,7 @@ jobs:
         run: go test
 
   build:
-    needs: [frontend-lint, lint, test]
+    needs: [frontend-lint, test]
     runs-on: ubuntu:latest
     steps:
       - uses: actions/checkout@v3
