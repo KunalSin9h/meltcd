@@ -27,15 +27,15 @@ import (
 )
 
 func RunServer(cmd *cobra.Command, _ []string) error {
-	baseUrl := os.Getenv("MELTCD_HOST")
+	baseURL := os.Getenv("MELTCD_HOST")
 	verbose, _ := cmd.Flags().GetBool("verbose")
 
-	host, port, err := net.SplitHostPort(baseUrl)
+	host, port, err := net.SplitHostPort(baseURL)
 	if err != nil {
 		log.Warn(err)
 
 		host, port = "127.0.0.1", "11771"
-		if ip := net.ParseIP(strings.Trim(baseUrl, "[]")); ip != nil {
+		if ip := net.ParseIP(strings.Trim(baseURL, "[]")); ip != nil {
 			host = ip.String()
 		}
 	}
