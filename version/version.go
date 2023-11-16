@@ -18,4 +18,4 @@ package version
 
 // Version will be altered at CI step when new version release
 // is published
-var Version string = "0.0.0"
+var Version string = "0.0.0" // nolint:all

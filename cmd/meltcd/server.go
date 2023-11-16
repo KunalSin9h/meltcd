@@ -20,6 +20,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func RunServer(cmd *cobra.Command, _ []string) error {
+func RunServer(cmd *cobra.Command, _ []string) error { // nolint:all
 	return nil
 }
