@@ -1,30 +1,26 @@
 name: Release
 
 on:
-  release:
-    types: [prereleased]
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+  packages: write
 
 jobs:
   release:
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: setup node
-        uses: actions/setup-node@v3
         with:
-          node-version: 18
-      - uses: pnpm/action-setup@v2
+          fetch-depth: 0
+      - run: git fetch --force --tags
+      - uses: actions/setup-go@v4
         with:
-          version: 8
-      - name: install frontend dependencies
-        run: pnpm --prefix=./ui install
-      - name: build admin dashboard
-        run: pnpm --prefix=./ui build
-
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v3
+          go-version: stable
+      - uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
           version: latest
