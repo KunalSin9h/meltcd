@@ -31,6 +31,10 @@ builds:
 
 release:
   draft: true
+  github:
+    owner: user
+    name: repo
+  name_template: "{{.ProjectName}}-v{{.Version}}"
 
 archives:
   - format: tar.gz
