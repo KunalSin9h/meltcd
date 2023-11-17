@@ -66,10 +66,16 @@ jobs:
 
       - name: build docker image
         run: |
-          docker build -t ghcr.io/meltred/meltcd:head .
+          docker build -t meltred/meltcd:head .
 
       - name: publish docker image
         if: github.ref == 'refs/heads/main'
         run: |
+          echo ${{ secrets.DOCKER_HUB }} | docker login -u "meltred" --password-stdin
+          docker push meltred/meltcd:head
+
+          docker logout
+
           echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "kunalsin9h" --password-stdin
+          docker image tag meltred/meltcd:head  ghcr.io/meltred/meltcd:head
           docker push ghcr.io/meltred/meltcd:head
