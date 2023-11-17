@@ -8,19 +8,16 @@ COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
 COPY . .
-RUN go build -o meltcd main.go
+RUN go build -o meltcd-bin main.go
 
 # Runtime
 FROM alpine:latest
 
-WORKDIR /meltcd
-
-COPY --from=0 /meltcd/meltcd /meltcd/meltcd
-COPY --from=0 /meltcd/ui/dist/ /meltcd/ui/dist/
+COPY --from=0 /meltcd/meltcd-bin /bin/meltcd/
 
 EXPOSE 11771
 
 ENV MELTCD_HOST=0.0.0.0
 
-ENTRYPOINT [ "/meltcd/meltcd" ]
+ENTRYPOINT [ "/bin/meltcd" ]
 CMD ["serve", "--verbose"]

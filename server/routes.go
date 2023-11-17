@@ -1,9 +1,11 @@
 package server
 
 import (
+	"embed"
 	"fmt"
 	"meltred/meltcd/version"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -11,8 +13,12 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
+
+//go:embed static/*
+var frontendSource embed.FS
 
 var defaultAllowOrigins = []string{
 	"localhost",
@@ -33,13 +39,19 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 		AppName: fmt.Sprintf("MeltCD Server v%s", version.Version),
 	})
 
-	app.Use(cors.New())
+	app.Use(cors.New(config))
 
 	if verboseOutput {
 		app.Use(logger.New())
 	}
 
-	app.Static("/", "./ui/dist/")
+	// Server frontend on `/`
+	app.Use("/", filesystem.New(filesystem.Config{
+		Root:       http.FS(frontendSource),
+		Browse:     true,
+		Index:      "index.html",
+		PathPrefix: "static", // the name of the folder because the files will be as static/index.html
+	}))
 
 	api := app.Group("api")
 

@@ -45,7 +45,7 @@ jobs:
       - name: install frontend dependencies
         run: pnpm --prefix=./ui install
       - name: build admin dashboard
-        run: pnpm --prefix=./ui build
+        run: pnpm --prefix=./ui --emptyOutDir build
 
       - uses: actions/setup-go@v4
         with:

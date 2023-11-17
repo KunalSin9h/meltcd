@@ -2,4 +2,3 @@
 test
 .env
 ui
-!ui/dist
