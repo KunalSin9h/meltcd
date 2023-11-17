@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  meltcd:
+    image: meltred/meltcd:latest
+    ports:
+      - "11771:11771"
+    environment:
+      MELTCD_HOST: 0.0.0.0

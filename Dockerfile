@@ -19,4 +19,4 @@ EXPOSE 11771
 ENV MELTCD_HOST=0.0.0.0
 
 ENTRYPOINT [ "/bin/meltcd" ]
-CMD ["serve"]
+CMD ["serve", "--verbose"]
