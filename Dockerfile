@@ -13,7 +13,7 @@ RUN go build -o meltcd-bin main.go
 # Runtime
 FROM alpine:latest
 
-COPY --from=0 /meltcd/meltcd-bin /bin/meltcd/
+COPY --from=0 /meltcd/meltcd-bin /bin/meltcd
 
 EXPOSE 11771
 
