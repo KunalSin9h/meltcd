@@ -10,13 +10,17 @@ RUN go mod download && go mod verify
 COPY . .
 RUN go build -o meltcd main.go
 
+# Runtime
 FROM alpine:latest
 
-COPY --from=0 /meltcd/meltcd /bin/meltcd
+WORKDIR /meltcd
+
+COPY --from=0 /meltcd/meltcd /meltcd/meltcd
+COPY --from=0 /meltcd/ui/dist/ /meltcd/ui/dist/
 
 EXPOSE 11771
 
 ENV MELTCD_HOST=0.0.0.0
 
-ENTRYPOINT [ "/bin/meltcd" ]
+ENTRYPOINT [ "/meltcd/meltcd" ]
 CMD ["serve", "--verbose"]
