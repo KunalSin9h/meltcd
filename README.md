@@ -1,6 +1,6 @@
 <div align="center">
     <picture>
-        <img alt="MeltCD Logo" height="200px" src="https://github.com/meltred/meltcd/assets/82411321/3b22b7b3-e345-43b0-9099-b379a4c95e14">
+        <img alt="MeltCD Logo" height="200px" src="https://github.com/meltred/meltcd/assets/82411321/52b0c441-0d63-4afb-b5a6-fec145e3ba26">
     </picture>
 </div>
 
