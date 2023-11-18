@@ -9,7 +9,6 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
-      - MELTCD_HOST=0.0.0.0
     goos:
       - linux
       - windows
@@ -18,17 +17,9 @@ builds:
     goarch:
       - amd64
       - arm64
-      - arm
 
     goarm:
       - "7"
-
-    ignore:
-      - goos: windows
-        goarch: arm
-      - goos: darwin
-        goarch: arm
-
 release:
   draft: true
   github:
