@@ -75,10 +75,10 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 		return c.JSON(app.Stack())
 	})
 	api.Get("/health_check", func(c *fiber.Ctx) error {
-		return c.Status(200).SendString("MeltCD is running\n")
+		return c.Status(200).SendString(fmt.Sprintf("MeltCD is running (version: %s)\n", version.Version))
 	})
 
-	log.Infof("Listening on %s", ln.Addr())
+	log.Infof("Listening on %s (version: %s)", ln.Addr(), version.Version)
 
 	signals := make(chan os.Signal, 1)
 	go signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
