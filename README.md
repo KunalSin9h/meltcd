@@ -2,11 +2,13 @@
 
 Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
-# Local Setup
+## Local Setup
 
-### Requirements
+#### Requirements
 1. GoLang
 2. pnpm
+
+#### Run
 
 1. Clone the
 2. Download go packages
