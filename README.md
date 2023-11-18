@@ -1,6 +1,6 @@
 <div align="center">
     <picture>
-        <img alt="MeltCD Logo" src="https://i.imgur.com/ZTimolR.png">
+        <img alt="MeltCD Logo" height="200px" src="https://i.imgur.com/phDXG6T.png">
     </picture>
 </div>
 
