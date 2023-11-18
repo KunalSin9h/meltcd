@@ -1,10 +1,12 @@
 <div align="center">
     <picture>
-        <img alt="MeltCD Logo" height="200px" src="https://github.com/meltred/meltcd/assets/82411321/06f0e2e8-6881-4792-af69-c84244919d62">
+        <img alt="MeltCD Logo" height="200px" src="https://github.com/meltred/meltcd/assets/82411321/3b22b7b3-e345-43b0-9099-b379a4c95e14">
     </picture>
 </div>
 
 # meltcd
+
+#### Docs: https://cd.meltred.tech/docs
 
 Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
