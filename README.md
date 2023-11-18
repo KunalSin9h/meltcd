@@ -10,6 +10,22 @@
 
 Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
+## Install
+
+#### Linux
+
+```bash
+curl -s https://install.meltred.tech/meltcd/linux | bash
+```
+
+#### Mac OS 
+
+From [latest release](https://github.com/meltred/meltcd/releases/latest)
+
+#### Windows 
+
+From [latest release](https://github.com/meltred/meltcd/releases/latest)
+
 ## Local Setup
 
 #### Requirements
