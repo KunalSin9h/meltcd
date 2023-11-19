@@ -1,7 +1,5 @@
 <div align="center">
-    <picture>
-        <img alt="MeltCD Logo" height="200px" src="https://github.com/meltred/meltcd/assets/82411321/52b0c441-0d63-4afb-b5a6-fec145e3ba26">
-    </picture>
+    <img alt="MeltCD Logo" height="200px" src="https://github.com/meltred/meltcd/assets/82411321/52b0c441-0d63-4afb-b5a6-fec145e3ba26">
 </div>
 
 # meltcd
@@ -12,23 +10,20 @@ Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
 ## Install
 
-#### Linux
+#### Linux, MacOS and WSL.
 
 ```bash
-curl -s https://install.meltred.tech/meltcd/linux | bash
+curl -s https://install.meltred.tech/meltcd | bash
 ```
 
-#### Mac OS 
+#### Windows
 
-From [latest release](https://github.com/meltred/meltcd/releases/latest)
-
-#### Windows 
-
-From [latest release](https://github.com/meltred/meltcd/releases/latest)
+Download From [latest release](https://github.com/meltred/meltcd/releases/latest)
 
 ## Local Setup
 
 #### Requirements
+
 1. GoLang
 2. pnpm
 
@@ -36,18 +31,23 @@ From [latest release](https://github.com/meltred/meltcd/releases/latest)
 
 1. Clone the
 2. Download go packages
+
 ```bash
 go mod download
 ```
+
 3. install fontend packages
+
 ```bash
 pnpm --prefix=./ui install
 ```
 
 4. build the fontend
+
 ```bash
 pnpm --prefix=./ui build
 ```
+
 This will update the latest fontend to `server/static`
 
 5. run the app
