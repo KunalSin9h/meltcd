@@ -85,6 +85,10 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 		os.Exit(1)
 	}
 
+	go func() {
+		core.Run()
+	}()
+
 	log.Infof("Listening on %s (version: %s)", ln.Addr(), version.Version)
 
 	signals := make(chan os.Signal, 1)

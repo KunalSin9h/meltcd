@@ -51,6 +51,10 @@ func New(spec ApplicationSpec) Application {
 	}
 }
 
+func (app *Application) Run() {
+	log.Info("Running Application", "name", app.Name)
+}
+
 func (app *Application) GetService() (swarm.ServiceSpec, error) {
 	log.Info("Getting service from git repo", "repo", app.Source.RepoURL, "app_name", app.Name)
 

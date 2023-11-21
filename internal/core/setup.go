@@ -20,6 +20,8 @@ package core
 // settings to make use of MeltCD
 // like setting up admin password in docker secret
 // setting up docker volume for persistent storage
+//
+// fill  the Applications from the volume
 func Setup() error {
 	return nil
 }
