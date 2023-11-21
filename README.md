@@ -57,8 +57,10 @@ This will update the latest fontend to `server/static`
 5. run the app
 
 ```bash
-go run main.go
+go run main.go serve --verbose
 ```
+
+This will start the server on port `11771` 
 
 ---
 
