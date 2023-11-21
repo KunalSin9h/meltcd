@@ -24,6 +24,8 @@ import (
 )
 
 func createNewApplication(cmd *cobra.Command, args []string) error {
+	var spec application.ApplicationSpec
+
 	if len(args) == 0 {
 		// Creating application without application name
 		// means using a file
@@ -31,9 +33,10 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		//TODO
-
-		fmt.Println(file)
+		spec, err = application.ParseSpecFromFile(file)
+		if err != nil {
+			return err
+		}
 	} else {
 		// Creating application with application name
 		// means using arguments
@@ -51,13 +54,14 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 
 		refresh, _ := cmd.Flags().GetDuration("refresh")
 
-		spec, err := application.ParseSpecFromValue(name, repo, path, refresh)
+		spec, err = application.ParseSpecFromValue(name, repo, path, refresh)
 		if err != nil {
 			return err
 		}
-
-		_ = application.New(spec)
-		// TODO: run the
 	}
+
+	app := application.New(spec)
+	fmt.Println(app.Name)
+	fmt.Println(app.Source)
 	return nil
 }

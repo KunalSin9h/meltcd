@@ -34,6 +34,10 @@ type Source struct {
 
 // parse an application from yaml source
 func ParseSpecFromFile(file string) (ApplicationSpec, error) {
+	if file == "" {
+		return ApplicationSpec{}, errors.New("Application specification file not specified")
+	}
+
 	return ApplicationSpec{}, nil
 }
 
