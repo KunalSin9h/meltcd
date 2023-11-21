@@ -29,7 +29,7 @@ import (
 type Application struct {
 	Name         string            `json:"name"`
 	Source       Source            `json:"source"`
-	RefreshTimer time.Duration     `json:"refresh_timer"` // Timer to check for Sync
+	RefreshTimer string            `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
 	Health       ApplicationHealth `json:"health"`
 	LiveState    swarm.ServiceSpec `json:"live_state"`
 }
@@ -53,6 +53,20 @@ func New(spec ApplicationSpec) Application {
 
 func (app *Application) Run() {
 	log.Info("Running Application", "name", app.Name)
+
+	refreshTime, err := time.ParseDuration(app.RefreshTimer)
+	if err != nil {
+		app.Health = Suspended
+		log.Error("Failed to parse refresh_time, it must be like \"3m30s\"", "name", app.Name)
+		return
+	}
+
+	timer := time.NewTicker(refreshTime)
+
+	for range timer.C {
+		// check for sync
+		log.Info("	+", "name", app.Name)
+	}
 }
 
 func (app *Application) GetService() (swarm.ServiceSpec, error) {

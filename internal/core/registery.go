@@ -24,9 +24,3 @@ func Register(app *application.Application) error {
 
 	return nil
 }
-
-func Run() {
-	for _, app := range Applications {
-		go app.Run()
-	}
-}

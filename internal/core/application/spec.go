@@ -18,15 +18,14 @@ package application
 
 import (
 	"errors"
-	"time"
 
 	"github.com/charmbracelet/log"
 )
 
 type ApplicationSpec struct {
-	Name         string        `json:"name" yaml:"name"`
-	RefreshTimer time.Duration `json:"refresh_timer" yaml:"refresh_timer"` // number of minutes
-	Source       Source        `json:"source" yaml:"source"`
+	Name         string `json:"name" yaml:"name"`
+	RefreshTimer string `json:"refresh_timer" yaml:"refresh_timer"` // number of minutes
+	Source       Source `json:"source" yaml:"source"`
 }
 
 type Source struct {
@@ -47,7 +46,7 @@ func ParseSpecFromFile(file string) (ApplicationSpec, error) {
 	return ApplicationSpec{}, nil
 }
 
-func ParseSpecFromValue(name, repo, revision, path string, refresh time.Duration) (ApplicationSpec, error) {
+func ParseSpecFromValue(name, repo, revision, path, refresh string) (ApplicationSpec, error) {
 	if repo == "" {
 		return ApplicationSpec{}, errors.New("The git repository not specified")
 	}

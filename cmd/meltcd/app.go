@@ -17,7 +17,6 @@ limitations under the License.
 package meltcd
 
 import (
-	"meltred/meltcd/internal/core"
 	"meltred/meltcd/internal/core/application"
 
 	"github.com/charmbracelet/log"
@@ -55,7 +54,7 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		refresh, _ := cmd.Flags().GetDuration("refresh")
+		refresh, _ := cmd.Flags().GetString("refresh")
 		revision, _ := cmd.Flags().GetString("revision")
 
 		spec, err = application.ParseSpecFromValue(name, repo, revision, path, refresh)
@@ -64,11 +63,7 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	app := application.New(spec)
-
-	if err := core.Register(&app); err != nil {
-		return err
-	}
+	_ = application.New(spec)
 
 	return nil
 }
