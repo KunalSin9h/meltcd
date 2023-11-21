@@ -3,15 +3,13 @@ package meltcd
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 func getHost() string {
-	// TODO: remove edge case like `/` in ending of env var
-	// but we are add `/` so this will make the url invalid
-	// MAKE IT MORE NEAT
 	server := "http://127.0.0.1:11771"
 	if os.Getenv("MELTCD_SERVER") != "" {
-		server = os.Getenv("MELTCD_SERVER")
+		server, _ = strings.CutSuffix(os.Getenv("MELTCD_SERVER"), "/")
 	}
 
 	return server
