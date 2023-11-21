@@ -26,7 +26,7 @@ import (
 // NewApplication creates a new cli app
 // This cli app can be used to start the api server
 // as well as a client
-func NewApplication() *cobra.Command {
+func NewCLI() *cobra.Command {
 	// Log time, date, and file name
 	log.SetFlags(log.Ldate | log.Lshortfile)
 
@@ -54,7 +54,29 @@ func NewApplication() *cobra.Command {
 
 	serveCmd.Flags().Bool("verbose", false, "verbose is used to get extra logs/info about process")
 
+	// Application
+	appCmd := &cobra.Command{
+		Use:   "app",
+		Short: "Work with Applications",
+	}
+
+	appCreateCmd := &cobra.Command{
+		Use:   "create",
+		Short: "Create a new application",
+		Args:  cobra.RangeArgs(0, 1),
+		RunE:  createNewApplication,
+	}
+
+	appCreateCmd.Flags().String("repo", "", "The git repository where the service file is hosted")
+	appCreateCmd.Flags().String("revision", "HEAD", "The git repository revision")
+	appCreateCmd.Flags().String("path", "", "The path to service file")
+	appCreateCmd.Flags().String("refresh", "3m0s", "The refresh time for sync")
+	appCreateCmd.Flags().String("file", "", "Application schema file")
+
+	appCmd.AddCommand(appCreateCmd)
+
 	rootCmd.AddCommand(serveCmd)
+	rootCmd.AddCommand(appCmd)
 
 	return rootCmd
 }

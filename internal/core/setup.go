@@ -14,15 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package core
 
-import (
-	"context"
-	"meltred/meltcd/cmd/meltcd"
-
-	"github.com/spf13/cobra"
-)
-
-func main() {
-	cobra.CheckErr(meltcd.NewCLI().ExecuteContext(context.Background()))
+// Setup will setup require
+// settings to make use of MeltCD
+// like setting up admin password in docker secret
+// setting up docker volume for persistent storage
+//
+// fill  the Applications from the volume
+func Setup() error {
+	return nil
 }

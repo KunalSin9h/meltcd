@@ -14,15 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package main
+package application
 
-import (
-	"context"
-	"meltred/meltcd/cmd/meltcd"
-
-	"github.com/spf13/cobra"
-)
-
-func main() {
-	cobra.CheckErr(meltcd.NewCLI().ExecuteContext(context.Background()))
+type Set struct {
+	Applications []Application
 }

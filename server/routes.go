@@ -19,6 +19,8 @@ package server
 import (
 	"embed"
 	"fmt"
+	meltcd_api "meltred/meltcd/api"
+	"meltred/meltcd/internal/core"
 	"meltred/meltcd/version"
 	"net"
 	"net/http"
@@ -70,13 +72,21 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	}))
 
 	api := app.Group("api")
-
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(app.Stack())
 	})
 	api.Get("/health_check", func(c *fiber.Ctx) error {
 		return c.Status(200).SendString(fmt.Sprintf("MeltCD is running (version: %s)\n", version.Version))
 	})
+
+	application := api.Group("application")
+	application.Post("/register", meltcd_api.Register)
+
+	err := core.Setup()
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
 
 	log.Infof("Listening on %s (version: %s)", ln.Addr(), version.Version)
 
