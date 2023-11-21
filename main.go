@@ -24,5 +24,5 @@ import (
 )
 
 func main() {
-	cobra.CheckErr(meltcd.NewApplication().ExecuteContext(context.Background()))
+	cobra.CheckErr(meltcd.NewCLI().ExecuteContext(context.Background()))
 }

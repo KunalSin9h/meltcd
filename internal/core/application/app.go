@@ -14,13 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package core
+package application
 
-import "github.com/docker/docker/api/types/swarm"
+import (
+	"time"
+
+	"github.com/docker/docker/api/types/swarm"
+)
 
 type Application struct {
 	Name         string            `json:"name"`
-	RefreshTimer uint64            `json:"sync_timer"` // Timer to check for Sync
+	Source       Source            `json:"source"`
+	RefreshTimer time.Duration     `json:"refresh_timer"` // Timer to check for Sync
 	Health       ApplicationHealth `json:"health"`
 	LiveState    swarm.ServiceSpec `json:"live_state"`
 }
@@ -33,6 +38,14 @@ const (
 	Degraded
 	Suspended
 )
+
+func New(spec ApplicationSpec) Application {
+	return Application{
+		Name:         spec.Name,
+		RefreshTimer: spec.RefreshTimer,
+		Source:       spec.Source,
+	}
+}
 
 // SyncStatus Check if LiveState = TargetState
 //
