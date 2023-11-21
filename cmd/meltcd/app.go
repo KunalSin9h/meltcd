@@ -17,9 +17,9 @@ limitations under the License.
 package meltcd
 
 import (
-	"fmt"
 	"meltred/meltcd/internal/core/application"
 
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )
 
@@ -27,6 +27,7 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 	var spec application.ApplicationSpec
 
 	if len(args) == 0 {
+		log.Info("Creating application with Specification file")
 		// Creating application without application name
 		// means using a file
 		file, err := cmd.Flags().GetString("file")
@@ -38,8 +39,9 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	} else {
-		// Creating application with application name
+		// creating application with application name
 		// means using arguments
+		log.Info("Creating application using arguments")
 		name := args[0]
 
 		repo, err := cmd.Flags().GetString("repo")
@@ -53,15 +55,14 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 		}
 
 		refresh, _ := cmd.Flags().GetDuration("refresh")
+		revision, _ := cmd.Flags().GetString("revision")
 
-		spec, err = application.ParseSpecFromValue(name, repo, path, refresh)
+		spec, err = application.ParseSpecFromValue(name, repo, revision, path, refresh)
 		if err != nil {
 			return err
 		}
 	}
 
-	app := application.New(spec)
-	fmt.Println(app.Name)
-	fmt.Println(app.Source)
+	_ = application.New(spec)
 	return nil
 }

@@ -68,8 +68,9 @@ func NewCLI() *cobra.Command {
 		RunE:  createNewApplication,
 	}
 
-	appCreateCmd.Flags().String("repo", "", "The git repository where the compose file is hosted")
-	appCreateCmd.Flags().String("path", "", "The path to compose file")
+	appCreateCmd.Flags().String("repo", "", "The git repository where the service file is hosted")
+	appCreateCmd.Flags().String("revision", "HEAD", "The git repository revision")
+	appCreateCmd.Flags().String("path", "", "The path to service file")
 	appCreateCmd.Flags().Duration("refresh", time.Minute*3, "The refresh time for sync")
 	appCreateCmd.Flags().String("file", "", "Application schema file")
 

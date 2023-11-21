@@ -17,9 +17,13 @@ limitations under the License.
 package application
 
 import (
+	"errors"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/docker/docker/api/types/swarm"
+	git "github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/storage/memory"
 )
 
 type Application struct {
@@ -45,6 +49,33 @@ func New(spec ApplicationSpec) Application {
 		RefreshTimer: spec.RefreshTimer,
 		Source:       spec.Source,
 	}
+}
+
+func (app *Application) GetService() (swarm.ServiceSpec, error) {
+	log.Info("Getting service from git repo", "repo", app.Source.RepoURL, "app_name", app.Name)
+
+	// TODO: IMPROVEMENT
+	// Use Docker Volumes to clone repository
+	// and then only fetch & pull if already exists
+	// and check if specified path is modified then apply the changes
+	storage := memory.NewStorage()
+
+	// defer clear storage
+	_, err := git.Clone(storage, nil, &git.CloneOptions{
+		URL: app.Source.RepoURL,
+	})
+	if errors.Is(err, git.ErrRepositoryAlreadyExists) {
+		//  fetch & pull request
+		// don't clone again
+	}
+	if err != nil {
+		return swarm.ServiceSpec{}, err
+	}
+
+	// convert it into service spec
+
+	// return
+	return swarm.ServiceSpec{}, nil
 }
 
 // SyncStatus Check if LiveState = TargetState

@@ -19,6 +19,8 @@ package application
 import (
 	"errors"
 	"time"
+
+	"github.com/charmbracelet/log"
 )
 
 type ApplicationSpec struct {
@@ -28,34 +30,39 @@ type ApplicationSpec struct {
 }
 
 type Source struct {
-	Repo string `json:"repo" yaml:"repo"`
-	Path string `json:"path" yaml:"path"`
+	RepoURL        string `json:"repo" yaml:"repoURL"`
+	TargetRevision string `json:"revision" yaml:"targetRevision"`
+	Path           string `json:"path" yaml:"path"`
 }
 
 // parse an application from yaml source
 func ParseSpecFromFile(file string) (ApplicationSpec, error) {
 	if file == "" {
+		log.Error("Application specification file not specified")
 		return ApplicationSpec{}, errors.New("Application specification file not specified")
 	}
+
+	log.Info("Using file", "Service file", file)
 
 	return ApplicationSpec{}, nil
 }
 
-func ParseSpecFromValue(name, repo, path string, refresh time.Duration) (ApplicationSpec, error) {
+func ParseSpecFromValue(name, repo, revision, path string, refresh time.Duration) (ApplicationSpec, error) {
 	if repo == "" {
 		return ApplicationSpec{}, errors.New("The git repository not specified")
 	}
 
 	if path == "" {
-		return ApplicationSpec{}, errors.New("The path to compose file not specified")
+		return ApplicationSpec{}, errors.New("The path to Service file not specified")
 	}
 
 	return ApplicationSpec{
 		Name:         name,
 		RefreshTimer: refresh,
 		Source: Source{
-			Repo: repo,
-			Path: path,
+			RepoURL:        repo,
+			TargetRevision: revision,
+			Path:           path,
 		},
 	}, nil
 }
