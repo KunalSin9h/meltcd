@@ -30,20 +30,20 @@ type Application struct {
 	Name         string            `json:"name"`
 	Source       Source            `json:"source"`
 	RefreshTimer string            `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
-	Health       ApplicationHealth `json:"health"`
+	Health       Health            `json:"health"`
 	LiveState    swarm.ServiceSpec `json:"live_state"`
 }
 
-type ApplicationHealth int
+type Health int
 
 const (
-	Healthy ApplicationHealth = iota
+	Healthy Health = iota
 	Progressing
 	Degraded
 	Suspended
 )
 
-func New(spec ApplicationSpec) Application {
+func New(spec Spec) Application {
 	return Application{
 		Name:         spec.Name,
 		RefreshTimer: spec.RefreshTimer,
@@ -85,6 +85,7 @@ func (app *Application) GetService() (swarm.ServiceSpec, error) {
 	if errors.Is(err, git.ErrRepositoryAlreadyExists) {
 		//  fetch & pull request
 		// don't clone again
+		log.Info("Repo already exits", "repo", app.Source.RepoURL)
 	}
 	if err != nil {
 		return swarm.ServiceSpec{}, err
@@ -100,15 +101,15 @@ func (app *Application) GetService() (swarm.ServiceSpec, error) {
 //
 // Whether or not the live state matches the target state.
 // Is the deployed application the same as Git says it should be?
-func (app *Application) SyncStatus(targetState swarm.ServiceSpec) bool {
-	//TODO
+func (app *Application) SyncStatus(_ swarm.ServiceSpec) bool {
+	// TODO
 	return false
 }
 
 // Sync
 // The process of making an application move to its target state.
 // E.g. by applying changes to a docker swarm cluster.
-func (app *Application) Sync(targetState swarm.ServiceSpec) error {
-	//TODO
+func (app *Application) Sync(_ swarm.ServiceSpec) error {
+	// TODO
 	return nil
 }

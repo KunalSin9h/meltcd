@@ -16,6 +16,6 @@ limitations under the License.
 
 package application
 
-type ApplicationSet struct {
-	applications []Application
+type Set struct {
+	Applications []Application
 }

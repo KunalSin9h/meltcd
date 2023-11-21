@@ -22,7 +22,7 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-type ApplicationSpec struct {
+type Spec struct {
 	Name         string `json:"name" yaml:"name"`
 	RefreshTimer string `json:"refresh_timer" yaml:"refresh_timer"` // number of minutes
 	Source       Source `json:"source" yaml:"source"`
@@ -35,27 +35,27 @@ type Source struct {
 }
 
 // parse an application from yaml source
-func ParseSpecFromFile(file string) (ApplicationSpec, error) {
+func ParseSpecFromFile(file string) (Spec, error) {
 	if file == "" {
 		log.Error("Application specification file not specified")
-		return ApplicationSpec{}, errors.New("Application specification file not specified")
+		return Spec{}, errors.New("Application specification file not specified")
 	}
 
 	log.Info("Using file", "Service file", file)
 
-	return ApplicationSpec{}, nil
+	return Spec{}, nil
 }
 
-func ParseSpecFromValue(name, repo, revision, path, refresh string) (ApplicationSpec, error) {
+func ParseSpecFromValue(name, repo, revision, path, refresh string) (Spec, error) {
 	if repo == "" {
-		return ApplicationSpec{}, errors.New("The git repository not specified")
+		return Spec{}, errors.New("the git repository not specified")
 	}
 
 	if path == "" {
-		return ApplicationSpec{}, errors.New("The path to Service file not specified")
+		return Spec{}, errors.New("the path to Service file not specified")
 	}
 
-	return ApplicationSpec{
+	return Spec{
 		Name:         name,
 		RefreshTimer: refresh,
 		Source: Source{

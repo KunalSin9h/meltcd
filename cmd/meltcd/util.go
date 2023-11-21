@@ -19,6 +19,6 @@ func info(text string, args ...any) {
 	fmt.Printf(text+"\n", args...)
 }
 
-func error_msg(text string, args ...any) {
+func errorMsg(text string, args ...any) {
 	fmt.Printf(text+"\n", args...)
 }

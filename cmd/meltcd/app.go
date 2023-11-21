@@ -28,7 +28,7 @@ import (
 )
 
 func createNewApplication(cmd *cobra.Command, args []string) error {
-	var spec application.ApplicationSpec
+	var spec application.Spec
 
 	if len(args) == 0 {
 		info("Creating application with Specification file")
@@ -77,6 +77,7 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	defer res.Body.Close()
 
 	var responseBody struct {
 		Code    int    `json:"code"`
@@ -84,8 +85,8 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 	}
 
 	if res.StatusCode != 202 {
-		error_msg("Server not respond with 202: Error %s", responseBody.Message)
-		return errors.New("Something went wrong")
+		errorMsg("server not respond with 202: error %s", responseBody.Message)
+		return errors.New("something went wrong")
 	}
 
 	info("New Application created")

@@ -1,7 +1,6 @@
 package core
 
 import (
-	"errors"
 	"fmt"
 	"meltred/meltcd/internal/core/application"
 
@@ -15,7 +14,7 @@ func Register(app *application.Application) error {
 
 	for _, regApp := range Applications {
 		if regApp.Name == app.Name {
-			return errors.New(fmt.Sprintf("App already exists with name: %s\n", app.Name))
+			return fmt.Errorf("app already exists with name: %s", app.Name)
 		}
 	}
 
