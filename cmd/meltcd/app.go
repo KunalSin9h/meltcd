@@ -17,9 +17,13 @@ limitations under the License.
 package meltcd
 
 import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
 	"meltred/meltcd/internal/core/application"
+	"net/http"
 
-	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +31,7 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 	var spec application.ApplicationSpec
 
 	if len(args) == 0 {
-		log.Info("Creating application with Specification file")
+		info("Creating application with Specification file")
 		// Creating application without application name
 		// means using a file
 		file, err := cmd.Flags().GetString("file")
@@ -41,7 +45,7 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 	} else {
 		// creating application with application name
 		// means using arguments
-		log.Info("Creating application using arguments")
+		info("Creating application using arguments")
 		name := args[0]
 
 		repo, err := cmd.Flags().GetString("repo")
@@ -63,7 +67,27 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	_ = application.New(spec)
+	app := application.New(spec)
+	payload, err := json.Marshal(app)
+	if err != nil {
+		return err
+	}
 
+	res, err := http.Post(fmt.Sprintf("%s/api/application/register", getHost()), "application/json", bytes.NewReader(payload))
+	if err != nil {
+		return err
+	}
+
+	var responseBody struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+	}
+
+	if res.StatusCode != 202 {
+		error_msg("Server not respond with 202: Error %s", responseBody.Message)
+		return errors.New("Something went wrong")
+	}
+
+	info("New Application created")
 	return nil
 }
