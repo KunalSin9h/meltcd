@@ -17,12 +17,18 @@ limitations under the License.
 package application
 
 import (
+	"context"
 	"errors"
+	"io"
+	"os"
 	"reflect"
 	"time"
 
 	"github.com/charmbracelet/log"
+	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/swarm"
+	"github.com/docker/docker/client"
+	"github.com/go-git/go-billy/v5/memfs"
 	git "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/storage/memory"
 )
@@ -97,30 +103,56 @@ func (app *Application) GetService() (swarm.ServiceSpec, error) {
 	// Use Docker Volumes to clone repository
 	// and then only fetch & pull if already exists
 	// and check if specified path is modified then apply the changes
+	fs := memfs.New()
 	storage := memory.NewStorage()
+	// defer clear storage, i (kunal singh) think that when storage goes out-of-scope
+	// it is cleared
 
-	// defer clear storage
-	_, err := git.Clone(storage, nil, &git.CloneOptions{
+	_, err := git.Clone(storage, fs, &git.CloneOptions{
 		URL: app.Source.RepoURL,
 	})
 	if errors.Is(err, git.ErrRepositoryAlreadyExists) {
 		//  fetch & pull request
 		// don't clone again
 		log.Info("Repo already exits", "repo", app.Source.RepoURL)
-	}
-	if err != nil {
+		log.Error("Since the storage is not persistent, this error should not exist")
+	} else if err != nil {
 		return swarm.ServiceSpec{}, err
 	}
 
-	// convert it into service spec
+	serviceFile, err := fs.Open(app.Source.Path)
+	if err != nil {
+		log.Error("Path not found", "repo", app.Source.RepoURL, "path", app.Source.Path)
+		return swarm.ServiceSpec{}, err
+	}
+	defer serviceFile.Close()
 
+	io.Copy(os.Stdout, serviceFile)
+	os.Exit(1)
+	// convert it into service spec
 	// return
+
 	return swarm.ServiceSpec{}, nil
 }
 
 func (app *Application) Apply(targetState swarm.ServiceSpec) error {
-	// TODO: Apply the new targetState
-	// if everything is good
+	// TODO this client can be stored i app or new struct core
+	cli, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		log.Error("Not able to create a new docker client")
+		return err
+	}
+
+	res, err := cli.ServiceCreate(context.Background(), targetState, types.ServiceCreateOptions{})
+	if err != nil {
+		log.Error("Not able to create a new service")
+		return err
+	}
+
+	if len(res.Warnings) != 0 {
+		log.Warn("New Service Create give warnings", "warnings", res.Warnings)
+	}
+
 	app.LiveState = targetState
 	return nil
 }

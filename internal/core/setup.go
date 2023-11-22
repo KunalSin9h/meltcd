@@ -22,6 +22,8 @@ package core
 // setting up docker volume for persistent storage
 //
 // fill  the Applications from the volume
+//
+// initialize a new docker client
 func Setup() error {
 	return nil
 }
