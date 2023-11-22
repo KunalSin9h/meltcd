@@ -6,10 +6,11 @@ import (
 	"strings"
 )
 
-func getHost() string {
+func getServer() string {
 	server := "http://127.0.0.1:11771"
-	if os.Getenv("MELTCD_SERVER") != "" {
-		server, _ = strings.CutSuffix(os.Getenv("MELTCD_SERVER"), "/")
+	serverEnvVar := os.Getenv("MELTCD_SERVER")
+	if serverEnvVar != "" {
+		server, _ = strings.CutSuffix(serverEnvVar, "/")
 	}
 
 	return server

@@ -18,6 +18,7 @@ package application
 
 import (
 	"errors"
+	"reflect"
 	"time"
 
 	"github.com/charmbracelet/log"
@@ -61,11 +62,31 @@ func (app *Application) Run() {
 		return
 	}
 
-	timer := time.NewTicker(refreshTime)
+	ticker := time.NewTicker(refreshTime)
 
-	for range timer.C {
-		// check for sync
-		log.Info("	+", "name", app.Name)
+	for range ticker.C {
+		targetState, err := app.GetService()
+		if err != nil {
+			log.Warn("Not able to get service", "repo", app.Source.RepoURL)
+			app.Health = Suspended
+			continue
+		}
+		if app.SyncStatus(targetState) {
+			// TODO: Sync Status = Synched
+			log.Info("Synched")
+			app.Health = Healthy
+			continue
+		}
+
+		// TODO: Sync Status = Out of Sync
+		app.Health = Progressing
+		if err := app.Apply(targetState); err != nil {
+			app.Health = Suspended
+			log.Warn("Not able to targetState", "error", err.Error())
+			continue
+		}
+		app.Health = Healthy
+		log.Info("Applied new changes")
 	}
 }
 
@@ -97,13 +118,19 @@ func (app *Application) GetService() (swarm.ServiceSpec, error) {
 	return swarm.ServiceSpec{}, nil
 }
 
+func (app *Application) Apply(targetState swarm.ServiceSpec) error {
+	// TODO: Apply the new targetState
+	// if everything is good
+	app.LiveState = targetState
+	return nil
+}
+
 // SyncStatus Check if LiveState = TargetState
 //
 // Whether or not the live state matches the target state.
 // Is the deployed application the same as Git says it should be?
-func (app *Application) SyncStatus(_ swarm.ServiceSpec) bool {
-	// TODO
-	return false
+func (app *Application) SyncStatus(targetState swarm.ServiceSpec) bool {
+	return reflect.DeepEqual(app.LiveState, targetState)
 }
 
 // Sync

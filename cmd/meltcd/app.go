@@ -73,7 +73,7 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	res, err := http.Post(fmt.Sprintf("%s/api/application/register", getHost()), "application/json", bytes.NewReader(payload))
+	res, err := http.Post(fmt.Sprintf("%s/api/application/register", getServer()), "application/json", bytes.NewReader(payload))
 	if err != nil {
 		return err
 	}
