@@ -17,11 +17,10 @@ limitations under the License.
 package application
 
 import (
+	"bytes"
 	"context"
 	"errors"
-	"io"
-	"os"
-	"reflect"
+	"meltred/meltcd/spec"
 	"time"
 
 	"github.com/charmbracelet/log"
@@ -31,14 +30,15 @@ import (
 	"github.com/go-git/go-billy/v5/memfs"
 	git "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/storage/memory"
+	"gopkg.in/yaml.v2"
 )
 
 type Application struct {
-	Name         string            `json:"name"`
-	Source       Source            `json:"source"`
-	RefreshTimer string            `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
-	Health       Health            `json:"health"`
-	LiveState    swarm.ServiceSpec `json:"live_state"`
+	Name         string `json:"name"`
+	Source       Source `json:"source"`
+	RefreshTimer string `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
+	Health       Health `json:"health"`
+	LiveState    string `json:"live_state"`
 }
 
 type Health int
@@ -71,7 +71,7 @@ func (app *Application) Run() {
 	ticker := time.NewTicker(refreshTime)
 
 	for range ticker.C {
-		targetState, err := app.GetService()
+		targetState, err := app.GetState()
 		if err != nil {
 			log.Warn("Not able to get service", "repo", app.Source.RepoURL)
 			app.Health = Suspended
@@ -84,7 +84,7 @@ func (app *Application) Run() {
 			continue
 		}
 
-		// TODO: Sync Status = Out of Sync
+		// // TODO: Sync Status = Out of Sync
 		app.Health = Progressing
 		if err := app.Apply(targetState); err != nil {
 			app.Health = Suspended
@@ -96,8 +96,9 @@ func (app *Application) Run() {
 	}
 }
 
-func (app *Application) GetService() (swarm.ServiceSpec, error) {
-	log.Info("Getting service from git repo", "repo", app.Source.RepoURL, "app_name", app.Name)
+func (app *Application) GetState() (string, error) {
+	log.Info("Getting service state from git repo", "repo", app.Source.RepoURL, "app_name", app.Name)
+	// TODO: not using targetRevision
 
 	// TODO: IMPROVEMENT
 	// Use Docker Volumes to clone repository
@@ -117,25 +118,24 @@ func (app *Application) GetService() (swarm.ServiceSpec, error) {
 		log.Info("Repo already exits", "repo", app.Source.RepoURL)
 		log.Error("Since the storage is not persistent, this error should not exist")
 	} else if err != nil {
-		return swarm.ServiceSpec{}, err
+		return "", err
 	}
 
 	serviceFile, err := fs.Open(app.Source.Path)
 	if err != nil {
 		log.Error("Path not found", "repo", app.Source.RepoURL, "path", app.Source.Path)
-		return swarm.ServiceSpec{}, err
+		return "", err
 	}
 	defer serviceFile.Close()
 
-	io.Copy(os.Stdout, serviceFile)
-	os.Exit(1)
-	// convert it into service spec
-	// return
+	// reading the service file content
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(serviceFile)
 
-	return swarm.ServiceSpec{}, nil
+	return buf.String(), nil
 }
 
-func (app *Application) Apply(targetState swarm.ServiceSpec) error {
+func (app *Application) Apply(targetState string) error {
 	// TODO this client can be stored i app or new struct core
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
@@ -143,14 +143,24 @@ func (app *Application) Apply(targetState swarm.ServiceSpec) error {
 		return err
 	}
 
-	res, err := cli.ServiceCreate(context.Background(), targetState, types.ServiceCreateOptions{})
-	if err != nil {
-		log.Error("Not able to create a new service")
-		return err
-	}
+	var swarmSpec spec.DockerSwarm
+	yaml.Unmarshal([]byte(targetState), &swarmSpec)
 
-	if len(res.Warnings) != 0 {
-		log.Warn("New Service Create give warnings", "warnings", res.Warnings)
+	services, err := swarmSpec.GetServiceSpec(app.Name)
+	log.Info("Get services from the source schema", "number of services found", len(services))
+
+	for _, service := range services {
+		res, err := cli.ServiceCreate(context.Background(), service, types.ServiceCreateOptions{})
+		if err != nil {
+			app.Health = Degraded
+			log.Error("Not able to create a new service")
+			return err
+		}
+
+		if len(res.Warnings) != 0 {
+			log.Warn("New Service Create give warnings", "warnings", res.Warnings)
+
+		}
 	}
 
 	app.LiveState = targetState
@@ -161,8 +171,8 @@ func (app *Application) Apply(targetState swarm.ServiceSpec) error {
 //
 // Whether or not the live state matches the target state.
 // Is the deployed application the same as Git says it should be?
-func (app *Application) SyncStatus(targetState swarm.ServiceSpec) bool {
-	return reflect.DeepEqual(app.LiveState, targetState)
+func (app *Application) SyncStatus(targetState string) bool {
+	return app.LiveState == targetState
 }
 
 // Sync
