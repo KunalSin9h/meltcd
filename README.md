@@ -6,6 +6,9 @@
 
 #### Docs: https://cd.meltred.tech/docs
 
+> [!IMPORTANT]
+> `meltcd` is very far from production use, unless we achive **1.0.0** 
+
 Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
 ## Install
