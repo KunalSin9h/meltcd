@@ -18,8 +18,6 @@ package application
 
 import (
 	"errors"
-
-	"github.com/charmbracelet/log"
 )
 
 type Spec struct {
@@ -37,11 +35,8 @@ type Source struct {
 // parse an application from yaml source
 func ParseSpecFromFile(file string) (Spec, error) {
 	if file == "" {
-		log.Error("Application specification file not specified")
 		return Spec{}, errors.New("Application specification file not specified")
 	}
-
-	log.Info("Using file", "Service file", file)
 
 	return Spec{}, nil
 }
