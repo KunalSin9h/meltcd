@@ -169,7 +169,7 @@ func (app *Application) Apply(targetState string) error {
 
 	for _, service := range services {
 		// check if already exists then only update
-		if svc, exists := checkServiceAlreadyExist(service.Name, allServicesRunning); exists {
+		if svc, exists := checkServiceAlreadyExist(service.Name, &allServicesRunning); exists {
 			log.Info("Service already running", "name", service.Name)
 			res, err := cli.ServiceUpdate(context.Background(), svc.ID, svc.Version, service, types.ServiceUpdateOptions{})
 			if err != nil {
@@ -207,8 +207,8 @@ func (app *Application) SyncStatus(targetState string) bool {
 	return app.LiveState == targetState
 }
 
-func checkServiceAlreadyExist(serviceName string, allServices []swarm.Service) (swarm.Service, bool) {
-	for _, svc := range allServices {
+func checkServiceAlreadyExist(serviceName string, allServices *[]swarm.Service) (swarm.Service, bool) {
+	for _, svc := range *allServices {
 		if svc.Spec.Name == serviceName {
 			return svc, true
 		}
