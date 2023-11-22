@@ -47,7 +47,7 @@ type Volume struct {
 func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error) {
 	log.Info("Getting service spec for app", "app name", appName)
 
-	var specs []swarm.ServiceSpec
+	specs := make([]swarm.ServiceSpec, 0)
 
 	for serviceName, spec := range d.Services {
 		log.Info("Making serviceSpec for service", "service_name", serviceName)

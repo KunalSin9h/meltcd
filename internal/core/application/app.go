@@ -156,6 +156,9 @@ func (app *Application) Apply(targetState string) error {
 	yaml.Unmarshal([]byte(targetState), &swarmSpec)
 
 	services, err := swarmSpec.GetServiceSpec(app.Name)
+	if err != nil {
+		return err
+	}
 	log.Info("Get services from the source schema", "number of services found", len(services))
 
 	// find the service if already exists
@@ -176,7 +179,6 @@ func (app *Application) Apply(targetState string) error {
 			}
 			if len(res.Warnings) != 0 {
 				log.Warn("New Service update give warnings", "warnings", res.Warnings)
-
 			}
 			continue
 		}
@@ -190,7 +192,6 @@ func (app *Application) Apply(targetState string) error {
 
 		if len(res.Warnings) != 0 {
 			log.Warn("New Service Create give warnings", "warnings", res.Warnings)
-
 		}
 	}
 
