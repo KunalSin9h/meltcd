@@ -45,9 +45,12 @@ type Volume struct {
 }
 
 func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error) {
+	log.Info("Getting service spec for app", "app name", appName)
+
 	var specs []swarm.ServiceSpec
 
 	for serviceName, spec := range d.Services {
+		log.Info("Making serviceSpec for service", "service_name", serviceName)
 
 		var targetSpec swarm.ServiceSpec
 		targetSpec.Name = appName + "_" + serviceName
@@ -56,7 +59,6 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 				Image: spec.Image,
 			},
 		}
-
 		for k, v := range spec.Environment {
 			targetSpec.TaskTemplate.ContainerSpec.Env = append(targetSpec.TaskTemplate.ContainerSpec.Env, k+"="+v)
 		}
@@ -74,28 +76,37 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 				Target: tokens[1],
 			})
 		}
+
 		if spec.Deploy.Mode == "replicated" {
-			targetSpec.Mode.Replicated.Replicas = &spec.Deploy.Replicas
+			targetSpec.Mode.Replicated = &swarm.ReplicatedService{
+				Replicas: &spec.Deploy.Replicas,
+			}
 		} else if spec.Deploy.Mode == "global" {
 			targetSpec.Mode.Global = &swarm.GlobalService{}
 		}
 
+		var ports []swarm.PortConfig
 		for _, port := range spec.Ports {
 			tokens := strings.Split(port, ":")
 			if len(tokens) != 2 {
 				log.Error("ports are not split on : in 2", "tokens", tokens)
 				os.Exit(1)
 			}
-			targetPort, _ := strconv.Atoi(tokens[1])
-			publishPort, _ := strconv.Atoi(tokens[0])
+			target, _ := strconv.Atoi(tokens[1])
+			publish, _ := strconv.Atoi(tokens[0])
 
-			targetSpec.EndpointSpec.Ports = append(targetSpec.EndpointSpec.Ports, swarm.PortConfig{
+			ports = append(ports, swarm.PortConfig{
 				Protocol:      "tcp",
-				TargetPort:    uint32(targetPort),
-				PublishedPort: uint32(publishPort),
+				TargetPort:    uint32(target),
+				PublishedPort: uint32(publish),
 			})
 		}
 
+		targetSpec.EndpointSpec = &swarm.EndpointSpec{
+			Ports: ports,
+		}
+
+		log.Info("Adding serviceSpec for service in allServiceArray", "service_name", serviceName)
 		specs = append(specs, targetSpec)
 	}
 

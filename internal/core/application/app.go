@@ -67,22 +67,26 @@ func (app *Application) Run() {
 		log.Error("Failed to parse refresh_time, it must be like \"3m30s\"", "name", app.Name)
 		return
 	}
+	log.Info("Staring sync process")
 
 	ticker := time.NewTicker(refreshTime)
+	defer ticker.Stop()
 
-	for range ticker.C {
+	for ; true; <-ticker.C {
 		targetState, err := app.GetState()
 		if err != nil {
 			log.Warn("Not able to get service", "repo", app.Source.RepoURL)
 			app.Health = Suspended
 			continue
 		}
+		log.Info("got target state")
 		if app.SyncStatus(targetState) {
 			// TODO: Sync Status = Synched
 			log.Info("Synched")
 			app.Health = Healthy
 			continue
 		}
+		log.Info("liveState and Target state is out of sync. syncing now...")
 
 		// // TODO: Sync Status = Out of Sync
 		app.Health = Progressing
@@ -136,6 +140,7 @@ func (app *Application) GetState() (string, error) {
 }
 
 func (app *Application) Apply(targetState string) error {
+	log.Info("Applying new targetState")
 	// TODO this client can be stored i app or new struct core
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
@@ -153,7 +158,7 @@ func (app *Application) Apply(targetState string) error {
 		res, err := cli.ServiceCreate(context.Background(), service, types.ServiceCreateOptions{})
 		if err != nil {
 			app.Health = Degraded
-			log.Error("Not able to create a new service")
+			log.Error("Not able to create a new service", "error", err.Error())
 			return err
 		}
 
