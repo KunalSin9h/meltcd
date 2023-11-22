@@ -99,6 +99,7 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 				Protocol:      "tcp",
 				TargetPort:    uint32(target),
 				PublishedPort: uint32(publish),
+				PublishMode:   swarm.PortConfigPublishModeIngress,
 			})
 		}
 

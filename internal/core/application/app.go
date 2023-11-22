@@ -92,7 +92,7 @@ func (app *Application) Run() {
 		app.Health = Progressing
 		if err := app.Apply(targetState); err != nil {
 			app.Health = Suspended
-			log.Warn("Not able to targetState", "error", err.Error())
+			log.Warn("Not able to apply targetState", "error", err.Error())
 			continue
 		}
 		app.Health = Healthy
@@ -112,6 +112,10 @@ func (app *Application) GetState() (string, error) {
 	storage := memory.NewStorage()
 	// defer clear storage, i (kunal singh) think that when storage goes out-of-scope
 	// it is cleared
+
+	// TODO: Improvement
+	// GET the name and commit also
+	// so that we can show it in the ui or something
 
 	_, err := git.Clone(storage, fs, &git.CloneOptions{
 		URL: app.Source.RepoURL,
@@ -154,7 +158,29 @@ func (app *Application) Apply(targetState string) error {
 	services, err := swarmSpec.GetServiceSpec(app.Name)
 	log.Info("Get services from the source schema", "number of services found", len(services))
 
+	// find the service if already exists
+	allServicesRunning, err := cli.ServiceList(context.Background(), types.ServiceListOptions{})
+	if err != nil {
+		return err
+	}
+
 	for _, service := range services {
+		// check if already exists then only update
+		if svc, exists := checkServiceAlreadyExist(service.Name, &allServicesRunning); exists {
+			log.Info("Service already running", "name", service.Name)
+			res, err := cli.ServiceUpdate(context.Background(), svc.ID, svc.Version, service, types.ServiceUpdateOptions{})
+			if err != nil {
+				app.Health = Degraded
+				log.Error("Not able to update a running service", "error", err.Error())
+				return err
+			}
+			if len(res.Warnings) != 0 {
+				log.Warn("New Service update give warnings", "warnings", res.Warnings)
+
+			}
+			continue
+		}
+		log.Info("Creating new service")
 		res, err := cli.ServiceCreate(context.Background(), service, types.ServiceCreateOptions{})
 		if err != nil {
 			app.Health = Degraded
@@ -180,10 +206,11 @@ func (app *Application) SyncStatus(targetState string) bool {
 	return app.LiveState == targetState
 }
 
-// Sync
-// The process of making an application move to its target state.
-// E.g. by applying changes to a docker swarm cluster.
-func (app *Application) Sync(_ swarm.ServiceSpec) error {
-	// TODO
-	return nil
+func checkServiceAlreadyExist(serviceName string, allServices *[]swarm.Service) (swarm.Service, bool) {
+	for _, svc := range *allServices {
+		if svc.Spec.Name == serviceName {
+			return svc, true
+		}
+	}
+	return swarm.Service{}, false
 }

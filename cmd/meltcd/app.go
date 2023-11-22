@@ -78,14 +78,9 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	defer res.Body.Close()
-
-	var responseBody struct {
-		Code    int    `json:"code"`
-		Message string `json:"message"`
-	}
-
+	// TODO Extract fiber.Error from the response
 	if res.StatusCode != 202 {
-		errorMsg("server not respond with 202: error %s", responseBody.Message)
+		errorMsg("server not respond with 202")
 		return errors.New("something went wrong")
 	}
 
