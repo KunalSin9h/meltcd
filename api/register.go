@@ -19,7 +19,10 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	if err := core.Register(&app); err != nil {
-		return err
+		return &fiber.Error{
+			Code:    fiber.StatusBadRequest,
+			Message: err.Error(),
+		}
 	}
 
 	return c.SendStatus(http.StatusAccepted)
