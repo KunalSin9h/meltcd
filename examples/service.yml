@@ -1,0 +1,8 @@
+name: My-Application
+
+refresh_timer: "3m0s"
+
+source:
+  repoURL: https://github.com/kunalsin9h/tiddi.git
+  path: compose.yml
+  targetRevision: HEAD

@@ -6,7 +6,7 @@
 meltcd app create <app-name> --repo <repo-url> --path <path-to-spec>
 ```
 
-2. Create a new `Application` with file [TODO]
+2. Create a new `Application` with file [DONE]
 
 ```bash
 meltcd app create --file <path-to-file>
