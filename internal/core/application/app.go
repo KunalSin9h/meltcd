@@ -153,7 +153,9 @@ func (app *Application) Apply(targetState string) error {
 	}
 
 	var swarmSpec spec.DockerSwarm
-	yaml.Unmarshal([]byte(targetState), &swarmSpec)
+	if err := yaml.Unmarshal([]byte(targetState), &swarmSpec); err != nil {
+		return err
+	}
 
 	services, err := swarmSpec.GetServiceSpec(app.Name)
 	if err != nil {

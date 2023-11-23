@@ -17,7 +17,12 @@ limitations under the License.
 package application
 
 import (
+	"encoding/json"
 	"errors"
+	"os"
+	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Spec struct {
@@ -27,8 +32,8 @@ type Spec struct {
 }
 
 type Source struct {
-	RepoURL        string `json:"repo" yaml:"repoURL"`
-	TargetRevision string `json:"revision" yaml:"targetRevision"`
+	RepoURL        string `json:"repoURL" yaml:"repoURL"`
+	TargetRevision string `json:"targetRevision" yaml:"targetRevision"`
 	Path           string `json:"path" yaml:"path"`
 }
 
@@ -37,8 +42,26 @@ func ParseSpecFromFile(file string) (Spec, error) {
 	if file == "" {
 		return Spec{}, errors.New("Application specification file not specified")
 	}
+	fileContent, err := os.ReadFile(file)
+	if err != nil {
+		return Spec{}, err
+	}
 
-	return Spec{}, nil
+	var spec Spec
+
+	if strings.HasSuffix(file, ".yaml") || strings.HasSuffix(file, ".yml") { // nolint:all
+		if err := yaml.Unmarshal(fileContent, &spec); err != nil {
+			return Spec{}, err
+		}
+	} else if strings.HasSuffix(file, ".json") {
+		if err := json.Unmarshal(fileContent, &spec); err != nil {
+			return Spec{}, err
+		}
+	} else {
+		return Spec{}, errors.New("file format not supported, only yaml and json are supported")
+	}
+
+	return spec, nil
 }
 
 func ParseSpecFromValue(name, repo, revision, path, refresh string) (Spec, error) {
