@@ -49,7 +49,7 @@ func ParseSpecFromFile(file string) (Spec, error) {
 
 	var spec Spec
 
-	if strings.HasSuffix(file, ".yaml") || strings.HasSuffix(file, ".yml") {
+	if strings.HasSuffix(file, ".yaml") || strings.HasSuffix(file, ".yml") { // nolint:all
 		if err := yaml.Unmarshal(fileContent, &spec); err != nil {
 			return Spec{}, err
 		}
@@ -58,7 +58,7 @@ func ParseSpecFromFile(file string) (Spec, error) {
 			return Spec{}, err
 		}
 	} else {
-		return Spec{}, errors.New("File format not supported, only yaml and json are supported")
+		return Spec{}, errors.New("file format not supported, only yaml and json are supported")
 	}
 
 	return spec, nil
