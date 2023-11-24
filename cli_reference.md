@@ -22,7 +22,7 @@ meltcd app update <app-name> --repo <repo-url> --path <path-to-spec>
 meltcd app update --file <path-to-file>
 ```
 
-4. Get details about `Application` [TODO]
+4. Get details about `Application` [DONE]
 
 ```bash
 meltcd app get <app-name>

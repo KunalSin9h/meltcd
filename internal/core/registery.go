@@ -33,6 +33,8 @@ func Register(app *application.Application) error {
 		return fmt.Errorf("app already exists with name: %s", app.Name)
 	}
 
+	app.SyncTrigger = make(chan application.SyncType, 3)
+
 	go app.Run()
 	Applications = append(Applications, app)
 
@@ -51,7 +53,9 @@ func Update(app *application.Application) error {
 	runningApp.RefreshTimer = app.RefreshTimer
 	runningApp.Source = app.Source
 
-	log.Info("Updated!")
+	// Sync the application as new update is done
+	runningApp.SyncTrigger <- application.UpdateSync
+
 	return nil
 }
 
