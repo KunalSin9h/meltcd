@@ -28,7 +28,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func getDetailsAboutApplication(cmd *cobra.Command, args []string) error {
+func getDetailsAboutApplication(_ *cobra.Command, args []string) error {
 	appName := args[0]
 
 	res, err := http.Get(fmt.Sprintf("%s/api/application/get/%s", getServer(), appName))

@@ -80,7 +80,7 @@ func (app *Application) Run() {
 
 	log.Info("Staring sync process")
 
-	for ; true; wait(ticker.C, app.SyncTrigger) {
+	for ; true; waitSync(ticker.C, app.SyncTrigger) {
 		if err := updateTicker(app.RefreshTimer, ticker); err != nil {
 			log.Error(err)
 			app.Health = Degraded
@@ -115,10 +115,10 @@ func (app *Application) Run() {
 	}
 }
 
-func wait(ticker <-chan time.Time, syncTrigger <-chan SyncType) {
+func waitSync(ticker <-chan time.Time, syncTrigger <-chan SyncType) {
 	select {
-	case _ = <-ticker:
-	case _ = <-syncTrigger:
+	case <-ticker:
+	case <-syncTrigger:
 	}
 }
 

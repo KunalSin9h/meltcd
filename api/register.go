@@ -57,7 +57,7 @@ func Update(c *fiber.Ctx) error {
 func Details(c *fiber.Ctx) error {
 	appName := c.Params("app_name")
 	if appName == "" {
-		return errors.New("Application name (app_name) missing in querystring")
+		return errors.New("application name (app_name) missing in querystring")
 	}
 
 	details, err := core.Details(appName)

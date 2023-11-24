@@ -42,6 +42,8 @@ func Register(app *application.Application) error {
 	return nil
 }
 
+// TODO: update atomic parts
+// only specify things you need go update
 func Update(app *application.Application) error {
 	log.Info("Updating application", "name", app.Name)
 
@@ -59,10 +61,10 @@ func Update(app *application.Application) error {
 	return nil
 }
 
-func Details(app_name string) (application.Application, error) {
-	log.Info("Getting application details", "name", app_name)
+func Details(appName string) (application.Application, error) {
+	log.Info("Getting application details", "name", appName)
 
-	runningApp, exists := getApp(app_name)
+	runningApp, exists := getApp(appName)
 	if !exists {
 		return application.Application{}, fmt.Errorf("app does not exists, create a new application first")
 	}
