@@ -28,17 +28,11 @@ func Register(c *fiber.Ctx) error {
 	var app application.Application
 
 	if err := c.BodyParser(&app); err != nil {
-		return &fiber.Error{
-			Code:    fiber.StatusBadRequest,
-			Message: err.Error(),
-		}
+		return fiber.NewError(fiber.StatusBadRequest, "body parsing error")
 	}
 
 	if err := core.Register(&app); err != nil {
-		return &fiber.Error{
-			Code:    fiber.StatusBadRequest,
-			Message: err.Error(),
-		}
+		return fiber.NewError(fiber.StatusBadRequest, "app already exists with name: "+app.Name)
 	}
 
 	return c.SendStatus(http.StatusAccepted)

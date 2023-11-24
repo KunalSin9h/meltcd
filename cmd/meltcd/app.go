@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"meltred/meltcd/internal/core/application"
 	"net/http"
 
@@ -78,10 +79,13 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	defer res.Body.Close()
-	// TODO Extract fiber.Error from the response
+
 	if res.StatusCode != 202 {
-		errorMsg("server not respond with 202")
-		return errors.New("something went wrong")
+		data, err := io.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+		return errors.New(string(data))
 	}
 
 	info("New Application created")
