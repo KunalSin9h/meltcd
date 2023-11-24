@@ -19,7 +19,6 @@ package server
 import (
 	"embed"
 	"fmt"
-	meltcd_api "meltred/meltcd/api"
 	"meltred/meltcd/internal/core"
 	"meltred/meltcd/version"
 	"net"
@@ -80,9 +79,10 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	})
 
 	application := api.Group("application")
-	application.Post("/register", meltcd_api.Register)
-	application.Post("/update", meltcd_api.Update)
-	application.Get("/get/:app_name", meltcd_api.Details)
+	application.Post("/register", Register)
+	application.Post("/update", Update)
+	application.Get("/get", AllApplications)
+	application.Get("/get/:app_name", Details)
 
 	err := core.Setup()
 	if err != nil {

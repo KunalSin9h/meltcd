@@ -37,7 +37,8 @@ type Application struct {
 	Name         string        `json:"name"`
 	Source       Source        `json:"source"`
 	RefreshTimer string        `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
-	Health       Health        `json:"health"`
+	Health       Health        `json:"-"`
+	HealthStatus string        `json:"health_status"`
 	LiveState    string        `json:"-"`
 	SyncTrigger  chan SyncType `json:"-"`
 }
@@ -50,6 +51,21 @@ const (
 	Degraded
 	Suspended
 )
+
+func (h Health) ToString() string {
+	switch h {
+	case Healthy:
+		return "healthy"
+	case Progressing:
+		return "progressing"
+	case Degraded:
+		return "degraded"
+	case Suspended:
+		return "suspended"
+	}
+
+	return "NA"
+}
 
 type SyncType int
 

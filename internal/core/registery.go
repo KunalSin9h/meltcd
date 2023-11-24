@@ -69,8 +69,20 @@ func Details(appName string) (application.Application, error) {
 		return application.Application{}, fmt.Errorf("app does not exists, create a new application first")
 	}
 
+	runningApp.HealthStatus = runningApp.Health.ToString()
+
 	log.Info("Done!")
 	return *runningApp, nil
+}
+
+func List() map[string]string {
+	res := make(map[string]string)
+
+	for _, app := range Applications {
+		res[app.Name] = app.Health.ToString()
+	}
+
+	return res
 }
 
 func getApp(name string) (*application.Application, bool) {

@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package api
+package server
 
 import (
-	"encoding/json"
 	"errors"
 	"meltred/meltcd/internal/core"
 	"meltred/meltcd/internal/core/application"
@@ -65,11 +64,29 @@ func Details(c *fiber.Ctx) error {
 		return err
 	}
 
-	bytes, err := json.Marshal(details)
-	if err != nil {
-		return err
+	return c.Status(200).JSON(details)
+}
+
+type AppList struct {
+	Data []AppStatus `json:"data"`
+}
+
+type AppStatus struct {
+	Name   string `json:"name"`
+	Health string `json:"health"`
+}
+
+func AllApplications(c *fiber.Ctx) error {
+	status := core.List()
+
+	var res AppList
+
+	for k, v := range status {
+		res.Data = append(res.Data, AppStatus{
+			Name:   k,
+			Health: v,
+		})
 	}
 
-	c.Response().Header.Add("Content-Type", "application/json")
-	return c.Status(200).SendString(string(bytes))
+	return c.Status(200).JSON(res)
 }
