@@ -86,8 +86,16 @@ func NewCLI() *cobra.Command {
 	appUpdateCmd.Flags().String("refresh", "3m0s", "The refresh time for sync")
 	appUpdateCmd.Flags().String("file", "", "Application schema file")
 
+	appGetCmd := &cobra.Command{
+		Use:   "get",
+		Short: "Get details about the application",
+		Args:  cobra.ExactArgs(1),
+		RunE:  getDetailsAboutApplication,
+	}
+
 	appCmd.AddCommand(appCreateCmd)
 	appCmd.AddCommand(appUpdateCmd)
+	appCmd.AddCommand(appGetCmd)
 
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(appCmd)

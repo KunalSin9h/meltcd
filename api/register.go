@@ -17,6 +17,8 @@ limitations under the License.
 package api
 
 import (
+	"encoding/json"
+	"errors"
 	"meltred/meltcd/internal/core"
 	"meltred/meltcd/internal/core/application"
 	"net/http"
@@ -50,4 +52,24 @@ func Update(c *fiber.Ctx) error {
 	}
 
 	return c.SendStatus(http.StatusAccepted)
+}
+
+func Details(c *fiber.Ctx) error {
+	appName := c.Params("app_name")
+	if appName == "" {
+		return errors.New("Application name (app_name) missing in querystring")
+	}
+
+	details, err := core.Details(appName)
+	if err != nil {
+		return err
+	}
+
+	bytes, err := json.Marshal(details)
+	if err != nil {
+		return err
+	}
+
+	c.Response().Header.Add("Content-Type", "application/json")
+	return c.Status(200).SendString(string(bytes))
 }

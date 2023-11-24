@@ -28,36 +28,51 @@ var Applications []*application.Application
 func Register(app *application.Application) error {
 	log.Info("Registering application", "name", app.Name)
 
-	for _, regApp := range Applications {
-		if regApp.Name == app.Name {
-			return fmt.Errorf("app already exists with name: %s", app.Name)
-		}
+	_, exists := getApp(app.Name)
+	if exists {
+		return fmt.Errorf("app already exists with name: %s", app.Name)
 	}
 
 	go app.Run()
 	Applications = append(Applications, app)
 
+	log.Info("Registered!")
 	return nil
 }
 
 func Update(app *application.Application) error {
 	log.Info("Updating application", "name", app.Name)
 
-	exists := false
-
-	for _, regApp := range Applications {
-		if regApp.Name == app.Name {
-
-			regApp.RefreshTimer = app.RefreshTimer
-			regApp.Source = app.Source
-
-			exists = true
-			break
-		}
-	}
-
+	runningApp, exists := getApp(app.Name)
 	if !exists {
 		return fmt.Errorf("app does not exists, create a new application first")
 	}
+
+	runningApp.RefreshTimer = app.RefreshTimer
+	runningApp.Source = app.Source
+
+	log.Info("Updated!")
 	return nil
+}
+
+func Details(app_name string) (application.Application, error) {
+	log.Info("Getting application details", "name", app_name)
+
+	runningApp, exists := getApp(app_name)
+	if !exists {
+		return application.Application{}, fmt.Errorf("app does not exists, create a new application first")
+	}
+
+	log.Info("Done!")
+	return *runningApp, nil
+}
+
+func getApp(name string) (*application.Application, bool) {
+	for _, app := range Applications {
+		if app.Name == name {
+			return app, true
+		}
+	}
+
+	return &application.Application{}, false
 }

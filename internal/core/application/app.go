@@ -38,7 +38,7 @@ type Application struct {
 	Source       Source `json:"source"`
 	RefreshTimer string `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
 	Health       Health `json:"health"`
-	LiveState    string `json:"live_state"`
+	LiveState    string `json:"-"`
 }
 
 type Health int

@@ -28,6 +28,28 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func getDetailsAboutApplication(cmd *cobra.Command, args []string) error {
+	appName := args[0]
+
+	res, err := http.Get(fmt.Sprintf("%s/api/application/get/%s", getServer(), appName))
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		return errors.New("server does not respond with 200")
+	}
+
+	data, err := io.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(string(data))
+	return nil
+}
+
 func createNewApplication(cmd *cobra.Command, args []string) error {
 	spec, err := getSpecFromData(cmd, args)
 	if err != nil {
