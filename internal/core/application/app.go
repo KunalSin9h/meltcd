@@ -34,11 +34,12 @@ import (
 )
 
 type Application struct {
-	Name         string `json:"name"`
-	Source       Source `json:"source"`
-	RefreshTimer string `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
-	Health       Health `json:"health"`
-	LiveState    string `json:"live_state"`
+	Name         string        `json:"name"`
+	Source       Source        `json:"source"`
+	RefreshTimer string        `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
+	Health       Health        `json:"health"`
+	LiveState    string        `json:"-"`
+	SyncTrigger  chan SyncType `json:"-"`
 }
 
 type Health int
@@ -48,6 +49,13 @@ const (
 	Progressing
 	Degraded
 	Suspended
+)
+
+type SyncType int
+
+const (
+	Synchronize SyncType = iota
+	UpdateSync
 )
 
 func New(spec Spec) Application {
@@ -61,22 +69,28 @@ func New(spec Spec) Application {
 func (app *Application) Run() {
 	log.Info("Running Application", "name", app.Name)
 
-	refreshTime, err := time.ParseDuration(app.RefreshTimer)
-	if err != nil {
-		app.Health = Suspended
-		log.Error("Failed to parse refresh_time, it must be like \"3m30s\"", "name", app.Name)
-		return
-	}
-	log.Info("Staring sync process")
-
-	ticker := time.NewTicker(refreshTime)
+	ticker := time.NewTicker(time.Minute * 3)
 	defer ticker.Stop()
 
-	for ; true; <-ticker.C {
+	if err := updateTicker(app.RefreshTimer, ticker); err != nil {
+		log.Error(err)
+		app.Health = Suspended
+		return
+	}
+
+	log.Info("Staring sync process")
+
+	for ; true; waitSync(ticker.C, app.SyncTrigger) {
+		if err := updateTicker(app.RefreshTimer, ticker); err != nil {
+			log.Error(err)
+			app.Health = Degraded
+			continue
+		}
+
 		targetState, err := app.GetState()
 		if err != nil {
 			log.Warn("Not able to get service", "repo", app.Source.RepoURL)
-			app.Health = Suspended
+			app.Health = Degraded
 			continue
 		}
 		log.Info("got target state")
@@ -91,13 +105,32 @@ func (app *Application) Run() {
 		// // TODO: Sync Status = Out of Sync
 		app.Health = Progressing
 		if err := app.Apply(targetState); err != nil {
-			app.Health = Suspended
+			app.Health = Degraded
 			log.Warn("Not able to apply targetState", "error", err.Error())
 			continue
 		}
+
 		app.Health = Healthy
 		log.Info("Applied new changes")
 	}
+}
+
+func waitSync(ticker <-chan time.Time, syncTrigger <-chan SyncType) {
+	select {
+	case <-ticker:
+	case <-syncTrigger:
+	}
+}
+
+func updateTicker(duration string, t *time.Ticker) error {
+	refreshTime, err := time.ParseDuration(duration)
+	if err != nil {
+		log.Error("Failed to parse refresh_time, it must be like \"3m30s\"", "name", duration)
+		return err
+	}
+
+	t.Reset(refreshTime)
+	return nil
 }
 
 func (app *Application) GetState() (string, error) {

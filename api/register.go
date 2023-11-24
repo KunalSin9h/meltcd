@@ -17,6 +17,8 @@ limitations under the License.
 package api
 
 import (
+	"encoding/json"
+	"errors"
 	"meltred/meltcd/internal/core"
 	"meltred/meltcd/internal/core/application"
 	"net/http"
@@ -28,18 +30,46 @@ func Register(c *fiber.Ctx) error {
 	var app application.Application
 
 	if err := c.BodyParser(&app); err != nil {
-		return &fiber.Error{
-			Code:    fiber.StatusBadRequest,
-			Message: err.Error(),
-		}
+		return fiber.NewError(fiber.StatusBadRequest, "body parsing error")
 	}
 
 	if err := core.Register(&app); err != nil {
-		return &fiber.Error{
-			Code:    fiber.StatusBadRequest,
-			Message: err.Error(),
-		}
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	return c.SendStatus(http.StatusAccepted)
+}
+
+func Update(c *fiber.Ctx) error {
+	var app application.Application
+
+	if err := c.BodyParser(&app); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "body parsing error")
+	}
+
+	if err := core.Update(&app); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return c.SendStatus(http.StatusAccepted)
+}
+
+func Details(c *fiber.Ctx) error {
+	appName := c.Params("app_name")
+	if appName == "" {
+		return errors.New("application name (app_name) missing in querystring")
+	}
+
+	details, err := core.Details(appName)
+	if err != nil {
+		return err
+	}
+
+	bytes, err := json.Marshal(details)
+	if err != nil {
+		return err
+	}
+
+	c.Response().Header.Add("Content-Type", "application/json")
+	return c.Status(200).SendString(string(bytes))
 }

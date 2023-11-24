@@ -12,7 +12,17 @@ meltcd app create <app-name> --repo <repo-url> --path <path-to-spec>
 meltcd app create --file <path-to-file>
 ```
 
-3. Get details about `Application` [TODO]
+3. Update existing `Application` [DONE]
+
+```bash
+meltcd app update <app-name> --repo <repo-url> --path <path-to-spec>
+
+# Or using file
+
+meltcd app update --file <path-to-file>
+```
+
+4. Get details about `Application` [DONE]
 
 ```bash
 meltcd app get <app-name>

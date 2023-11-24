@@ -32,10 +32,10 @@ func getServer() string {
 	return server
 }
 
-func info(text string, args ...any) {
+func info(text string, args ...any) { // nolint
 	fmt.Printf(text+"\n", args...)
 }
 
-func errorMsg(text string, args ...any) {
+func errorMsg(text string, args ...any) { //nolint
 	fmt.Printf(text+"\n", args...)
 }
