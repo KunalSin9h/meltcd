@@ -81,6 +81,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	application := api.Group("application")
 	application.Post("/register", meltcd_api.Register)
+	application.Post("/update", meltcd_api.Update)
 
 	err := core.Setup()
 	if err != nil {

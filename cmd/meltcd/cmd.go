@@ -73,7 +73,21 @@ func NewCLI() *cobra.Command {
 	appCreateCmd.Flags().String("refresh", "3m0s", "The refresh time for sync")
 	appCreateCmd.Flags().String("file", "", "Application schema file")
 
+	appUpdateCmd := &cobra.Command{
+		Use:   "update",
+		Short: "Update existing application",
+		Args:  cobra.RangeArgs(0, 1),
+		RunE:  updateExistingApplication,
+	}
+
+	appUpdateCmd.Flags().String("repo", "", "The git repository where the service file is hosted")
+	appUpdateCmd.Flags().String("revision", "HEAD", "The git repository revision")
+	appUpdateCmd.Flags().String("path", "", "The path to service file")
+	appUpdateCmd.Flags().String("refresh", "3m0s", "The refresh time for sync")
+	appUpdateCmd.Flags().String("file", "", "Application schema file")
+
 	appCmd.AddCommand(appCreateCmd)
+	appCmd.AddCommand(appUpdateCmd)
 
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(appCmd)

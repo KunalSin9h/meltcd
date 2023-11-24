@@ -29,43 +29,9 @@ import (
 )
 
 func createNewApplication(cmd *cobra.Command, args []string) error {
-	var spec application.Spec
-
-	if len(args) == 0 {
-		info("Creating application with Specification file")
-		// Creating application without application name
-		// means using a file
-		file, err := cmd.Flags().GetString("file")
-		if err != nil {
-			return err
-		}
-		spec, err = application.ParseSpecFromFile(file)
-		if err != nil {
-			return err
-		}
-	} else {
-		// creating application with application name
-		// means using arguments
-		info("Creating application using arguments")
-		name := args[0]
-
-		repo, err := cmd.Flags().GetString("repo")
-		if err != nil {
-			return err
-		}
-
-		path, err := cmd.Flags().GetString("path")
-		if err != nil {
-			return err
-		}
-
-		refresh, _ := cmd.Flags().GetString("refresh")
-		revision, _ := cmd.Flags().GetString("revision")
-
-		spec, err = application.ParseSpecFromValue(name, repo, revision, path, refresh)
-		if err != nil {
-			return err
-		}
+	spec, err := getSpecFromData(cmd, args)
+	if err != nil {
+		return err
 	}
 
 	app := application.New(spec)
@@ -90,4 +56,77 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 
 	info("New Application created")
 	return nil
+}
+
+func updateExistingApplication(cmd *cobra.Command, args []string) error {
+	spec, err := getSpecFromData(cmd, args)
+	if err != nil {
+		return err
+	}
+
+	app := application.New(spec)
+	payload, err := json.Marshal(app)
+	if err != nil {
+		return err
+	}
+
+	res, err := http.Post(fmt.Sprintf("%s/api/application/update", getServer()), "application/json", bytes.NewReader(payload))
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 202 {
+		data, err := io.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+		return errors.New(string(data))
+	}
+
+	info("New Application created")
+	return nil
+}
+
+func getSpecFromData(cmd *cobra.Command, args []string) (application.Spec, error) {
+	var spec application.Spec
+
+	if len(args) == 0 {
+		info("Creating application with Specification file")
+		// Creating application without application name
+		// means using a file
+		file, err := cmd.Flags().GetString("file")
+		if err != nil {
+			return application.Spec{}, err
+		}
+		spec, err = application.ParseSpecFromFile(file)
+		if err != nil {
+			return application.Spec{}, err
+		}
+	} else {
+		// creating application with application name
+		// means using arguments
+		info("Creating application using arguments")
+		name := args[0]
+
+		repo, err := cmd.Flags().GetString("repo")
+		if err != nil {
+			return application.Spec{}, err
+		}
+
+		path, err := cmd.Flags().GetString("path")
+		if err != nil {
+			return application.Spec{}, err
+		}
+
+		refresh, _ := cmd.Flags().GetString("refresh")
+		revision, _ := cmd.Flags().GetString("revision")
+
+		spec, err = application.ParseSpecFromValue(name, repo, revision, path, refresh)
+		if err != nil {
+			return application.Spec{}, err
+		}
+	}
+
+	return spec, nil
 }

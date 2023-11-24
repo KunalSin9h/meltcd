@@ -39,3 +39,25 @@ func Register(app *application.Application) error {
 
 	return nil
 }
+
+func Update(app *application.Application) error {
+	log.Info("Updating application", "name", app.Name)
+
+	exists := false
+
+	for _, regApp := range Applications {
+		if regApp.Name == app.Name {
+
+			regApp.RefreshTimer = app.RefreshTimer
+			regApp.Source = app.Source
+
+			exists = true
+			break
+		}
+	}
+
+	if !exists {
+		return fmt.Errorf("app does not exists, create a new application first")
+	}
+	return nil
+}

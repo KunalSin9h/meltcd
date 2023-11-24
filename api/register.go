@@ -32,7 +32,21 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	if err := core.Register(&app); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "app already exists with name: "+app.Name)
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+	}
+
+	return c.SendStatus(http.StatusAccepted)
+}
+
+func Update(c *fiber.Ctx) error {
+	var app application.Application
+
+	if err := c.BodyParser(&app); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "body parsing error")
+	}
+
+	if err := core.Update(&app); err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	return c.SendStatus(http.StatusAccepted)
