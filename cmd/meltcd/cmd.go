@@ -93,9 +93,17 @@ func NewCLI() *cobra.Command {
 		RunE:  getDetailsAboutApplication,
 	}
 
+	appListCmd := &cobra.Command{
+		Use:   "list",
+		Short: "Get all the applications registered",
+		Args:  cobra.ExactArgs(0),
+		RunE:  getAllApplications,
+	}
+
 	appCmd.AddCommand(appCreateCmd)
 	appCmd.AddCommand(appUpdateCmd)
 	appCmd.AddCommand(appGetCmd)
+	appCmd.AddCommand(appListCmd)
 
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(appCmd)

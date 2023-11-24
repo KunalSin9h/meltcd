@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"io"
 	"meltred/meltcd/internal/core/application"
+	"meltred/meltcd/server"
 	"net/http"
 
 	"github.com/spf13/cobra"
@@ -106,7 +107,36 @@ func updateExistingApplication(cmd *cobra.Command, args []string) error {
 		return errors.New(string(data))
 	}
 
-	info("New Application created")
+	info("Application updated")
+	return nil
+}
+
+func getAllApplications(_ *cobra.Command, _ []string) error {
+	res, err := http.Get(fmt.Sprintf("%s/api/application/get", getServer()))
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != 200 {
+		return errors.New("server does not respond with 200")
+	}
+
+	data, err := io.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	var resPayload server.AppList
+
+	if err := json.Unmarshal(data, &resPayload); err != nil {
+		return err
+	}
+
+	for _, v := range resPayload.Data {
+		fmt.Println(v.Name, v.Health)
+	}
+
 	return nil
 }
 
@@ -114,7 +144,7 @@ func getSpecFromData(cmd *cobra.Command, args []string) (application.Spec, error
 	var spec application.Spec
 
 	if len(args) == 0 {
-		info("Creating application with Specification file")
+		info("Application with Specification file")
 		// Creating application without application name
 		// means using a file
 		file, err := cmd.Flags().GetString("file")

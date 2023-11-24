@@ -27,3 +27,9 @@ meltcd app update --file <path-to-file>
 ```bash
 meltcd app get <app-name>
 ```
+
+5. List all the running applications
+
+```bash
+meltcd app list
+```
