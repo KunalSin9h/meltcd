@@ -20,7 +20,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"meltred/meltcd/spec"
 	"time"
 
@@ -119,11 +118,8 @@ func (app *Application) Run() {
 func wait(ticker <-chan time.Time, syncTrigger <-chan SyncType) {
 	select {
 	case _ = <-ticker:
-		fmt.Println("Ticker has ticked")
 	case _ = <-syncTrigger:
-		fmt.Println("Update has arrived")
 	}
-	fmt.Println("Wait is over")
 }
 
 func updateTicker(duration string, t *time.Ticker) error {
