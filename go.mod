@@ -1,4 +1,4 @@
-module meltred/meltcd
+module github.com/meltred/meltcd
 
 go 1.21.0
 

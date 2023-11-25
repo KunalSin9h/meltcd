@@ -22,9 +22,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"meltred/meltcd/internal/core/application"
-	"meltred/meltcd/server"
 	"net/http"
+
+	"github.com/meltred/meltcd/internal/core/application"
+	"github.com/meltred/meltcd/server"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/cobra"
@@ -123,14 +124,8 @@ func getAllApplications(_ *cobra.Command, _ []string) error {
 		return errors.New("server does not respond with 200")
 	}
 
-	data, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-
 	var resPayload server.AppList
-
-	if err := json.Unmarshal(data, &resPayload); err != nil {
+	if err := json.NewDecoder(res.Body).Decode(&resPayload); err != nil {
 		return err
 	}
 

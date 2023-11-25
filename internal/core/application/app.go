@@ -20,8 +20,9 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"meltred/meltcd/spec"
 	"time"
+
+	"github.com/meltred/meltcd/spec"
 
 	"github.com/charmbracelet/log"
 	"github.com/docker/docker/api/types"

@@ -18,7 +18,8 @@ package core
 
 import (
 	"fmt"
-	"meltred/meltcd/internal/core/application"
+
+	"github.com/meltred/meltcd/internal/core/application"
 
 	"github.com/charmbracelet/log"
 )

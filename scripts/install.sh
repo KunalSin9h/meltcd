@@ -83,10 +83,10 @@ if [ -n "$NEEDS" ]; then
     exit 1
 fi
 
-LATEST_VERSION=$(curl --fail --show-error --location -s https://api.github.com/repos/meltred/meltcd/releases/latest | grep "tag_name" | cut -d '"' -f 4)
+LATEST_VERSION=$(curl --fail --show-error --location -s https://api.github.com/repos/github.com/meltred/meltcd/releases/latest | grep "tag_name" | cut -d '"' -f 4)
 
 status "Downloading MeltCD v$LATEST_VERSION for $OS $ARCH"
-curl --fail --show-error --location --progress-bar -o $TEMP_DIR/meltcd.tar.gz "https://github.com/meltred/meltcd/releases/download/$LATEST_VERSION/meltcd_${LATEST_VERSION}_${OS}_$ARCH.tar.gz"
+curl --fail --show-error --location --progress-bar -o $TEMP_DIR/meltcd.tar.gz "https://github.com/github.com/meltred/meltcd/releases/download/$LATEST_VERSION/meltcd_${LATEST_VERSION}_${OS}_$ARCH.tar.gz"
 
 tar zxf $TEMP_DIR/meltcd.tar.gz -C $TEMP_DIR
 

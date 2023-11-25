@@ -17,10 +17,11 @@ limitations under the License.
 package meltcd
 
 import (
-	"meltred/meltcd/server"
 	"net"
 	"os"
 	"strings"
+
+	"github.com/meltred/meltcd/server"
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"

@@ -19,13 +19,14 @@ package server
 import (
 	"embed"
 	"fmt"
-	"meltred/meltcd/internal/core"
-	"meltred/meltcd/version"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/meltred/meltcd/internal/core"
+	"github.com/meltred/meltcd/version"
 
 	"github.com/charmbracelet/log"
 	"github.com/gofiber/fiber/v2"

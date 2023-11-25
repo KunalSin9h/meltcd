@@ -18,7 +18,8 @@ package meltcd
 
 import (
 	"log"
-	"meltred/meltcd/version"
+
+	"github.com/meltred/meltcd/version"
 
 	"github.com/spf13/cobra"
 )

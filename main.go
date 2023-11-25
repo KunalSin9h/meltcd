@@ -18,7 +18,8 @@ package main
 
 import (
 	"context"
-	"meltred/meltcd/cmd/meltcd"
+
+	"github.com/meltred/meltcd/cmd/meltcd"
 
 	"github.com/spf13/cobra"
 )
