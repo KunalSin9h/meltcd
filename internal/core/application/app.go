@@ -38,9 +38,9 @@ type Application struct {
 	Name         string        `json:"name"`
 	Source       Source        `json:"source"`
 	RefreshTimer string        `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
-	Health       Health        `json:"-"`
+	Health       Health        `json:"health"`
 	HealthStatus string        `json:"health_status"`
-	LiveState    string        `json:"-"`
+	LiveState    string        `json:"live_state"`
 	SyncTrigger  chan SyncType `json:"-"`
 }
 

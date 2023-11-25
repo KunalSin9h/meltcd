@@ -16,6 +16,16 @@ limitations under the License.
 
 package core
 
+import (
+	"os"
+	"path"
+
+	"github.com/charmbracelet/log"
+)
+
+const MELTCD_DIR = ".meltcd"
+const MELTCD_APPLICATIONS_FILE = "applications.json"
+
 // Setup will setup require
 // settings to make use of MeltCD
 // like setting up admin password in docker secret
@@ -25,5 +35,77 @@ package core
 //
 // initialize a new docker client
 func Setup() error {
+	if err := meltcdState(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getMeltcdDir() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		log.Warn("failed to get home dir (using default \".\")")
+		return "."
+	}
+
+	meltcdDir := path.Join(home, MELTCD_DIR)
+
+	return meltcdDir
+}
+
+func getAppFile() string {
+	meltcdDir := getMeltcdDir()
+	return path.Join(meltcdDir, MELTCD_APPLICATIONS_FILE)
+}
+
+func meltcdState() error {
+	meltcdDir := getMeltcdDir()
+
+	_, err := os.Stat(meltcdDir)
+	if err != nil {
+		log.Infof("Creating directory: %s", meltcdDir)
+
+		err = os.Mkdir(meltcdDir, os.ModePerm)
+		if err != nil {
+			return err
+		}
+	}
+
+	applicationsFile := path.Join(meltcdDir, MELTCD_APPLICATIONS_FILE)
+
+	_, err = os.Stat(applicationsFile)
+	if err != nil {
+		log.Infof("Creating file: %s", applicationsFile)
+		_, err = os.Create(applicationsFile)
+		if err != nil {
+			return err
+		}
+	}
+
+	data, err := os.ReadFile(applicationsFile)
+	if err != nil {
+		return err
+	}
+
+	if err := loadRegistryData(&data); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func ShutDown() error {
+	appFile := getAppFile()
+
+	data, err := getRegistryData()
+	if err != nil {
+		return err
+	}
+
+	if err := os.WriteFile(appFile, data, os.ModePerm); err != nil {
+		return err
+	}
+
 	return nil
 }

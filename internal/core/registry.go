@@ -17,6 +17,7 @@ limitations under the License.
 package core
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/meltred/meltcd/internal/core/application"
@@ -103,6 +104,31 @@ func Refresh(appName string) error {
 	}
 
 	app.SyncTrigger <- application.Synchronize
+
+	return nil
+}
+
+func getRegistryData() ([]byte, error) {
+	result, err := json.Marshal(Applications)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return result, nil
+}
+
+func loadRegistryData(d *[]byte) error {
+	var load []*application.Application
+
+	if err := json.Unmarshal(*d, &load); err != nil {
+		return err
+	}
+
+	for _, app := range load {
+		go app.Run()
+	}
+
+	Applications = load
 
 	return nil
 }

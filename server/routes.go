@@ -100,6 +100,12 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	go func() {
 		<-signals
 		log.Info("Shutting down server...")
+
+		if err := core.ShutDown(); err != nil {
+			log.Error(err.Error())
+			os.Exit(1)
+		}
+
 		os.Exit(0)
 	}()
 
