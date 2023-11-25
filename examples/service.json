@@ -1,6 +1,6 @@
 {
   "name": "my_app",
-  "refresh_timer": "10s",
+  "refresh_timer": "3m0s",
   "source": {
     "repoURL": "https://github.com/kunalsin9h/tiddi.git",
     "path": "compose.yml",
