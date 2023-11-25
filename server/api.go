@@ -90,3 +90,13 @@ func AllApplications(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(res)
 }
+
+func Refresh(c *fiber.Ctx) error {
+	appName := c.Params("app_name")
+
+	if err := core.Refresh(appName); err != nil {
+		return err
+	}
+
+	return c.SendStatus(200)
+}

@@ -26,6 +26,7 @@ import (
 	"meltred/meltcd/server"
 	"net/http"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -181,4 +182,19 @@ func getSpecFromData(cmd *cobra.Command, args []string) (application.Spec, error
 	}
 
 	return spec, nil
+}
+
+func refreshApplication(_ *cobra.Command, args []string) error {
+	appName := args[0]
+
+	res, err := http.Post(fmt.Sprintf("%s/api/application/refresh/%s", getServer(), appName), "", nil)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != fiber.StatusOK {
+		return errors.New("server does not respond with 200")
+	}
+	return nil
 }

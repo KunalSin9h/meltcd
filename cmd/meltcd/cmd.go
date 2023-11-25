@@ -100,10 +100,19 @@ func NewCLI() *cobra.Command {
 		RunE:  getAllApplications,
 	}
 
+	appRefreshCmd := &cobra.Command{
+		Use:     "refresh",
+		Aliases: []string{"sync"},
+		Short:   "Force refresh (synchronize) application",
+		Args:    cobra.ExactArgs(1),
+		RunE:    refreshApplication,
+	}
+
 	appCmd.AddCommand(appCreateCmd)
 	appCmd.AddCommand(appUpdateCmd)
 	appCmd.AddCommand(appGetCmd)
 	appCmd.AddCommand(appListCmd)
+	appCmd.AddCommand(appRefreshCmd)
 
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(appCmd)
