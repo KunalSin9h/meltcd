@@ -18,9 +18,10 @@ package server
 
 import (
 	"errors"
-	"meltred/meltcd/internal/core"
-	"meltred/meltcd/internal/core/application"
 	"net/http"
+
+	"github.com/meltred/meltcd/internal/core"
+	"github.com/meltred/meltcd/internal/core/application"
 
 	"github.com/gofiber/fiber/v2"
 )
