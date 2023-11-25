@@ -33,3 +33,13 @@ meltcd app get <app-name>
 ```bash
 meltcd app list
 ```
+
+6. Force refresh (synchronize) the application [TODO]
+
+```bash
+meltcd app refresh <app-name>
+
+# or
+
+meltcd app sync <app-name>
+```

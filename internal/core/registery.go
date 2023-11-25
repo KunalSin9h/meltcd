@@ -94,3 +94,14 @@ func getApp(name string) (*application.Application, bool) {
 
 	return &application.Application{}, false
 }
+
+func Refresh(appName string) error {
+	app, exists := getApp(appName)
+	if !exists {
+		return fmt.Errorf("app does not exists, create a new application first")
+	}
+
+	app.SyncTrigger <- application.Synchronize
+
+	return nil
+}
