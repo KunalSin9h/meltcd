@@ -95,7 +95,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	log.Infof("Listening on %s (version: %s)", ln.Addr(), version.Version)
 
 	signals := make(chan os.Signal, 1)
-	go signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+	go signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGABRT, syscall.SIGILL)
 
 	go func() {
 		<-signals
