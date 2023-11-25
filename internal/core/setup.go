@@ -84,7 +84,11 @@ func meltcdState() error {
 		return err
 	}
 
-	return loadRegistryData(&data)
+	if err := loadRegistryData(&data); err != nil {
+		log.Warn("Application state file is empty")
+	}
+
+	return nil
 }
 
 func ShutDown() error {
