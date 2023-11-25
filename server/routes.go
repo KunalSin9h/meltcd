@@ -80,7 +80,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	})
 
 	application := api.Group("application")
-	application.Post("/register", Register)
+	application.Post("/create", Register)
 	application.Post("/update", Update)
 	application.Post("/refresh/:app_name", Refresh)
 	application.Get("/get", AllApplications)
