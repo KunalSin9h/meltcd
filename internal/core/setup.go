@@ -23,8 +23,8 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-const MELTCD_DIR = ".meltcd"
-const MELTCD_APPLICATIONS_FILE = "applications.json"
+const MELTCD_DIR = ".meltcd"                         //nolint
+const MELTCD_APPLICATIONS_FILE = "applications.json" //nolint
 
 // Setup will setup require
 // settings to make use of MeltCD
@@ -35,11 +35,7 @@ const MELTCD_APPLICATIONS_FILE = "applications.json"
 //
 // initialize a new docker client
 func Setup() error {
-	if err := meltcdState(); err != nil {
-		return err
-	}
-
-	return nil
+	return meltcdState()
 }
 
 func getMeltcdDir() string {
@@ -88,11 +84,7 @@ func meltcdState() error {
 		return err
 	}
 
-	if err := loadRegistryData(&data); err != nil {
-		return err
-	}
-
-	return nil
+	return loadRegistryData(&data)
 }
 
 func ShutDown() error {
@@ -103,9 +95,5 @@ func ShutDown() error {
 		return err
 	}
 
-	if err := os.WriteFile(appFile, data, os.ModePerm); err != nil {
-		return err
-	}
-
-	return nil
+	return os.WriteFile(appFile, data, os.ModePerm)
 }
