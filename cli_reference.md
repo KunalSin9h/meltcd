@@ -26,12 +26,19 @@ meltcd app update --file <path-to-file>
 
 ```bash
 meltcd app get <app-name>
+
+# or
+meltcd app inspect <app-name>
 ```
 
 5. List all the running applications
 
 ```bash
 meltcd app list
+
+# or
+
+meltcd app ls
 ```
 
 6. Force refresh (synchronize) the application [DONE]
@@ -42,4 +49,14 @@ meltcd app refresh <app-name>
 # or
 
 meltcd app sync <app-name>
+```
+
+7. Remove an application [TODO]
+
+```bash
+meltcd app remove <app-name>
+
+# or
+
+meltcd app rm <app-name>
 ```

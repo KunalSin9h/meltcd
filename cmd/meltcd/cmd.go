@@ -88,17 +88,19 @@ func NewCLI() *cobra.Command {
 	appUpdateCmd.Flags().String("file", "", "Application schema file")
 
 	appGetCmd := &cobra.Command{
-		Use:   "get",
-		Short: "Get details about the application",
-		Args:  cobra.ExactArgs(1),
-		RunE:  getDetailsAboutApplication,
+		Use:     "get",
+		Aliases: []string{"inspect"},
+		Short:   "Get details about the application",
+		Args:    cobra.ExactArgs(1),
+		RunE:    getDetailsAboutApplication,
 	}
 
 	appListCmd := &cobra.Command{
-		Use:   "list",
-		Short: "Get all the applications registered",
-		Args:  cobra.ExactArgs(0),
-		RunE:  getAllApplications,
+		Use:     "list",
+		Aliases: []string{"ls"},
+		Short:   "Get all the applications registered",
+		Args:    cobra.ExactArgs(0),
+		RunE:    getAllApplications,
 	}
 
 	appRefreshCmd := &cobra.Command{

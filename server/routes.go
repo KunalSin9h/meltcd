@@ -80,7 +80,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	})
 
 	application := api.Group("application")
-	application.Post("/register", Register)
+	application.Post("/create", Register)
 	application.Post("/update", Update)
 	application.Post("/refresh/:app_name", Refresh)
 	application.Get("/get", AllApplications)
@@ -95,11 +95,17 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	log.Infof("Listening on %s (version: %s)", ln.Addr(), version.Version)
 
 	signals := make(chan os.Signal, 1)
-	go signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
+	go signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGABRT, syscall.SIGILL)
 
 	go func() {
 		<-signals
 		log.Info("Shutting down server...")
+
+		if err := core.ShutDown(); err != nil {
+			log.Error(err.Error())
+			os.Exit(1)
+		}
+
 		os.Exit(0)
 	}()
 
