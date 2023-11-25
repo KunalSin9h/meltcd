@@ -191,6 +191,7 @@ func refreshApplication(_ *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	defer res.Body.Close()
 
 	if res.StatusCode != fiber.StatusOK {
 		return errors.New("server does not respond with 200")
