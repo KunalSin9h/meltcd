@@ -39,7 +39,7 @@ func Register(app *application.Application) error {
 		return fmt.Errorf("app already exists with name: %s", app.Name)
 	}
 
-	app.SyncTrigger = make(chan application.SyncType, 3)
+	app.SyncTrigger = make(chan application.SyncType, 1)
 
 	go app.Run()
 	Applications = append(Applications, app)
@@ -129,6 +129,7 @@ func loadRegistryData(d *[]byte) error {
 	}
 
 	for _, app := range load {
+		app.SyncTrigger = make(chan application.SyncType, 1)
 		go app.Run()
 	}
 
