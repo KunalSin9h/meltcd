@@ -6,8 +6,7 @@
 
 #### Docs: https://cd.meltred.tech/docs
 
-> [!IMPORTANT]
-> `meltcd` is very far from production use, unless we achive **1.0.0** 
+> [!IMPORTANT] > `meltcd` is very far from production use, unless we achieve **1.0.0**
 
 Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
@@ -23,7 +22,7 @@ curl -s https://install.meltred.tech/meltcd | bash
 
 Download From [latest release](https://github.com/meltred/meltcd/releases/latest)
 
-## Architecture 
+## Architecture
 
 ![architecture](https://github.com/meltred/meltcd/assets/82411321/9af15c33-627d-4e10-9952-0bd9e6422bbd)
 
@@ -43,19 +42,19 @@ Download From [latest release](https://github.com/meltred/meltcd/releases/latest
 go mod download
 ```
 
-3. install fontend packages
+3. install frontend packages
 
 ```bash
 pnpm --prefix=./ui install
 ```
 
-4. build the fontend
+4. build the frontend
 
 ```bash
 pnpm --prefix=./ui build
 ```
 
-This will update the latest fontend to `server/static`
+This will update the latest frontend to `server/static`
 
 5. run the app
 
@@ -63,7 +62,9 @@ This will update the latest fontend to `server/static`
 go run main.go serve --verbose
 ```
 
-This will start the server on port `11771` 
+This will start the server on port `11771`
+
+Go to **Developer Docs** for more info. [Developer Docs](https://https://github.com/meltred/meltcd/tree/main/docs/dev)
 
 ---
 
