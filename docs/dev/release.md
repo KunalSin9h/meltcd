@@ -14,6 +14,12 @@ git tag 1.15.0
 git push --force --tag
 ```
 
+Or just push tag when pushing real prs
+
+```bash
+git push origin master --tag
+```
+
 This will update the tag in `main` branch.
 
 After this trigger the workflow.
