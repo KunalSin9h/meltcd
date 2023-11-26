@@ -17,9 +17,13 @@ limitations under the License.
 package core
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/meltred/meltcd/internal/core/application"
 
 	"github.com/charmbracelet/log"
@@ -35,7 +39,7 @@ func Register(app *application.Application) error {
 		return fmt.Errorf("app already exists with name: %s", app.Name)
 	}
 
-	app.SyncTrigger = make(chan application.SyncType, 3)
+	app.SyncTrigger = make(chan application.SyncType, 1)
 
 	go app.Run()
 	Applications = append(Applications, app)
@@ -125,10 +129,47 @@ func loadRegistryData(d *[]byte) error {
 	}
 
 	for _, app := range load {
+		app.SyncTrigger = make(chan application.SyncType, 1)
 		go app.Run()
 	}
 
 	Applications = load
 
 	return nil
+}
+
+func RemoveApplication(appName string) error {
+	cli, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		return err
+	}
+
+	runningService, err := cli.ServiceList(context.Background(), types.ServiceListOptions{})
+	if err != nil {
+		return err
+	}
+
+	for _, svc := range runningService {
+		if strings.HasPrefix(svc.Spec.Name, appName) {
+			if err := cli.ServiceRemove(context.Background(), svc.ID); err != nil {
+				return err
+			}
+		}
+	}
+
+	removeSvcFromApps(appName)
+
+	return nil
+}
+
+func removeSvcFromApps(appName string) {
+	tmp := make([]*application.Application, 0)
+
+	for _, app := range Applications {
+		if app.Name != appName {
+			tmp = append(tmp, app)
+		}
+	}
+
+	Applications = tmp
 }

@@ -193,3 +193,22 @@ func refreshApplication(_ *cobra.Command, args []string) error {
 	}
 	return nil
 }
+
+func removeApplication(_ *cobra.Command, args []string) error {
+	appName := args[0]
+
+	res, err := http.Post(fmt.Sprintf("%s/api/application/remove/%s", getServer(), appName), "", nil)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != fiber.StatusOK {
+		data, err := io.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+		return errors.New(string(data))
+	}
+	return nil
+}

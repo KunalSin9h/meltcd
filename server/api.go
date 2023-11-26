@@ -26,7 +26,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func Register(c *fiber.Ctx) error {
+func register(c *fiber.Ctx) error {
 	var app application.Application
 
 	if err := c.BodyParser(&app); err != nil {
@@ -40,7 +40,7 @@ func Register(c *fiber.Ctx) error {
 	return c.SendStatus(http.StatusAccepted)
 }
 
-func Update(c *fiber.Ctx) error {
+func update(c *fiber.Ctx) error {
 	var app application.Application
 
 	if err := c.BodyParser(&app); err != nil {
@@ -54,7 +54,7 @@ func Update(c *fiber.Ctx) error {
 	return c.SendStatus(http.StatusAccepted)
 }
 
-func Details(c *fiber.Ctx) error {
+func details(c *fiber.Ctx) error {
 	appName := c.Params("app_name")
 	if appName == "" {
 		return errors.New("application name (app_name) missing in querystring")
@@ -77,7 +77,7 @@ type AppStatus struct {
 	Health string `json:"health"`
 }
 
-func AllApplications(c *fiber.Ctx) error {
+func allApplications(c *fiber.Ctx) error {
 	status := core.List()
 
 	var res AppList
@@ -92,10 +92,20 @@ func AllApplications(c *fiber.Ctx) error {
 	return c.Status(200).JSON(res)
 }
 
-func Refresh(c *fiber.Ctx) error {
+func refresh(c *fiber.Ctx) error {
 	appName := c.Params("app_name")
 
 	if err := core.Refresh(appName); err != nil {
+		return err
+	}
+
+	return c.SendStatus(200)
+}
+
+func remove(c *fiber.Ctx) error {
+	appName := c.Params("app_name")
+
+	if err := core.RemoveApplication(appName); err != nil {
 		return err
 	}
 
