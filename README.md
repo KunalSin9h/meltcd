@@ -64,7 +64,7 @@ go run main.go serve --verbose
 
 This will start the server on port `11771`
 
-Go to **Developer Docs** for more info. [Developer Docs](https://https://github.com/meltred/meltcd/tree/main/docs/dev)
+Go to **Developer Docs** for more info. [Developer Docs](https://github.com/meltred/meltcd/tree/main/docs/dev)
 
 ---
 
