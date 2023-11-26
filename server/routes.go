@@ -80,11 +80,12 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	})
 
 	application := api.Group("application")
-	application.Post("/create", Register)
-	application.Post("/update", Update)
-	application.Post("/refresh/:app_name", Refresh)
-	application.Get("/get", AllApplications)
-	application.Get("/get/:app_name", Details)
+	application.Post("/create", register)
+	application.Post("/update", update)
+	application.Post("/refresh/:app_name", refresh)
+	application.Post("/remove/:app_name", remove)
+	application.Get("/get", allApplications)
+	application.Get("/get/:app_name", details)
 
 	err := core.Setup()
 	if err != nil {

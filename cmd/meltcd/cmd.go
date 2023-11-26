@@ -111,11 +111,20 @@ func NewCLI() *cobra.Command {
 		RunE:    refreshApplication,
 	}
 
+	appRemoveCmd := &cobra.Command{
+		Use:     "remove",
+		Aliases: []string{"rm"},
+		Short:   "Remove Application",
+		Args:    cobra.ExactArgs(1),
+		RunE:    removeApplication,
+	}
+
 	appCmd.AddCommand(appCreateCmd)
 	appCmd.AddCommand(appUpdateCmd)
 	appCmd.AddCommand(appGetCmd)
 	appCmd.AddCommand(appListCmd)
 	appCmd.AddCommand(appRefreshCmd)
+	appCmd.AddCommand(appRemoveCmd)
 
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(appCmd)

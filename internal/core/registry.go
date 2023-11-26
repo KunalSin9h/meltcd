@@ -17,9 +17,13 @@ limitations under the License.
 package core
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/meltred/meltcd/internal/core/application"
 
 	"github.com/charmbracelet/log"
@@ -131,4 +135,40 @@ func loadRegistryData(d *[]byte) error {
 	Applications = load
 
 	return nil
+}
+
+func RemoveApplication(appName string) error {
+	cli, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		return err
+	}
+
+	runningService, err := cli.ServiceList(context.Background(), types.ServiceListOptions{})
+	if err != nil {
+		return err
+	}
+
+	for _, svc := range runningService {
+		if strings.HasPrefix(svc.Spec.Name, appName) {
+			if err := cli.ServiceRemove(context.Background(), svc.ID); err != nil {
+				return err
+			}
+		}
+	}
+
+	removeSvcFromApps(appName)
+
+	return nil
+}
+
+func removeSvcFromApps(appName string) {
+	tmp := make([]*application.Application, 0)
+
+	for _, app := range Applications {
+		if app.Name != appName {
+			tmp = append(tmp, app)
+		}
+	}
+
+	Applications = tmp
 }
