@@ -23,6 +23,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/fatih/color"
 	"github.com/meltred/meltcd/internal/core"
@@ -134,11 +135,11 @@ func getAllApplications(_ *cobra.Command, _ []string) error {
 	headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
 	columnFmt := color.New(color.FgYellow).SprintfFunc()
 
-	table := table.New("ID", "Name", "Health")
+	table := table.New("ID", "Name", "Health", "Last Synced At", "Created At", "Updated At")
 	table.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 	for _, v := range resPayload.Data {
-		table.AddRow(v.ID[:7], v.Name, v.Health)
+		table.AddRow(v.ID[:7], v.Name, v.Health, v.LastSyncedAt.Format(time.RFC822), v.CreatedAt.Format(time.RFC822), v.UpdatedAT.Format(time.RFC822))
 	}
 
 	table.Print()
