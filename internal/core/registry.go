@@ -81,11 +81,25 @@ func Details(appName string) (application.Application, error) {
 	return *runningApp, nil
 }
 
-func List() map[string]string {
-	res := make(map[string]string)
+type AppList struct {
+	Data []AppStatus `json:"data"`
+}
+
+type AppStatus struct {
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	Health string `json:"health"`
+}
+
+func List() AppList {
+	var res AppList
 
 	for _, app := range Applications {
-		res[app.Name] = app.Health.ToString()
+		res.Data = append(res.Data, AppStatus{
+			ID:     app.ID,
+			Name:   app.Name,
+			Health: app.Health.ToString(),
+		})
 	}
 
 	return res

@@ -35,12 +35,13 @@ import (
 )
 
 type Application struct {
+	ID           string        `json:"id"`
 	Name         string        `json:"name"`
 	Source       Source        `json:"source"`
 	RefreshTimer string        `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
 	Health       Health        `json:"health"`
 	HealthStatus string        `json:"health_status"`
-	LiveState    string        `json:"live_state"`
+	LiveState    string        `json:"-"`
 	SyncTrigger  chan SyncType `json:"-"`
 }
 
@@ -245,6 +246,8 @@ func (app *Application) Apply(targetState string) error {
 		if len(res.Warnings) != 0 {
 			log.Warn("New Service Create give warnings", "warnings", res.Warnings)
 		}
+
+		app.ID = res.ID
 	}
 
 	app.LiveState = targetState
