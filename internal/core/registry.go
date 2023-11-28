@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -44,6 +45,10 @@ func Register(app *application.Application) error {
 	go app.Run()
 	Applications = append(Applications, app)
 
+	timeOfCreation := time.Now()
+	app.CreatedAt = timeOfCreation
+	app.UpdatedAt = timeOfCreation
+
 	log.Info("Registered!")
 	return nil
 }
@@ -60,6 +65,8 @@ func Update(app *application.Application) error {
 
 	runningApp.RefreshTimer = app.RefreshTimer
 	runningApp.Source = app.Source
+
+	runningApp.UpdatedAt = time.Now()
 
 	// Sync the application as new update is done
 	runningApp.SyncTrigger <- application.UpdateSync
@@ -81,11 +88,31 @@ func Details(appName string) (application.Application, error) {
 	return *runningApp, nil
 }
 
-func List() map[string]string {
-	res := make(map[string]string)
+type AppList struct {
+	Data []AppStatus `json:"data"`
+}
+
+type AppStatus struct {
+	ID           string    `json:"id"`
+	Name         string    `json:"name"`
+	Health       string    `json:"health"`
+	CreatedAt    time.Time `json:"created_at"`
+	UpdatedAT    time.Time `json:"updated_at"`
+	LastSyncedAt time.Time `json:"last_synced_at"`
+}
+
+func List() AppList {
+	var res AppList
 
 	for _, app := range Applications {
-		res[app.Name] = app.Health.ToString()
+		res.Data = append(res.Data, AppStatus{
+			ID:           app.ID,
+			Name:         app.Name,
+			Health:       app.Health.ToString(),
+			CreatedAt:    app.CreatedAt,
+			UpdatedAT:    app.UpdatedAt,
+			LastSyncedAt: app.LastSyncedAt,
+		})
 	}
 
 	return res

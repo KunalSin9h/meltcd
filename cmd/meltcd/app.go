@@ -23,9 +23,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
+	"github.com/fatih/color"
+	"github.com/meltred/meltcd/internal/core"
 	"github.com/meltred/meltcd/internal/core/application"
-	"github.com/meltred/meltcd/server"
+	"github.com/rodaine/table"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/cobra"
@@ -120,19 +123,26 @@ func getAllApplications(_ *cobra.Command, _ []string) error {
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
+	if res.StatusCode != fiber.StatusOK {
 		return errors.New("server does not respond with 200")
 	}
 
-	var resPayload server.AppList
+	var resPayload core.AppList
 	if err := json.NewDecoder(res.Body).Decode(&resPayload); err != nil {
 		return err
 	}
 
+	headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+	columnFmt := color.New(color.FgYellow).SprintfFunc()
+
+	table := table.New("ID", "Name", "Health", "Last Synced At", "Created At", "Updated At")
+	table.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
+
 	for _, v := range resPayload.Data {
-		fmt.Println(v.Name, v.Health)
+		table.AddRow(v.ID[:7], v.Name, v.Health, v.LastSyncedAt.Format(time.RFC822), v.CreatedAt.Format(time.RFC822), v.UpdatedAT.Format(time.RFC822))
 	}
 
+	table.Print()
 	return nil
 }
 

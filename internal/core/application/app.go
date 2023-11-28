@@ -35,12 +35,16 @@ import (
 )
 
 type Application struct {
+	ID           string        `json:"id"`
 	Name         string        `json:"name"`
 	Source       Source        `json:"source"`
 	RefreshTimer string        `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
 	Health       Health        `json:"health"`
 	HealthStatus string        `json:"health_status"`
-	LiveState    string        `json:"live_state"`
+	CreatedAt    time.Time     `json:"created_at"`
+	UpdatedAt    time.Time     `json:"updated_at"`
+	LastSyncedAt time.Time     `json:"last_synced_at"`
+	LiveState    string        `json:"-"`
 	SyncTrigger  chan SyncType `json:"-"`
 }
 
@@ -232,6 +236,8 @@ func (app *Application) Apply(targetState string) error {
 			if len(res.Warnings) != 0 {
 				log.Warn("New Service update give warnings", "warnings", res.Warnings)
 			}
+
+			app.LastSyncedAt = time.Now()
 			continue
 		}
 		log.Info("Creating new service")
@@ -245,6 +251,9 @@ func (app *Application) Apply(targetState string) error {
 		if len(res.Warnings) != 0 {
 			log.Warn("New Service Create give warnings", "warnings", res.Warnings)
 		}
+
+		app.ID = res.ID
+		app.LastSyncedAt = time.Now()
 	}
 
 	app.LiveState = targetState

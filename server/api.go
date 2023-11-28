@@ -68,28 +68,9 @@ func details(c *fiber.Ctx) error {
 	return c.Status(200).JSON(details)
 }
 
-type AppList struct {
-	Data []AppStatus `json:"data"`
-}
-
-type AppStatus struct {
-	Name   string `json:"name"`
-	Health string `json:"health"`
-}
-
 func allApplications(c *fiber.Ctx) error {
 	status := core.List()
-
-	var res AppList
-
-	for k, v := range status {
-		res.Data = append(res.Data, AppStatus{
-			Name:   k,
-			Health: v,
-		})
-	}
-
-	return c.Status(200).JSON(res)
+	return c.Status(200).JSON(status)
 }
 
 func refresh(c *fiber.Ctx) error {
