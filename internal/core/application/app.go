@@ -20,6 +20,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/meltred/meltcd/spec"
@@ -27,6 +28,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/swarm"
+	"github.com/docker/docker/api/types/volume"
 	"github.com/docker/docker/client"
 	"github.com/go-git/go-billy/v5/memfs"
 	git "github.com/go-git/go-git/v5"
@@ -211,6 +213,28 @@ func (app *Application) Apply(targetState string) error {
 		return err
 	}
 
+	// TODO use volOpts
+	// create volume
+	for volName, volOpts := range swarmSpec.Volumes {
+		labels := make(map[string]string)
+		for _, l := range volOpts.Labels {
+			tokens := strings.Split(l, "=")
+			if len(tokens) != 2 {
+				return errors.New("invalid labels in volume")
+			}
+
+			labels[tokens[0]] = tokens[1]
+		}
+
+		cli.VolumeCreate(context.Background(), volume.CreateOptions{
+			Name:       volName,
+			Driver:     volOpts.Driver,
+			DriverOpts: volOpts.DriverOpts,
+			Labels:     labels,
+		})
+
+	}
+
 	services, err := swarmSpec.GetServiceSpec(app.Name)
 	if err != nil {
 		return err
@@ -274,4 +298,14 @@ func checkServiceAlreadyExist(serviceName string, allServices *[]swarm.Service) 
 		}
 	}
 	return swarm.Service{}, false
+}
+
+func checkVolumeAlreadyExist(name string, vols []*volume.Volume) (volume.Volume, bool) {
+	for _, v := range vols {
+		if v.Name == name {
+			return *v, true
+		}
+	}
+
+	return volume.Volume{}, false
 }
