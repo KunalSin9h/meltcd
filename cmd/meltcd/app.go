@@ -139,7 +139,7 @@ func getAllApplications(_ *cobra.Command, _ []string) error {
 	table.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 	for _, v := range resPayload.Data {
-		table.AddRow(v.ID[:7], v.Name, v.Health, v.LastSyncedAt.Format(time.RFC822), v.CreatedAt.Format(time.RFC822), v.UpdatedAT.Format(time.RFC822))
+		table.AddRow(v.ID, v.Name, v.Health, v.LastSyncedAt.Format(time.RFC822), v.CreatedAt.Format(time.RFC822), v.UpdatedAT.Format(time.RFC822))
 	}
 
 	table.Print()
@@ -153,6 +153,14 @@ func getSpecFromData(cmd *cobra.Command, args []string) (application.Spec, error
 		info("Application with Specification file")
 		// Creating application without application name
 		// means using a file
+
+		// if user has specified --repo then he/she must have forgotten the app name
+		// and come here
+		repo, err := cmd.Flags().GetString("repo")
+		if repo != "" && err == nil {
+			return application.Spec{}, errors.New("missing application name")
+		}
+
 		file, err := cmd.Flags().GetString("file")
 		if err != nil {
 			return application.Spec{}, err

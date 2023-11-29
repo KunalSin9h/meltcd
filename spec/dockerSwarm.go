@@ -55,9 +55,11 @@ type Network struct {
 }
 
 type Volume struct {
-	Name    string            `yaml:"name"`
-	Driver  string            `yaml:"driver"`
-	Options map[string]string `yaml:"options"`
+	Name       string            `yaml:"name"`
+	Driver     string            `yaml:"driver"`
+	DriverOpts map[string]string `yaml:"driver_opts"`
+	Labels     []string          `yaml:"labels"`
+	Options    map[string]string `yaml:"options"`
 }
 
 func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error) {
@@ -88,7 +90,7 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 			}
 
 			targetSpec.TaskTemplate.ContainerSpec.Mounts = append(targetSpec.TaskTemplate.ContainerSpec.Mounts, mount.Mount{
-				Type:   mount.TypeBind,
+				Type:   mount.TypeVolume,
 				Source: tokens[0],
 				Target: tokens[1],
 			})

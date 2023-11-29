@@ -20,6 +20,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/meltred/meltcd/spec"
@@ -27,15 +28,17 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/swarm"
+	"github.com/docker/docker/api/types/volume"
 	"github.com/docker/docker/client"
 	"github.com/go-git/go-billy/v5/memfs"
 	git "github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/storage/memory"
 	"gopkg.in/yaml.v2"
 )
 
 type Application struct {
-	ID           string        `json:"id"`
+	ID           uint32        `json:"id"`
 	Name         string        `json:"name"`
 	Source       Source        `json:"source"`
 	RefreshTimer string        `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
@@ -170,10 +173,16 @@ func (app *Application) GetState() (string, error) {
 	// TODO: Improvement
 	// GET the name and commit also
 	// so that we can show it in the ui or something
+	ref := plumbing.HEAD
+	if app.Source.TargetRevision != "HEAD" {
+		ref = plumbing.NewBranchReferenceName(app.Source.TargetRevision)
+	}
 
 	_, err := git.Clone(storage, fs, &git.CloneOptions{
-		URL: app.Source.RepoURL,
+		URL:           app.Source.RepoURL,
+		ReferenceName: ref,
 	})
+
 	if errors.Is(err, git.ErrRepositoryAlreadyExists) {
 		//  fetch & pull request
 		// don't clone again
@@ -209,6 +218,27 @@ func (app *Application) Apply(targetState string) error {
 	var swarmSpec spec.DockerSwarm
 	if err := yaml.Unmarshal([]byte(targetState), &swarmSpec); err != nil {
 		return err
+	}
+
+	// TODO use volOpts
+	// create volume
+	for volName, volOpts := range swarmSpec.Volumes {
+		labels := make(map[string]string)
+		for _, l := range volOpts.Labels {
+			tokens := strings.Split(l, "=")
+			if len(tokens) != 2 {
+				return errors.New("invalid labels in volume")
+			}
+
+			labels[tokens[0]] = tokens[1]
+		}
+
+		cli.VolumeCreate(context.Background(), volume.CreateOptions{
+			Name:       volName,
+			Driver:     volOpts.Driver,
+			DriverOpts: volOpts.DriverOpts,
+			Labels:     labels, // TODO labels are not working
+		})
 	}
 
 	services, err := swarmSpec.GetServiceSpec(app.Name)
@@ -252,7 +282,6 @@ func (app *Application) Apply(targetState string) error {
 			log.Warn("New Service Create give warnings", "warnings", res.Warnings)
 		}
 
-		app.ID = res.ID
 		app.LastSyncedAt = time.Now()
 	}
 
