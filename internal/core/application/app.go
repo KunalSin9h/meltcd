@@ -35,7 +35,7 @@ import (
 )
 
 type Application struct {
-	ID           string        `json:"id"`
+	ID           uint32        `json:"id"`
 	Name         string        `json:"name"`
 	Source       Source        `json:"source"`
 	RefreshTimer string        `json:"refresh_timer"` // Timer to check for Sync format of "3m50s"
@@ -252,7 +252,6 @@ func (app *Application) Apply(targetState string) error {
 			log.Warn("New Service Create give warnings", "warnings", res.Warnings)
 		}
 
-		app.ID = res.ID
 		app.LastSyncedAt = time.Now()
 	}
 

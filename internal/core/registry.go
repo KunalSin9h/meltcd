@@ -93,7 +93,7 @@ type AppList struct {
 }
 
 type AppStatus struct {
-	ID           string    `json:"id"`
+	ID           uint32    `json:"id"`
 	Name         string    `json:"name"`
 	Health       string    `json:"health"`
 	CreatedAt    time.Time `json:"created_at"`
@@ -104,9 +104,9 @@ type AppStatus struct {
 func List() AppList {
 	var res AppList
 
-	for _, app := range Applications {
+	for index, app := range Applications {
 		res.Data = append(res.Data, AppStatus{
-			ID:           app.ID,
+			ID:           uint32(index),
 			Name:         app.Name,
 			Health:       app.Health.ToString(),
 			CreatedAt:    app.CreatedAt,

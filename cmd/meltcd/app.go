@@ -139,7 +139,7 @@ func getAllApplications(_ *cobra.Command, _ []string) error {
 	table.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 	for _, v := range resPayload.Data {
-		table.AddRow(v.ID[:7], v.Name, v.Health, v.LastSyncedAt.Format(time.RFC822), v.CreatedAt.Format(time.RFC822), v.UpdatedAT.Format(time.RFC822))
+		table.AddRow(v.ID, v.Name, v.Health, v.LastSyncedAt.Format(time.RFC822), v.CreatedAt.Format(time.RFC822), v.UpdatedAT.Format(time.RFC822))
 	}
 
 	table.Print()
