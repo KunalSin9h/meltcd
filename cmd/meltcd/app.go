@@ -153,6 +153,14 @@ func getSpecFromData(cmd *cobra.Command, args []string) (application.Spec, error
 		info("Application with Specification file")
 		// Creating application without application name
 		// means using a file
+
+		// if user has specified --repo then he/she must have forgotten the app name
+		// and come here
+		_, err := cmd.Flags().GetString("repo")
+		if err == nil {
+			return application.Spec{}, errors.New("missing application name")
+		}
+
 		file, err := cmd.Flags().GetString("file")
 		if err != nil {
 			return application.Spec{}, err
