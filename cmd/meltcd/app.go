@@ -156,8 +156,8 @@ func getSpecFromData(cmd *cobra.Command, args []string) (application.Spec, error
 
 		// if user has specified --repo then he/she must have forgotten the app name
 		// and come here
-		_, err := cmd.Flags().GetString("repo")
-		if err == nil {
+		repo, err := cmd.Flags().GetString("repo")
+		if repo != "" && err == nil {
 			return application.Spec{}, errors.New("missing application name")
 		}
 
