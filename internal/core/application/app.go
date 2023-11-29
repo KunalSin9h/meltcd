@@ -32,6 +32,7 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/go-git/go-billy/v5/memfs"
 	git "github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/storage/memory"
 	"gopkg.in/yaml.v2"
 )
@@ -172,10 +173,16 @@ func (app *Application) GetState() (string, error) {
 	// TODO: Improvement
 	// GET the name and commit also
 	// so that we can show it in the ui or something
+	ref := plumbing.HEAD
+	if app.Source.TargetRevision != "HEAD" {
+		ref = plumbing.NewBranchReferenceName(app.Source.TargetRevision)
+	}
 
 	_, err := git.Clone(storage, fs, &git.CloneOptions{
-		URL: app.Source.RepoURL,
+		URL:           app.Source.RepoURL,
+		ReferenceName: ref,
 	})
+
 	if errors.Is(err, git.ErrRepositoryAlreadyExists) {
 		//  fetch & pull request
 		// don't clone again
