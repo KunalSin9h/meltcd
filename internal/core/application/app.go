@@ -230,9 +230,8 @@ func (app *Application) Apply(targetState string) error {
 			Name:       volName,
 			Driver:     volOpts.Driver,
 			DriverOpts: volOpts.DriverOpts,
-			Labels:     labels,
+			Labels:     labels, // TODO labels are not working
 		})
-
 	}
 
 	services, err := swarmSpec.GetServiceSpec(app.Name)
@@ -298,14 +297,4 @@ func checkServiceAlreadyExist(serviceName string, allServices *[]swarm.Service) 
 		}
 	}
 	return swarm.Service{}, false
-}
-
-func checkVolumeAlreadyExist(name string, vols []*volume.Volume) (volume.Volume, bool) {
-	for _, v := range vols {
-		if v.Name == name {
-			return *v, true
-		}
-	}
-
-	return volume.Volume{}, false
 }
