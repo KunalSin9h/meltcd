@@ -114,6 +114,7 @@ func (app *Application) Run() {
 		targetState, err := app.GetState()
 		if err != nil {
 			log.Warn("Not able to get service", "repo", app.Source.RepoURL)
+			log.Error(err.Error())
 			app.Health = Degraded
 			continue
 		}
@@ -185,12 +186,13 @@ func (app *Application) GetState() (string, error) {
 		Depth:         1,
 	})
 
-	if errors.Is(err, git.ErrRepositoryAlreadyExists) {
-		//  fetch & pull request
-		// don't clone again
-		log.Info("Repo already exits", "repo", app.Source.RepoURL)
-		log.Error("Since the storage is not persistent, this error should not exist")
-	} else if err != nil {
+	// if errors.Is(err, git.ErrRepositoryAlreadyExists) {
+	// 	//  fetch & pull request
+	// 	// don't clone again
+	// 	log.Info("Repo already exits", "repo", app.Source.RepoURL)
+	// 	log.Error("Since the storage is not persistent, this error should not exist")
+	// } else
+	if err != nil {
 		return "", err
 	}
 
