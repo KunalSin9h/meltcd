@@ -33,6 +33,7 @@ import (
 	"github.com/go-git/go-billy/v5/memfs"
 	git "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/go-git/go-git/v5/storage/memory"
 	"gopkg.in/yaml.v2"
 )
@@ -184,6 +185,10 @@ func (app *Application) GetState() (string, error) {
 		ReferenceName: ref,
 		SingleBranch:  true,
 		Depth:         1,
+		Auth: &http.BasicAuth{
+			Username: "",
+			Password: "",
+		},
 	})
 
 	// if errors.Is(err, git.ErrRepositoryAlreadyExists) {
