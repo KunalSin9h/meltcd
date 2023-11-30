@@ -181,6 +181,8 @@ func (app *Application) GetState() (string, error) {
 	_, err := git.Clone(storage, fs, &git.CloneOptions{
 		URL:           app.Source.RepoURL,
 		ReferenceName: ref,
+		SingleBranch:  true,
+		Depth:         1,
 	})
 
 	if errors.Is(err, git.ErrRepositoryAlreadyExists) {
