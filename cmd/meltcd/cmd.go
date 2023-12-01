@@ -126,8 +126,39 @@ func NewCLI() *cobra.Command {
 	appCmd.AddCommand(appRefreshCmd)
 	appCmd.AddCommand(appRemoveCmd)
 
+	// meltcd repo
+	repoCmd := &cobra.Command{
+		Use:     "repo",
+		Aliases: []string{"repository"},
+		Short:   "Working with private git repository",
+	}
+
+	// meltcd  repo add https://github.com/... --username "" --password ""
+	repoAddCmd := &cobra.Command{
+		Use:   "add REPO_URL",
+		Short: "Add a private git repository",
+		Args:  cobra.ExactArgs(1), // the git repo url
+		RunE:  addPrivateGitRepository,
+	}
+
+	repoAddCmd.Flags().String("username", "", "username for basic auth")
+	repoAddCmd.MarkFlagRequired("username")
+	repoAddCmd.Flags().String("password", "", "password for basic auth")
+	repoAddCmd.MarkFlagRequired("password")
+
+	repoListCmd := &cobra.Command{
+		Use:     "list",
+		Aliases: []string{"ls"},
+		Short:   "List all added repositories",
+		RunE:    getAllRepoAdded,
+	}
+
+	repoCmd.AddCommand(repoAddCmd)
+	repoCmd.AddCommand(repoListCmd)
+
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(appCmd)
+	rootCmd.AddCommand(repoCmd)
 
 	return rootCmd
 }

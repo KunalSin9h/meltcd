@@ -25,7 +25,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/fatih/color"
 	"github.com/meltred/meltcd/internal/core"
 	"github.com/meltred/meltcd/internal/core/application"
 	"github.com/rodaine/table"
@@ -132,10 +131,7 @@ func getAllApplications(_ *cobra.Command, _ []string) error {
 		return err
 	}
 
-	headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
-	columnFmt := color.New(color.FgYellow).SprintfFunc()
-
-	table := table.New("ID", "Name", "Health", "Last Synced At", "Created At", "Updated At")
+	table := table.New("S.NO", "Name", "Health", "Last Synced At", "Created At", "Updated At")
 	table.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
 
 	for _, v := range resPayload.Data {

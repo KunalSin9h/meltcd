@@ -20,7 +20,12 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/fatih/color"
 )
+
+var headerFmt = color.New(color.FgGreen, color.Underline).SprintfFunc()
+var columnFmt = color.New(color.FgYellow).SprintfFunc()
 
 func getServer() string {
 	server := "http://127.0.0.1:11771"

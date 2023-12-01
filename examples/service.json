@@ -4,6 +4,6 @@
   "source": {
     "repoURL": "https://github.com/k9exp/infra-test.git",
     "path": "service.yml",
-    "targetRevision": "HEAD"
+    "targetRevision": "my-branch"
   }
 }

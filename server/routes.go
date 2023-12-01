@@ -26,6 +26,7 @@ import (
 	"syscall"
 
 	"github.com/meltred/meltcd/internal/core"
+	meltcdApi "github.com/meltred/meltcd/server/api"
 	"github.com/meltred/meltcd/version"
 
 	"github.com/charmbracelet/log"
@@ -80,12 +81,16 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	})
 
 	application := api.Group("application")
-	application.Post("/create", register)
-	application.Post("/update", update)
-	application.Post("/refresh/:app_name", refresh)
-	application.Post("/remove/:app_name", remove)
-	application.Get("/get", allApplications)
-	application.Get("/get/:app_name", details)
+	application.Post("/create", meltcdApi.Register)
+	application.Post("/update", meltcdApi.Update)
+	application.Post("/refresh/:app_name", meltcdApi.Refresh)
+	application.Post("/remove/:app_name", meltcdApi.Remove)
+	application.Get("/get", meltcdApi.AllApplications)
+	application.Get("/get/:app_name", meltcdApi.Details)
+
+	repo := api.Group("repo")
+	repo.Post("/add", meltcdApi.RepoAdd) // url, username and password will be send in body
+	repo.Get("/list", meltcdApi.RepoList)
 
 	err := core.Setup()
 	if err != nil {

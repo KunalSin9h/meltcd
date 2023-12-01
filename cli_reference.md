@@ -60,3 +60,45 @@ meltcd app remove <app-name>
 
 meltcd app rm <app-name>
 ```
+
+# Private Repository
+
+1. Add a private repository auth credentials [DONE]
+
+```bash
+meltcd repo add <repo-url> --username <username> --password <password>
+```
+
+2. List all added repositories [DONE]
+
+```bash
+meltcd repo ls
+
+#or
+
+meltcd repo list
+```
+
+3. Remove a repository [TODO]
+
+```bash
+meltcd repo rm <repo-url>
+
+# or
+
+meltcd repo remove <repo-url>
+```
+
+4. Update a repository [TODO]
+
+```bash
+meltcd repo update <repo-url> --username <username> --password <password>
+```
+
+# Private Image
+
+1. Add a image auth credentials [TODO]
+
+```bash
+meltcd image add <image-name> --username <username> --password <password>
+```

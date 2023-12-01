@@ -23,6 +23,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/meltred/meltcd/internal/core/repository"
 	"github.com/meltred/meltcd/spec"
 
 	"github.com/charmbracelet/log"
@@ -33,6 +34,7 @@ import (
 	"github.com/go-git/go-billy/v5/memfs"
 	git "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/go-git/go-git/v5/storage/memory"
 	"gopkg.in/yaml.v2"
 )
@@ -114,6 +116,7 @@ func (app *Application) Run() {
 		targetState, err := app.GetState()
 		if err != nil {
 			log.Warn("Not able to get service", "repo", app.Source.RepoURL)
+			log.Error(err.Error())
 			app.Health = Degraded
 			continue
 		}
@@ -170,6 +173,8 @@ func (app *Application) GetState() (string, error) {
 	// defer clear storage, i (kunal singh) think that when storage goes out-of-scope
 	// it is cleared
 
+	username, password := repository.Find(app.Source.RepoURL)
+
 	// TODO: Improvement
 	// GET the name and commit also
 	// so that we can show it in the ui or something
@@ -181,14 +186,21 @@ func (app *Application) GetState() (string, error) {
 	_, err := git.Clone(storage, fs, &git.CloneOptions{
 		URL:           app.Source.RepoURL,
 		ReferenceName: ref,
+		SingleBranch:  true,
+		Depth:         1,
+		Auth: &http.BasicAuth{
+			Username: username,
+			Password: password,
+		},
 	})
 
-	if errors.Is(err, git.ErrRepositoryAlreadyExists) {
-		//  fetch & pull request
-		// don't clone again
-		log.Info("Repo already exits", "repo", app.Source.RepoURL)
-		log.Error("Since the storage is not persistent, this error should not exist")
-	} else if err != nil {
+	// if errors.Is(err, git.ErrRepositoryAlreadyExists) {
+	// 	//  fetch & pull request
+	// 	// don't clone again
+	// 	log.Info("Repo already exits", "repo", app.Source.RepoURL)
+	// 	log.Error("Since the storage is not persistent, this error should not exist")
+	// } else
+	if err != nil {
 		return "", err
 	}
 
