@@ -38,3 +38,15 @@ func RepoAdd(c *fiber.Ctx) error {
 		Message: "Added new repository",
 	})
 }
+
+type RepoListData struct {
+	Data []string `json:"data"`
+}
+
+func RepoList(c *fiber.Ctx) error {
+	list := repository.List()
+
+	return c.Status(fiber.StatusOK).JSON(RepoListData{
+		Data: list,
+	})
+}

@@ -69,7 +69,7 @@ meltcd app rm <app-name>
 meltcd repo add <repo-url> --username <username> --password <password>
 ```
 
-2. List all added repositories [TODO]
+2. List all added repositories [DONE]
 
 ```bash
 meltcd repo ls

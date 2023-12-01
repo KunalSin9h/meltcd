@@ -26,6 +26,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/meltred/meltcd/server/api"
+	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 )
 
@@ -63,5 +64,28 @@ func addPrivateGitRepository(cmd *cobra.Command, args []string) error {
 	}
 
 	fmt.Println(resBody.Message)
+	return nil
+}
+
+func getAllRepoAdded(_ *cobra.Command, _ []string) error {
+	res, err := http.Get(fmt.Sprintf("%s/api/repo/list", getServer()))
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	var resData api.RepoListData
+	if err := json.NewDecoder(res.Body).Decode(&resData); err != nil {
+		return err
+	}
+
+	table := table.New("S.NO", "Repository URL")
+	table.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
+
+	for idx, url := range resData.Data {
+		table.AddRow(idx, url)
+	}
+
+	table.Print()
 	return nil
 }

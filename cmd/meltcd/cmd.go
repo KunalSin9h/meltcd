@@ -146,7 +146,15 @@ func NewCLI() *cobra.Command {
 	repoAddCmd.Flags().String("password", "", "password for basic auth")
 	repoAddCmd.MarkFlagRequired("password")
 
+	repoListCmd := &cobra.Command{
+		Use:     "list",
+		Aliases: []string{"ls"},
+		Short:   "List all added repositories",
+		RunE:    getAllRepoAdded,
+	}
+
 	repoCmd.AddCommand(repoAddCmd)
+	repoCmd.AddCommand(repoListCmd)
 
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(appCmd)
