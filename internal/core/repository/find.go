@@ -26,16 +26,9 @@ import (
 func Find(repoURL string) (string, string) {
 	repoURL, _ = strings.CutSuffix(repoURL, "/")
 
-	var secret string
-
-	for _, x := range repositories {
-		if x.URL == repoURL || x.URL+".git" == repoURL || x.URL == repoURL+".git" {
-			secret = x.Secret
-			break
-		}
-	}
-	if len(secret) == 0 {
-		return "", "" // not found required auth
+	secret, found := findSecret(repoURL)
+	if !found {
+		return "", ""
 	}
 
 	d, err := base64.StdEncoding.DecodeString(secret)
@@ -52,4 +45,14 @@ func Find(repoURL string) (string, string) {
 	}
 
 	return cred[0], cred[1]
+}
+
+func findSecret(url string) (string, bool) {
+	for _, x := range repositories {
+		if x.URL == url || x.URL+".git" == url || x.URL == url+".git" {
+			return x.Secret, true
+		}
+	}
+
+	return "", false
 }

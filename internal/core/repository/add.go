@@ -19,6 +19,7 @@ package repository
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 )
 
 type Repository struct {
@@ -29,6 +30,11 @@ var repositories []*Repository
 
 func Add(url, username, password string) error {
 	secret := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
+
+	_, found := findSecret(url)
+	if found {
+		return errors.New("repository with same url already exists")
+	}
 
 	repositories = append(repositories, &Repository{
 		URL:    url,

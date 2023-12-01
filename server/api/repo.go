@@ -1,6 +1,8 @@
 package api
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/meltred/meltcd/internal/core/repository"
 )
@@ -28,7 +30,9 @@ func RepoAdd(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := repository.Add(payload.URL, payload.Username, payload.Password); err != nil {
+	url, _ := strings.CutSuffix(payload.URL, "/")
+
+	if err := repository.Add(url, payload.Username, payload.Password); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(GlobalResponse{
 			Message: err.Error(),
 		})
