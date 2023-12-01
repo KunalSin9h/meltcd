@@ -23,6 +23,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/meltred/meltcd/internal/core/repository"
 	"github.com/meltred/meltcd/spec"
 
 	"github.com/charmbracelet/log"
@@ -172,6 +173,8 @@ func (app *Application) GetState() (string, error) {
 	// defer clear storage, i (kunal singh) think that when storage goes out-of-scope
 	// it is cleared
 
+	username, password := repository.Find(app.Source.RepoURL)
+
 	// TODO: Improvement
 	// GET the name and commit also
 	// so that we can show it in the ui or something
@@ -186,8 +189,8 @@ func (app *Application) GetState() (string, error) {
 		SingleBranch:  true,
 		Depth:         1,
 		Auth: &http.BasicAuth{
-			Username: "",
-			Password: "",
+			Username: username,
+			Password: password,
 		},
 	})
 

@@ -63,10 +63,20 @@ meltcd app rm <app-name>
 
 # Private Repository
 
-1. Add a private repository auth credentials [TODO]
+1. Add a private repository auth credentials [DONE]
 
 ```bash
 meltcd repo add <repo-url> --username <username> --password <password>
+```
+
+2. List all added repositories [TODO]
+
+```bash
+meltcd repo ls
+
+#or
+
+meltcd repo list
 ```
 
 # Private Image

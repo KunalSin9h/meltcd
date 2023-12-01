@@ -18,41 +18,38 @@ package repository
 
 import (
 	"encoding/base64"
-	"encoding/json"
+	"strings"
+
+	"github.com/charmbracelet/log"
 )
 
-type Repository struct {
-	URL, Secret string
-}
+func Find(repoURL string) (string, string) {
+	repoURL, _ = strings.CutSuffix(repoURL, "/")
 
-var repositories []*Repository
+	var secret string
 
-func Add(url, username, password string) error {
-	secret := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
+	for _, x := range repositories {
+		if x.URL == repoURL || x.URL+".git" == repoURL || x.URL == repoURL+".git" {
+			secret = x.Secret
+			break
+		}
+	}
+	if len(secret) == 0 {
+		return "", "" // not found required auth
+	}
 
-	repositories = append(repositories, &Repository{
-		URL:    url,
-		Secret: secret,
-	})
-	return nil
-}
-
-func GetData() ([]byte, error) {
-	result, err := json.Marshal(repositories)
+	d, err := base64.StdEncoding.DecodeString(secret)
 	if err != nil {
-		return []byte{}, err
+		log.Error(err.Error())
+		return "", ""
 	}
 
-	return result, nil
-}
+	cred := strings.Split(string(d), ":")
 
-func LoadData(d *[]byte) error {
-	var repos []*Repository
-
-	if err := json.Unmarshal(*d, &repos); err != nil {
-		return err
+	if len(cred) < 2 {
+		log.Error("username and password not found in secret")
+		return "", ""
 	}
 
-	repositories = repos
-	return nil
+	return cred[0], cred[1]
 }
