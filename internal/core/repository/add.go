@@ -18,30 +18,36 @@ package repository
 
 import (
 	"encoding/json"
+	"net/url"
 
 	"github.com/meltred/meltcd/internal/core/secrets"
 )
 
 type Repository struct {
-	URL, SecretId string
+	URL, SecretID string
 }
 
 var repositories []*Repository
 
-func Add(url, username, password string) error {
-	id, err := secrets.CreateRepository(url, username, password)
+func Add(uri, username, password string) error {
+	u, err := url.Parse(uri)
+	if err != nil {
+		return err
+	}
+
+	id, err := secrets.CreateRepository(u, username, password)
 	if err != nil {
 		return err
 	}
 
 	repositories = append(repositories, &Repository{
-		URL:      url,
-		SecretId: id,
+		URL:      u.String(),
+		SecretID: id,
 	})
 	return nil
 }
 
-func GetRepoData() ([]byte, error) {
+func GetData() ([]byte, error) {
 	result, err := json.Marshal(repositories)
 	if err != nil {
 		return []byte{}, err
@@ -50,7 +56,7 @@ func GetRepoData() ([]byte, error) {
 	return result, nil
 }
 
-func LoadRepoData(d *[]byte) error {
+func LoadData(d *[]byte) error {
 	var repos []*Repository
 
 	if err := json.Unmarshal(*d, &repos); err != nil {

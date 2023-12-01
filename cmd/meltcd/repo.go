@@ -17,18 +17,51 @@ limitations under the License.
 package meltcd
 
 import (
+	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"net/http"
+	"strings"
 
+	"github.com/gofiber/fiber/v2"
+	"github.com/meltred/meltcd/server/api"
 	"github.com/spf13/cobra"
 )
 
 func addPrivateGitRepository(cmd *cobra.Command, args []string) error {
 	repoURL := args[0]
+	repoURL, _ = strings.CutSuffix(repoURL, "/")
+
 	username, _ := cmd.Flags().GetString("username")
 	password, _ := cmd.Flags().GetString("password")
 
-	// make an api call
+	payload := api.PrivateRepoDetails{
+		URL:      repoURL,
+		Username: username,
+		Password: password,
+	}
 
-	fmt.Println(repoURL, username, password)
+	buf := new(bytes.Buffer)
+	if err := json.NewEncoder(buf).Encode(payload); err != nil {
+		return err
+	}
+
+	res, err := http.Post(fmt.Sprintf("%s/api/repo/add", getServer()), "application/json", buf)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	var resBody api.GlobalResponse
+	if err := json.NewDecoder(res.Body).Decode(&resBody); err != nil {
+		return err
+	}
+
+	if res.StatusCode != fiber.StatusAccepted {
+		return errors.New(resBody.Message)
+	}
+
+	fmt.Println(resBody.Message)
 	return nil
 }

@@ -81,7 +81,7 @@ func meltcdState() error {
 		return err
 	}
 
-	if err := repository.LoadRepoData(&repoData); err != nil {
+	if err := repository.LoadData(&repoData); err != nil {
 		log.Warn("Repository state file is empty")
 	}
 
@@ -101,7 +101,7 @@ func ShutDown() error {
 		return err
 	}
 
-	repoData, err := repository.GetRepoData()
+	repoData, err := repository.GetData()
 	if err != nil {
 		return err
 	}

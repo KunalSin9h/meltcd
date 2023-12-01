@@ -21,12 +21,15 @@ package secrets
 
 import (
 	"context"
+	"fmt"
+	"net/url"
+	"strings"
 
 	"github.com/docker/docker/api/types/swarm"
 	"github.com/docker/docker/client"
 )
 
-func CreateRepository(url, username, password string) (string, error) {
+func CreateRepository(u *url.URL, username, password string) (string, error) {
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		return "", err
@@ -37,10 +40,17 @@ func CreateRepository(url, username, password string) (string, error) {
 
 	sec, err := cli.SecretCreate(context.Background(), swarm.SecretSpec{
 		Annotations: swarm.Annotations{
-			Name: url,
+			Name: repoSecretName(u),
 		},
 		Data: data,
 	})
+	if err != nil {
+		return "", err
+	}
 
 	return sec.ID, nil
+}
+
+func repoSecretName(u *url.URL) string {
+	return fmt.Sprintf("repo.%s%s", u.Host, strings.ReplaceAll(u.Path, "/", "."))
 }

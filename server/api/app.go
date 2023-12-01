@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package server
+package api
 
 import (
 	"errors"
@@ -26,7 +26,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func register(c *fiber.Ctx) error {
+func Register(c *fiber.Ctx) error {
 	var app application.Application
 
 	if err := c.BodyParser(&app); err != nil {
@@ -40,7 +40,7 @@ func register(c *fiber.Ctx) error {
 	return c.SendStatus(http.StatusAccepted)
 }
 
-func update(c *fiber.Ctx) error {
+func Update(c *fiber.Ctx) error {
 	var app application.Application
 
 	if err := c.BodyParser(&app); err != nil {
@@ -54,7 +54,7 @@ func update(c *fiber.Ctx) error {
 	return c.SendStatus(http.StatusAccepted)
 }
 
-func details(c *fiber.Ctx) error {
+func Details(c *fiber.Ctx) error {
 	appName := c.Params("app_name")
 	if appName == "" {
 		return errors.New("application name (app_name) missing in querystring")
@@ -68,12 +68,12 @@ func details(c *fiber.Ctx) error {
 	return c.Status(200).JSON(details)
 }
 
-func allApplications(c *fiber.Ctx) error {
+func AllApplications(c *fiber.Ctx) error {
 	status := core.List()
 	return c.Status(200).JSON(status)
 }
 
-func refresh(c *fiber.Ctx) error {
+func Refresh(c *fiber.Ctx) error {
 	appName := c.Params("app_name")
 
 	if err := core.Refresh(appName); err != nil {
@@ -83,7 +83,7 @@ func refresh(c *fiber.Ctx) error {
 	return c.SendStatus(200)
 }
 
-func remove(c *fiber.Ctx) error {
+func Remove(c *fiber.Ctx) error {
 	appName := c.Params("app_name")
 
 	if err := core.RemoveApplication(appName); err != nil {
