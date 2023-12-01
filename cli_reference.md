@@ -79,6 +79,22 @@ meltcd repo ls
 meltcd repo list
 ```
 
+3. Remove a repository [TODO]
+
+```bash
+meltcd repo rm <repo-url>
+
+# or
+
+meltcd repo remove <repo-url>
+```
+
+4. Update a repository [TODO]
+
+```bash
+meltcd repo update <repo-url> --username <username> --password <password>
+```
+
 # Private Image
 
 1. Add a image auth credentials [TODO]
