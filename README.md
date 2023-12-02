@@ -5,6 +5,8 @@
 # meltcd
 
 #### Docs: https://cd.meltred.tech/docs
+![Discord](https://img.shields.io/discord/1086894797622624257)
+
 
 > [!IMPORTANT]
 > `meltcd` is very far from production use, unless we achieve **1.0.0**
