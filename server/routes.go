@@ -91,6 +91,8 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	repo := api.Group("repo")
 	repo.Post("/add", meltcdApi.RepoAdd) // url, username and password will be send in body
 	repo.Get("/list", meltcdApi.RepoList)
+	repo.Delete("/delete", meltcdApi.RepoRemove)
+	repo.Put("/update", meltcdApi.RepoUpdate)
 
 	err := core.Setup()
 	if err != nil {

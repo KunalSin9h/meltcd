@@ -79,7 +79,7 @@ meltcd repo ls
 meltcd repo list
 ```
 
-3. Remove a repository [TODO]
+3. Remove a repository [DONE]
 
 ```bash
 meltcd repo rm <repo-url>
@@ -89,7 +89,7 @@ meltcd repo rm <repo-url>
 meltcd repo remove <repo-url>
 ```
 
-4. Update a repository [TODO]
+4. Update a repository [DONE]
 
 ```bash
 meltcd repo update <repo-url> --username <username> --password <password>

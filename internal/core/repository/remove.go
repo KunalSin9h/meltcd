@@ -16,12 +16,19 @@ limitations under the License.
 
 package repository
 
-func List() []string {
-	res := make([]string, 0)
+import "strings"
+
+func Remove(repoURL string) error {
+	repoURL, _ = strings.CutSuffix(repoURL, "/")
+
+	tmp := make([]*Repository, 0)
 
 	for _, repo := range repositories {
-		res = append(res, repo.URL)
+		if repo.URL != repoURL {
+			tmp = append(tmp, repo)
+		}
 	}
 
-	return res
+	repositories = tmp
+	return nil
 }

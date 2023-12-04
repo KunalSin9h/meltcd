@@ -153,8 +153,30 @@ func NewCLI() *cobra.Command {
 		RunE:    getAllRepoAdded,
 	}
 
+	repoRemoveCmd := &cobra.Command{
+		Use:     "remove REPO_URL",
+		Aliases: []string{"rm"},
+		Short:   "Remove private repository",
+		Args:    cobra.ExactArgs(1), // repo-url
+		RunE:    removePrivateRepo,
+	}
+
+	repoUpdateCmd := &cobra.Command{
+		Use:   "update REPO_URL",
+		Short: "Update auth credentials for private repository",
+		Args:  cobra.ExactArgs(1), // the git repo url
+		RunE:  updatePrivateRepo,
+	}
+
+	repoUpdateCmd.Flags().String("username", "", "username for basic auth")
+	repoUpdateCmd.MarkFlagRequired("username")
+	repoUpdateCmd.Flags().String("password", "", "password for basic auth")
+	repoUpdateCmd.MarkFlagRequired("password")
+
 	repoCmd.AddCommand(repoAddCmd)
 	repoCmd.AddCommand(repoListCmd)
+	repoCmd.AddCommand(repoRemoveCmd)
+	repoCmd.AddCommand(repoUpdateCmd)
 
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(appCmd)
