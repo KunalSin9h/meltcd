@@ -54,3 +54,33 @@ func RepoList(c *fiber.Ctx) error {
 		Data: list,
 	})
 }
+
+type RepoRemovePayload struct {
+	Repo string `json:"repo"`
+}
+
+func RepoRemove(c *fiber.Ctx) error {
+	var payload RepoRemovePayload
+
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(GlobalResponse{
+			Message: err.Error(),
+		})
+	}
+
+	if payload.Repo == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(GlobalResponse{
+			Message: "missing repository url",
+		})
+	}
+
+	if err := repository.Remove(payload.Repo); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(GlobalResponse{
+			Message: err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(GlobalResponse{
+		Message: "removed repository",
+	})
+}

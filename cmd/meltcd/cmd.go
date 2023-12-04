@@ -153,8 +153,17 @@ func NewCLI() *cobra.Command {
 		RunE:    getAllRepoAdded,
 	}
 
+	repoRemoveCmd := &cobra.Command{
+		Use:     "remove",
+		Aliases: []string{"rm"},
+		Short:   "Remove private repository",
+		Args:    cobra.ExactArgs(1), // repo-url
+		RunE:    removePrivateRepo,
+	}
+
 	repoCmd.AddCommand(repoAddCmd)
 	repoCmd.AddCommand(repoListCmd)
+	repoCmd.AddCommand(repoRemoveCmd)
 
 	rootCmd.AddCommand(serveCmd)
 	rootCmd.AddCommand(appCmd)
