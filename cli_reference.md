@@ -89,7 +89,7 @@ meltcd repo rm <repo-url>
 meltcd repo remove <repo-url>
 ```
 
-4. Update a repository [TODO]
+4. Update a repository [DONE]
 
 ```bash
 meltcd repo update <repo-url> --username <username> --password <password>
