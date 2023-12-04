@@ -127,3 +127,46 @@ func removePrivateRepo(_ *cobra.Command, args []string) error {
 	fmt.Println(data.Message)
 	return nil
 }
+
+func updatePrivateRepo(cmd *cobra.Command, args []string) error {
+	repoURL := args[0]
+	repoURL, _ = strings.CutSuffix(repoURL, "/")
+
+	username, _ := cmd.Flags().GetString("username")
+	password, _ := cmd.Flags().GetString("password")
+
+	payload := api.PrivateRepoDetails{
+		URL:      repoURL,
+		Username: username,
+		Password: password,
+	}
+
+	buf := new(bytes.Buffer)
+	if err := json.NewEncoder(buf).Encode(payload); err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+
+	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/api/repo/update", getServer()), buf)
+	req.Header.Add("Content-Type", "application/json")
+
+	if err != nil {
+		return err
+	}
+
+	res, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	defer res.Body.Close()
+
+	var data api.GlobalResponse
+	if err := json.NewDecoder(res.Body).Decode(&data); err != nil {
+		return err
+	}
+
+	fmt.Println(data.Message)
+	return nil
+}

@@ -17,7 +17,6 @@ limitations under the License.
 package repository
 
 import (
-	"encoding/base64"
 	"strings"
 
 	"github.com/charmbracelet/log"
@@ -26,33 +25,27 @@ import (
 func Find(repoURL string) (string, string) {
 	repoURL, _ = strings.CutSuffix(repoURL, "/")
 
-	secret, found := findSecret(repoURL)
+	repo, found := findRepo(repoURL)
 	if !found {
 		return "", ""
 	}
 
-	d, err := base64.StdEncoding.DecodeString(secret)
-	if err != nil {
-		log.Error(err.Error())
-		return "", ""
-	}
+	username, password := repo.getCredential()
 
-	cred := strings.Split(string(d), ":")
-
-	if len(cred) < 2 {
+	if username == "" || password == "" {
 		log.Error("username and password not found in secret")
 		return "", ""
 	}
 
-	return cred[0], cred[1]
+	return username, password
 }
 
-func findSecret(url string) (string, bool) {
+func findRepo(url string) (*Repository, bool) {
 	for _, x := range repositories {
 		if x.URL == url || x.URL+".git" == url || x.URL == url+".git" {
-			return x.Secret, true
+			return x, true
 		}
 	}
 
-	return "", false
+	return &Repository{}, false
 }

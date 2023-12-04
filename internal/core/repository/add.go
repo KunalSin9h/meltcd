@@ -20,25 +20,51 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"strings"
+
+	"github.com/charmbracelet/log"
 )
 
 type Repository struct {
 	URL, Secret string
 }
 
+func (r *Repository) saveCredential(username, password string) {
+	r.Secret = base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
+}
+
+func (r *Repository) getCredential() (username, password string) {
+	d, err := base64.StdEncoding.DecodeString(r.Secret)
+	if err != nil {
+		log.Error(err.Error())
+		return "", ""
+	}
+
+	cred := strings.Split(string(d), ":")
+	if len(cred) != 2 {
+		log.Error("repository credential is empty")
+		return "", ""
+	}
+
+	username = cred[0]
+	password = cred[1]
+
+	return username, password
+}
+
 var repositories []*Repository
 
 func Add(url, username, password string) error {
-	secret := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
-
-	_, found := findSecret(url)
+	repo, found := findRepo(url)
 	if found {
 		return errors.New("repository with same url already exists")
 	}
 
+	repo.saveCredential(username, password)
+
 	repositories = append(repositories, &Repository{
 		URL:    url,
-		Secret: secret,
+		Secret: repo.Secret,
 	})
 	return nil
 }

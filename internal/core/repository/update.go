@@ -16,12 +16,16 @@ limitations under the License.
 
 package repository
 
-func List() []string {
-	res := make([]string, 0)
+import (
+	"errors"
+)
 
-	for _, repo := range repositories {
-		res = append(res, repo.URL)
+func Update(url, username, password string) error {
+	repo, found := findRepo(url)
+	if !found {
+		return errors.New("repository does not exists")
 	}
 
-	return res
+	repo.saveCredential(username, password)
+	return nil
 }
