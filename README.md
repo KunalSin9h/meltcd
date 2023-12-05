@@ -25,6 +25,12 @@ curl -s https://install.meltred.tech/meltcd | bash
 
 Download From [latest release](https://github.com/meltred/meltcd/releases/latest)
 
+#### Go Install
+
+```bash
+go install github.com/meltred/meltcd@latest
+```
+
 ## Architecture
 
 ![architecture](https://github.com/meltred/meltcd/assets/82411321/9af15c33-627d-4e10-9952-0bd9e6422bbd)
