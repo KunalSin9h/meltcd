@@ -32,6 +32,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
@@ -59,6 +60,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	})
 
 	app.Use(cors.New(config))
+    app.Use(recover.New())
 
 	if verboseOutput {
 		app.Use(logger.New())
