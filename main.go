@@ -24,6 +24,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//	@title						Meltcd API
+//	@version					0.0
+//	@description				Argo-cd like GitDevOps Continuous Development platform for docker swarm.
+//	@host						localhost:11771
+//	@basePath					/api
+//	@schemes					http
+//	@license.name				Apache 2.0
+//	@license.url				https://github.com/meltred/meltcd/blob/main/LICENSE
+//	@externalDocs.description	Meltcd Docs
+//	@externalDocs.url			https://cd.meltred.tech/docs
 func main() {
 	cobra.CheckErr(meltcd.NewCLI().ExecuteContext(context.Background()))
 }

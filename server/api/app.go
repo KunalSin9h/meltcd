@@ -17,7 +17,6 @@ limitations under the License.
 package api
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/meltred/meltcd/internal/core"
@@ -26,68 +25,141 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Register godoc
+//
+//	@summary	Register a new application
+//	@tags		Apps
+//	@accept		json
+//	@produce	json
+//	@param		request	body		application.Application	true	"Application body"
+//	@success	200		{object}	GlobalResponse
+//	@failure	400		{object}	GlobalResponse
+//	@failure	500		{object}	GlobalResponse
+//	@router		/apps [post]
 func Register(c *fiber.Ctx) error {
 	var app application.Application
 
 	if err := c.BodyParser(&app); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "body parsing error")
+		return c.Status(fiber.StatusBadRequest).JSON(GlobalResponse{
+			Message: "Failed to pase request body",
+		})
 	}
 
 	if err := core.Register(&app); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		return c.Status(fiber.StatusInternalServerError).JSON(GlobalResponse{
+			Message: err.Error(),
+		})
 	}
 
-	return c.SendStatus(http.StatusAccepted)
+	return c.Status(fiber.StatusOK).JSON(GlobalResponse{
+		Message: "Application registered successfully",
+	})
 }
 
+// Update godoc
+//
+//	@summary	Update an application
+//	@tags		Apps
+//	@accept		json
+//	@produce	json
+//	@param		request	body	application.Application	true	"Application body"
+//	@success	202
+//	@failure	400	{object}	GlobalResponse
+//	@failure	500	{object}	GlobalResponse
+//	@router		/apps [put]
 func Update(c *fiber.Ctx) error {
 	var app application.Application
 
 	if err := c.BodyParser(&app); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, "body parsing error")
+		return c.Status(fiber.StatusBadRequest).JSON(GlobalResponse{
+			Message: "Failed to parse request body",
+		})
 	}
 
 	if err := core.Update(&app); err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		return c.Status(fiber.StatusInternalServerError).JSON(GlobalResponse{
+			Message: err.Error(),
+		})
 	}
 
 	return c.SendStatus(http.StatusAccepted)
 }
 
+// Details godoc
+//
+//	@summary	Get details of an application
+//	@tags		Apps
+//	@param		app_name	path	string	true	"Application name"
+//	@produce	json
+//	@success	200	{object}	application.Application
+//	@failure	400	{object}	GlobalResponse
+//	@failure	500	{object}	GlobalResponse
+//	@router		/apps/{app_name} [get]
 func Details(c *fiber.Ctx) error {
 	appName := c.Params("app_name")
+
 	if appName == "" {
-		return errors.New("application name (app_name) missing in querystring")
+		return c.Status(fiber.StatusBadRequest).JSON(GlobalResponse{
+			Message: "application name (app_name) missing in querystring",
+		})
 	}
 
 	details, err := core.Details(appName)
 	if err != nil {
-		return err
+		return c.Status(fiber.StatusInternalServerError).JSON(GlobalResponse{
+			Message: err.Error(),
+		})
 	}
 
 	return c.Status(200).JSON(details)
 }
 
+// AllApplications godoc
+//
+//	@summary	Get a list all applications created
+//	@tags		Apps
+//	@success	200	{object}	core.AppList
+//	@router		/apps [get]
 func AllApplications(c *fiber.Ctx) error {
 	status := core.List()
 	return c.Status(200).JSON(status)
 }
 
+// Refresh godoc
+//
+//	@summary	Refresh/Synchronize an application
+//	@tags		Apps
+//	@param		app_name	path	string	true	"Application name"
+//	@success	200
+//	@failure	500	{object}	GlobalResponse
+//	@router		/apps/{app_name}/refresh [post]
 func Refresh(c *fiber.Ctx) error {
 	appName := c.Params("app_name")
 
 	if err := core.Refresh(appName); err != nil {
-		return err
+		return c.Status(fiber.StatusInternalServerError).JSON(GlobalResponse{
+			Message: err.Error(),
+		})
 	}
 
 	return c.SendStatus(200)
 }
 
+// Remove godoc
+//
+//	@summary	Remove an application
+//	@tags		Apps
+//	@param		app_name	path	string	true	"Application name"
+//	@success	200
+//	@failure	500	{object}	GlobalResponse
+//	@router		/apps/{app_name}/remove [post]
 func Remove(c *fiber.Ctx) error {
 	appName := c.Params("app_name")
 
 	if err := core.RemoveApplication(appName); err != nil {
-		return err
+		return c.Status(fiber.StatusInternalServerError).JSON(GlobalResponse{
+			Message: err.Error(),
+		})
 	}
 
 	return c.SendStatus(200)

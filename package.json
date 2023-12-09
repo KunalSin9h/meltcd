@@ -1,0 +1,12 @@
+{
+  "name": "meltcd",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "husky": "^8.0.0"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}
