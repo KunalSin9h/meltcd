@@ -29,8 +29,6 @@ import (
 	meltcdApi "github.com/meltred/meltcd/server/api"
 	"github.com/meltred/meltcd/version"
 
-	_ "github.com/meltred/meltcd/docs/swagger"
-
 	"github.com/charmbracelet/log"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -81,7 +79,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	api := app.Group("api")
 
-	api.Get("/", CheckApiStatus)
+	api.Get("/", CheckAPIStatus)
 
 	apps := api.Group("apps")
 	apps.Get("/", meltcdApi.AllApplications)
@@ -127,6 +125,6 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 // @tags		General
 // @produce	plain
 // @router		/ [get]
-func CheckApiStatus(c *fiber.Ctx) error {
+func CheckAPIStatus(c *fiber.Ctx) error {
 	return c.Status(200).SendString(fmt.Sprintf("Meltcd API is running (version: %s)\n", version.Version))
 }

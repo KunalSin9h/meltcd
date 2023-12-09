@@ -19,15 +19,15 @@ type GlobalResponse struct {
 
 // RepoAdd godoc
 //
-// @summary Add a new repository
-// @tags Repo
-// @accept json
-// @produce json
-// @param request body PrivateRepoDetails true "Repository details"
-// @success 202 {object} GlobalResponse
-// @failure 400 {object} GlobalResponse
-// @failure 500 {object} GlobalResponse
-// @router /repo [post]
+//	@summary	Add a new repository
+//	@tags		Repo
+//	@accept		json
+//	@produce	json
+//	@param		request	body		PrivateRepoDetails	true	"Repository details"
+//	@success	202		{object}	GlobalResponse
+//	@failure	400		{object}	GlobalResponse
+//	@failure	500		{object}	GlobalResponse
+//	@router		/repo [post]
 func RepoAdd(c *fiber.Ctx) error {
 	var payload PrivateRepoDetails
 
@@ -52,7 +52,7 @@ func RepoAdd(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusAccepted).JSON(GlobalResponse{
-		Message: "Added new repository",
+		Message: "Repository added / updated",
 	})
 }
 
@@ -62,11 +62,11 @@ type RepoListData struct {
 
 // RepoList godoc
 //
-// @summary Get a list all repositories
-// @tags Repo
-// @produce json
-// @success 200 {object} RepoListData
-// @router /repo [get]
+//	@summary	Get a list all repositories
+//	@tags		Repo
+//	@produce	json
+//	@success	200	{object}	RepoListData
+//	@router		/repo [get]
 func RepoList(c *fiber.Ctx) error {
 	list := repository.List()
 
@@ -81,15 +81,15 @@ type RepoRemovePayload struct {
 
 // RepoRemove godoc
 //
-// @summary Remove a repository
-// @tags Repo
-// @accept json
-// @produce json
-// @param request body RepoRemovePayload true "Repository url"
-// @success 200 {object} GlobalResponse
-// @failure 400 {object} GlobalResponse
-// @failure 500 {object} GlobalResponse
-// @router /repo [delete]
+//	@summary	Remove a repository
+//	@tags		Repo
+//	@accept		json
+//	@produce	json
+//	@param		request	body		RepoRemovePayload	true	"Repository url"
+//	@success	200		{object}	GlobalResponse
+//	@failure	400		{object}	GlobalResponse
+//	@failure	500		{object}	GlobalResponse
+//	@router		/repo [delete]
 func RepoRemove(c *fiber.Ctx) error {
 	var payload RepoRemovePayload
 
@@ -118,39 +118,15 @@ func RepoRemove(c *fiber.Ctx) error {
 
 // RepoUpdate godoc
 //
-// @summary Update a repository
-// @tags Repo
-// @accept json
-// @produce json
-// @param request body PrivateRepoDetails true "Repository details"
-// @success 202 {object} GlobalResponse
-// @failure 400 {object} GlobalResponse
-// @failure 500 {object} GlobalResponse
-// @router /repo [put]
+//	@summary	Update a repository
+//	@tags		Repo
+//	@accept		json
+//	@produce	json
+//	@param		request	body		PrivateRepoDetails	true	"Repository details"
+//	@success	202		{object}	GlobalResponse
+//	@failure	400		{object}	GlobalResponse
+//	@failure	500		{object}	GlobalResponse
+//	@router		/repo [put]
 func RepoUpdate(c *fiber.Ctx) error {
-	var payload PrivateRepoDetails
-
-	if err := c.BodyParser(&payload); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(GlobalResponse{
-			Message: err.Error(),
-		})
-	}
-
-	if payload.URL == "" || payload.Username == "" || payload.Password == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(GlobalResponse{
-			Message: "missing url, username or password in request body",
-		})
-	}
-
-	url, _ := strings.CutSuffix(payload.URL, "/")
-
-	if err := repository.Update(url, payload.Username, payload.Password); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(GlobalResponse{
-			Message: err.Error(),
-		})
-	}
-
-	return c.Status(fiber.StatusAccepted).JSON(GlobalResponse{
-		Message: "Updated repository",
-	})
+	return RepoAdd(c)
 }
