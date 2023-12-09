@@ -2,7 +2,16 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 
-swag init --output ./docs/swagger
-pnpm --prefix=./ui build --emptyOutDir
+if ! command -v swag &> /dev/null
+then
+    echo "swag could not be found, install from here https://github.com/swaggo/swag"
+    exit
+fi
 
-git add .
+exit 1
+
+swag init --output ./docs/swagger
+git add ./docs/swagger
+
+pnpm --prefix=./ui build --emptyOutDir
+git add ./ui/static
