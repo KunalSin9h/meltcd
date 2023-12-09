@@ -5,11 +5,10 @@
 # meltcd
 
 #### Docs: https://cd.meltred.tech/docs
+
 ![Discord](https://img.shields.io/discord/1086894797622624257)
 
-
-> [!IMPORTANT]
-> `meltcd` is very far from production use, unless we achieve **1.0.0**
+> [!IMPORTANT] > `meltcd` is very far from production use, unless we achieve **1.0.0**
 
 Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
@@ -45,13 +44,21 @@ Download From [latest release](https://github.com/meltred/meltcd/releases/latest
 go mod download
 ```
 
-3. install frontend packages
+3. Install `husky`
+
+```bash
+pnpm install
+```
+
+4. Install `swag` from [here](https://github.com/swaggo/swag)
+
+5. install frontend packages
 
 ```bash
 pnpm --prefix=./ui install
 ```
 
-4. build the frontend
+6. build the frontend
 
 ```bash
 pnpm --prefix=./ui build
@@ -59,7 +66,7 @@ pnpm --prefix=./ui build
 
 This will update the latest frontend to `server/static`
 
-5. run the app
+7. run the app
 
 ```bash
 go run main.go serve --verbose
