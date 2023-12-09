@@ -4,7 +4,7 @@
   "private": true,
   "license": "Apache-2.0",
   "devDependencies": {
-    "husky": "^8.0.0"
+    "husky": "^8.0.3"
   },
   "scripts": {
     "prepare": "husky install"
