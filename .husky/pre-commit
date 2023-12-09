@@ -8,10 +8,8 @@ then
     exit 1
 fi
 
-exit 0
-
 swag init --output ./docs/swagger
 git add ./docs/swagger
 
 pnpm --prefix=./ui build --emptyOutDir
-git add ./ui/static
+git add ./server/static
