@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+
+if ! command -v swag &> /dev/null
+then
+    echo "swag could not be found, install from here https://github.com/swaggo/swag"
+    exit 1
+fi
+
+swag init --output ./docs/swagger
+git add ./docs/swagger
+
+pnpm --prefix=./ui build --emptyOutDir
+git add ./server/static

@@ -1,0 +1,338 @@
+basePath: /api
+definitions:
+  api.GlobalResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  api.PrivateRepoDetails:
+    properties:
+      password:
+        type: string
+      url:
+        type: string
+      username:
+        type: string
+    type: object
+  api.RepoListData:
+    properties:
+      data:
+        items:
+          type: string
+        type: array
+    type: object
+  api.RepoRemovePayload:
+    properties:
+      repo:
+        type: string
+    type: object
+  application.Application:
+    properties:
+      created_at:
+        type: string
+      health:
+        $ref: '#/definitions/application.Health'
+      health_status:
+        type: string
+      id:
+        type: integer
+      last_synced_at:
+        type: string
+      name:
+        type: string
+      refresh_timer:
+        description: Timer to check for Sync format of "3m50s"
+        type: string
+      source:
+        $ref: '#/definitions/application.Source'
+      updated_at:
+        type: string
+    type: object
+  application.Health:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-varnames:
+    - Healthy
+    - Progressing
+    - Degraded
+    - Suspended
+  application.Source:
+    properties:
+      path:
+        type: string
+      repoURL:
+        type: string
+      targetRevision:
+        type: string
+    type: object
+  core.AppList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/core.AppStatus'
+        type: array
+    type: object
+  core.AppStatus:
+    properties:
+      created_at:
+        type: string
+      health:
+        type: string
+      id:
+        type: integer
+      last_synced_at:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+externalDocs:
+  description: Meltcd Docs
+  url: https://cd.meltred.tech/docs
+host: localhost:11771
+info:
+  contact: {}
+  description: Argo-cd like GitDevOps Continuous Development platform for docker swarm.
+  license:
+    name: Apache 2.0
+    url: https://github.com/meltred/meltcd/blob/main/LICENSE
+  title: Meltcd API
+  version: "0.5"
+paths:
+  /:
+    get:
+      produces:
+      - text/plain
+      responses: {}
+      summary: Check server status
+      tags:
+      - General
+  /apps:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/core.AppList'
+      summary: Get a list all applications created
+      tags:
+      - Apps
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Application body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/application.Application'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+      summary: Create a new application
+      tags:
+      - Apps
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Application body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/application.Application'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+      summary: Update an application
+      tags:
+      - Apps
+  /apps/{app_name}:
+    delete:
+      parameters:
+      - description: Application name
+        in: path
+        name: app_name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+      summary: Remove an application
+      tags:
+      - Apps
+    get:
+      parameters:
+      - description: Application name
+        in: path
+        name: app_name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/application.Application'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+      summary: Get details of an application
+      tags:
+      - Apps
+  /apps/{app_name}/refresh:
+    post:
+      parameters:
+      - description: Application name
+        in: path
+        name: app_name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+      summary: Refresh/Synchronize an application
+      tags:
+      - Apps
+  /repo:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Repository url
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.RepoRemovePayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+      summary: Remove a repository
+      tags:
+      - Repo
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.RepoListData'
+      summary: Get a list all repositories
+      tags:
+      - Repo
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Repository details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.PrivateRepoDetails'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+      summary: Add a new repository
+      tags:
+      - Repo
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Repository details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.PrivateRepoDetails'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.GlobalResponse'
+      summary: Update a repository
+      tags:
+      - Repo
+schemes:
+- http
+swagger: "2.0"

@@ -21,12 +21,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 
 	"github.com/meltred/meltcd/internal/core"
 	"github.com/meltred/meltcd/internal/core/application"
+	"github.com/meltred/meltcd/server/api"
 	"github.com/rodaine/table"
 
 	"github.com/gofiber/fiber/v2"
@@ -36,22 +36,31 @@ import (
 func getDetailsAboutApplication(_ *cobra.Command, args []string) error {
 	appName := args[0]
 
-	res, err := http.Get(fmt.Sprintf("%s/api/application/get/%s", getServer(), appName))
+	res, err := http.Get(fmt.Sprintf("%s/api/apps/%s", getServer(), appName))
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		return errors.New("server does not respond with 200")
+		var resPayload api.GlobalResponse
+		if err := json.NewDecoder(res.Body).Decode(&resPayload); err != nil {
+			return err
+		}
+		return errors.New(resPayload.Message)
 	}
 
-	data, err := io.ReadAll(res.Body)
+	var resDada application.Application
+	if err := json.NewDecoder(res.Body).Decode(&resDada); err != nil {
+		return err
+	}
+
+	bytes, err := json.MarshalIndent(resDada, "", "  ")
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(string(data))
+	fmt.Println(string(bytes))
 	return nil
 }
 
@@ -62,26 +71,27 @@ func createNewApplication(cmd *cobra.Command, args []string) error {
 	}
 
 	app := application.New(spec)
-	payload, err := json.Marshal(app)
-	if err != nil {
+
+	buf := new(bytes.Buffer)
+	if err := json.NewEncoder(buf).Encode(app); err != nil {
 		return err
 	}
 
-	res, err := http.Post(fmt.Sprintf("%s/api/application/create", getServer()), "application/json", bytes.NewReader(payload))
+	res, err := http.Post(fmt.Sprintf("%s/api/apps", getServer()), "application/json", buf)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode != 202 {
-		data, err := io.ReadAll(res.Body)
-		if err != nil {
-			return err
-		}
-		return errors.New(string(data))
+	var resPayload api.GlobalResponse
+	if err := json.NewDecoder(res.Body).Decode(&resPayload); err != nil {
+		return err
+	}
+	if res.StatusCode != fiber.StatusOK {
+		return errors.New(resPayload.Message)
 	}
 
-	info("New Application created")
+	info(resPayload.Message)
 	return nil
 }
 
@@ -92,23 +102,33 @@ func updateExistingApplication(cmd *cobra.Command, args []string) error {
 	}
 
 	app := application.New(spec)
-	payload, err := json.Marshal(app)
+
+	buf := new(bytes.Buffer)
+	if err := json.NewEncoder(buf).Encode(app); err != nil {
+		return err
+	}
+
+	client := &http.Client{}
+
+	req, err := http.NewRequest(fiber.MethodPut, fmt.Sprintf("%s/api/apps", getServer()), buf)
+	req.Header.Add("Content-Type", "application/json")
+
 	if err != nil {
 		return err
 	}
 
-	res, err := http.Post(fmt.Sprintf("%s/api/application/update", getServer()), "application/json", bytes.NewReader(payload))
+	res, err := client.Do(req)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode != 202 {
-		data, err := io.ReadAll(res.Body)
-		if err != nil {
+	if res.StatusCode != fiber.StatusAccepted {
+		var resPayload api.GlobalResponse
+		if err := json.NewDecoder(req.Body).Decode(&resPayload); err != nil {
 			return err
 		}
-		return errors.New(string(data))
+		return errors.New(resPayload.Message)
 	}
 
 	info("Application updated")
@@ -116,7 +136,7 @@ func updateExistingApplication(cmd *cobra.Command, args []string) error {
 }
 
 func getAllApplications(_ *cobra.Command, _ []string) error {
-	res, err := http.Get(fmt.Sprintf("%s/api/application/get", getServer()))
+	res, err := http.Get(fmt.Sprintf("%s/api/apps", getServer()))
 	if err != nil {
 		return err
 	}
@@ -196,33 +216,47 @@ func getSpecFromData(cmd *cobra.Command, args []string) (application.Spec, error
 func refreshApplication(_ *cobra.Command, args []string) error {
 	appName := args[0]
 
-	res, err := http.Post(fmt.Sprintf("%s/api/application/refresh/%s", getServer(), appName), "", nil)
+	res, err := http.Post(fmt.Sprintf("%s/api/apps/%s/refresh", getServer(), appName), "", nil)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != fiber.StatusOK {
-		return errors.New("server does not respond with 200")
+		var resPayload api.GlobalResponse
+		if err := json.NewDecoder(res.Body).Decode(&resPayload); err != nil {
+			return err
+		}
+		return errors.New(resPayload.Message)
 	}
+
+	info("Application Synchronized")
 	return nil
 }
 
 func removeApplication(_ *cobra.Command, args []string) error {
 	appName := args[0]
 
-	res, err := http.Post(fmt.Sprintf("%s/api/application/remove/%s", getServer(), appName), "", nil)
+	client := &http.Client{}
+	req, err := http.NewRequest(fiber.MethodDelete, fmt.Sprintf("%s/api/apps/%s", getServer(), appName), nil)
+	if err != nil {
+		return err
+	}
+
+	res, err := client.Do(req)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != fiber.StatusOK {
-		data, err := io.ReadAll(res.Body)
-		if err != nil {
+		var resPayload api.GlobalResponse
+		if err := json.NewDecoder(res.Body).Decode(&resPayload); err != nil {
 			return err
 		}
-		return errors.New(string(data))
+		return errors.New(resPayload.Message)
 	}
+
+	info("Application removed")
 	return nil
 }

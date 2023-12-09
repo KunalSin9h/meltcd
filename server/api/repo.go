@@ -17,11 +17,24 @@ type GlobalResponse struct {
 	Message string `json:"message"`
 }
 
-func RepoAdd(c *fiber.Ctx) error {
+// RepoAdd godoc
+//
+//	@summary	Add a new repository
+//	@tags		Repo
+//	@accept		json
+//	@produce	json
+//	@param		request	body		PrivateRepoDetails	true	"Repository details"
+//	@success	202		{object}	GlobalResponse
+//	@failure	400		{object}	GlobalResponse
+//	@failure	500		{object}	GlobalResponse
+//	@router		/repo [post]
+func RepoAdd(c *fiber.Ctx) error { // nolint:all
 	var payload PrivateRepoDetails
 
 	if err := c.BodyParser(&payload); err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).JSON(GlobalResponse{
+			Message: err.Error(),
+		})
 	}
 
 	if payload.URL == "" || payload.Username == "" || payload.Password == "" {
@@ -39,7 +52,7 @@ func RepoAdd(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusAccepted).JSON(GlobalResponse{
-		Message: "Added new repository",
+		Message: "Added Repository",
 	})
 }
 
@@ -47,6 +60,13 @@ type RepoListData struct {
 	Data []string `json:"data"`
 }
 
+// RepoList godoc
+//
+//	@summary	Get a list all repositories
+//	@tags		Repo
+//	@produce	json
+//	@success	200	{object}	RepoListData
+//	@router		/repo [get]
 func RepoList(c *fiber.Ctx) error {
 	list := repository.List()
 
@@ -59,6 +79,17 @@ type RepoRemovePayload struct {
 	Repo string `json:"repo"`
 }
 
+// RepoRemove godoc
+//
+//	@summary	Remove a repository
+//	@tags		Repo
+//	@accept		json
+//	@produce	json
+//	@param		request	body		RepoRemovePayload	true	"Repository url"
+//	@success	200		{object}	GlobalResponse
+//	@failure	400		{object}	GlobalResponse
+//	@failure	500		{object}	GlobalResponse
+//	@router		/repo [delete]
 func RepoRemove(c *fiber.Ctx) error {
 	var payload RepoRemovePayload
 
@@ -85,7 +116,18 @@ func RepoRemove(c *fiber.Ctx) error {
 	})
 }
 
-func RepoUpdate(c *fiber.Ctx) error {
+// RepoUpdate godoc
+//
+//	@summary	Update a repository
+//	@tags		Repo
+//	@accept		json
+//	@produce	json
+//	@param		request	body		PrivateRepoDetails	true	"Repository details"
+//	@success	202		{object}	GlobalResponse
+//	@failure	400		{object}	GlobalResponse
+//	@failure	500		{object}	GlobalResponse
+//	@router		/repo [put]
+func RepoUpdate(c *fiber.Ctx) error { // nolint:all
 	var payload PrivateRepoDetails
 
 	if err := c.BodyParser(&payload); err != nil {

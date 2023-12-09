@@ -34,6 +34,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/swagger"
 )
 
 //go:embed static/*
@@ -59,10 +61,13 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	})
 
 	app.Use(cors.New(config))
+	app.Use(recover.New())
 
 	if verboseOutput {
 		app.Use(logger.New())
 	}
+
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	// Server frontend on `/`
 	app.Use("/", filesystem.New(filesystem.Config{
@@ -73,26 +78,22 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	}))
 
 	api := app.Group("api")
-	api.Get("/", func(c *fiber.Ctx) error {
-		return c.JSON(app.Stack())
-	})
-	api.Get("/health_check", func(c *fiber.Ctx) error {
-		return c.Status(200).SendString(fmt.Sprintf("MeltCD is running (version: %s)\n", version.Version))
-	})
 
-	application := api.Group("application")
-	application.Post("/create", meltcdApi.Register)
-	application.Post("/update", meltcdApi.Update)
-	application.Post("/refresh/:app_name", meltcdApi.Refresh)
-	application.Post("/remove/:app_name", meltcdApi.Remove)
-	application.Get("/get", meltcdApi.AllApplications)
-	application.Get("/get/:app_name", meltcdApi.Details)
+	api.Get("/", CheckAPIStatus)
+
+	apps := api.Group("apps")
+	apps.Get("/", meltcdApi.AllApplications)
+	apps.Post("/", meltcdApi.Register)
+	apps.Get("/:app_name", meltcdApi.Details)
+	apps.Delete("/:app_name", meltcdApi.Remove)
+	apps.Put("/", meltcdApi.Update)
+	apps.Post("/:app_name/refresh", meltcdApi.Refresh)
 
 	repo := api.Group("repo")
-	repo.Post("/add", meltcdApi.RepoAdd) // url, username and password will be send in body
-	repo.Get("/list", meltcdApi.RepoList)
-	repo.Delete("/delete", meltcdApi.RepoRemove)
-	repo.Put("/update", meltcdApi.RepoUpdate)
+	repo.Get("/", meltcdApi.RepoList)
+	repo.Post("/", meltcdApi.RepoAdd) // url, username and password will be send in body
+	repo.Delete("/", meltcdApi.RepoRemove)
+	repo.Put("/", meltcdApi.RepoUpdate)
 
 	err := core.Setup()
 	if err != nil {
@@ -118,4 +119,12 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	}()
 
 	return app.Listener(ln)
+}
+
+// @summary	Check server status
+// @tags		General
+// @produce	plain
+// @router		/ [get]
+func CheckAPIStatus(c *fiber.Ctx) error {
+	return c.Status(200).SendString(fmt.Sprintf("Meltcd API is running (version: %s)\n", version.Version))
 }
