@@ -102,7 +102,7 @@ info:
     name: Apache 2.0
     url: https://github.com/meltred/meltcd/blob/main/LICENSE
   title: Meltcd API
-  version: "0.0"
+  version: "0.5"
 paths:
   /:
     get:

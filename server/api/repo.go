@@ -28,7 +28,7 @@ type GlobalResponse struct {
 //	@failure	400		{object}	GlobalResponse
 //	@failure	500		{object}	GlobalResponse
 //	@router		/repo [post]
-func RepoAdd(c *fiber.Ctx) error {
+func RepoAdd(c *fiber.Ctx) error { // nolint:all
 	var payload PrivateRepoDetails
 
 	if err := c.BodyParser(&payload); err != nil {
@@ -52,7 +52,7 @@ func RepoAdd(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusAccepted).JSON(GlobalResponse{
-		Message: "Repository added / updated",
+		Message: "Added Repository",
 	})
 }
 
@@ -127,6 +127,30 @@ func RepoRemove(c *fiber.Ctx) error {
 //	@failure	400		{object}	GlobalResponse
 //	@failure	500		{object}	GlobalResponse
 //	@router		/repo [put]
-func RepoUpdate(c *fiber.Ctx) error {
-	return RepoAdd(c)
+func RepoUpdate(c *fiber.Ctx) error { // nolint:all
+	var payload PrivateRepoDetails
+
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(GlobalResponse{
+			Message: err.Error(),
+		})
+	}
+
+	if payload.URL == "" || payload.Username == "" || payload.Password == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(GlobalResponse{
+			Message: "missing url, username or password in request body",
+		})
+	}
+
+	url, _ := strings.CutSuffix(payload.URL, "/")
+
+	if err := repository.Update(url, payload.Username, payload.Password); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(GlobalResponse{
+			Message: err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusAccepted).JSON(GlobalResponse{
+		Message: "Updated repository",
+	})
 }

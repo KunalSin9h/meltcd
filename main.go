@@ -26,7 +26,7 @@ import (
 )
 
 // @title						Meltcd API
-// @version					0.0
+// @version					0.5
 // @description				Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 // @host						localhost:11771
 // @basePath					/api

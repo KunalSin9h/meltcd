@@ -55,7 +55,12 @@ func getDetailsAboutApplication(_ *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("%+v\n", resDada)
+	bytes, err := json.MarshalIndent(resDada, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(string(bytes))
 	return nil
 }
 
