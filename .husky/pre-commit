@@ -5,10 +5,10 @@
 if ! command -v swag &> /dev/null
 then
     echo "swag could not be found, install from here https://github.com/swaggo/swag"
-    exit
+    exit 1
 fi
 
-exit 1
+exit 0
 
 swag init --output ./docs/swagger
 git add ./docs/swagger
