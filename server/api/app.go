@@ -27,7 +27,7 @@ import (
 
 // Register godoc
 //
-//	@summary	Register a new application
+//	@summary	Create a new application
 //	@tags		Apps
 //	@accept		json
 //	@produce	json
@@ -152,7 +152,7 @@ func Refresh(c *fiber.Ctx) error {
 //	@param		app_name	path	string	true	"Application name"
 //	@success	200
 //	@failure	500	{object}	GlobalResponse
-//	@router		/apps/{app_name}/remove [post]
+//	@router		/apps/{app_name} [delete]
 func Remove(c *fiber.Ctx) error {
 	appName := c.Params("app_name")
 

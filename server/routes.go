@@ -85,9 +85,9 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	apps.Get("/", meltcdApi.AllApplications)
 	apps.Post("/", meltcdApi.Register)
 	apps.Get("/:app_name", meltcdApi.Details)
+	apps.Delete("/:app_name", meltcdApi.Remove)
 	apps.Put("/", meltcdApi.Update)
 	apps.Post("/:app_name/refresh", meltcdApi.Refresh)
-	apps.Post("/:app_name/remove", meltcdApi.Remove)
 
 	repo := api.Group("repo")
 	repo.Get("/", meltcdApi.RepoList)

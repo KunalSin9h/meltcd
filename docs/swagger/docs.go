@@ -96,7 +96,7 @@ const docTemplate = `{
                 "tags": [
                     "Apps"
                 ],
-                "summary": "Register a new application",
+                "summary": "Create a new application",
                 "parameters": [
                     {
                         "description": "Application body",
@@ -168,14 +168,12 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/apps/{app_name}/refresh": {
-            "post": {
+            },
+            "delete": {
                 "tags": [
                     "Apps"
                 ],
-                "summary": "Refresh/Synchronize an application",
+                "summary": "Remove an application",
                 "parameters": [
                     {
                         "type": "string",
@@ -198,12 +196,12 @@ const docTemplate = `{
                 }
             }
         },
-        "/apps/{app_name}/remove": {
+        "/apps/{app_name}/refresh": {
             "post": {
                 "tags": [
                     "Apps"
                 ],
-                "summary": "Remove an application",
+                "summary": "Refresh/Synchronize an application",
                 "parameters": [
                     {
                         "type": "string",

@@ -48,7 +48,7 @@ func addPrivateGitRepository(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	res, err := http.Post(fmt.Sprintf("%s/api/repo/add", getServer()), "application/json", buf)
+	res, err := http.Post(fmt.Sprintf("%s/api/repo", getServer()), "application/json", buf)
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func addPrivateGitRepository(cmd *cobra.Command, args []string) error {
 }
 
 func getAllRepoAdded(_ *cobra.Command, _ []string) error {
-	res, err := http.Get(fmt.Sprintf("%s/api/repo/list", getServer()))
+	res, err := http.Get(fmt.Sprintf("%s/api/repo", getServer()))
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func removePrivateRepo(_ *cobra.Command, args []string) error {
 
 	client := &http.Client{}
 
-	request, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("%s/api/repo/delete", getServer()), buf)
+	request, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("%s/api/repo", getServer()), buf)
 	request.Header.Add("Content-Type", "application/json")
 
 	if err != nil {
@@ -148,7 +148,7 @@ func updatePrivateRepo(cmd *cobra.Command, args []string) error {
 
 	client := &http.Client{}
 
-	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/api/repo/update", getServer()), buf)
+	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/api/repo", getServer()), buf)
 	req.Header.Add("Content-Type", "application/json")
 
 	if err != nil {
