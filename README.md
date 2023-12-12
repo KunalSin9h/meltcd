@@ -76,6 +76,9 @@ This will update the latest frontend to `server/static`
 
 ```bash
 go run main.go serve --verbose
+
+# Using `gnu make`
+make run
 ```
 
 This will start the server on port `11771`
