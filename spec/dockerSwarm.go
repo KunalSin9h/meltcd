@@ -128,6 +128,7 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 
 				key = absPath
 				volumeType = mount.TypeBind
+
 			}
 
 			targetSpec.TaskTemplate.ContainerSpec.Mounts = append(targetSpec.TaskTemplate.ContainerSpec.Mounts, mount.Mount{
@@ -135,6 +136,8 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 				Source: key,
 				Target: value,
 			})
+
+			log.Info("Using volume", "key", key, "value", value)
 		}
 
 		if spec.Deploy.Mode == "replicated" {
