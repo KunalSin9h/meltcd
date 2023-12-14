@@ -128,6 +128,7 @@ After=network-online.target
 
 [Service]
 ExecStart=$BINDIR/meltcd serve
+User=$USER
 Restart=always
 RestartSec=3
 Environment="PATH=$PATH"
