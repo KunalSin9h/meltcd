@@ -17,7 +17,11 @@ limitations under the License.
 package spec
 
 import (
+	"bufio"
+	"fmt"
 	"os"
+	"os/user"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -39,6 +43,7 @@ type Service struct {
 	Ports       []string          `yaml:"ports"`
 	Deploy      Deploy            `yaml:"deploy"`
 	Environment map[string]string `yaml:"environment"`
+	EnvFile     []string          `yaml:"env_file"`
 	Volumes     []string          `yaml:"volumes"`
 	Networks    []string          `yaml:"networks"`
 }
@@ -78,6 +83,18 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 				Image: spec.Image,
 			},
 		}
+
+		for _, envFile := range spec.EnvFile {
+			envVars, err := getEnvVars(envFile)
+			if err != nil {
+				return []swarm.ServiceSpec{}, err
+			}
+
+			for k, v := range envVars {
+				targetSpec.TaskTemplate.ContainerSpec.Env = append(targetSpec.TaskTemplate.ContainerSpec.Env, k+"="+v)
+			}
+		}
+
 		for k, v := range spec.Environment {
 			targetSpec.TaskTemplate.ContainerSpec.Env = append(targetSpec.TaskTemplate.ContainerSpec.Env, k+"="+v)
 		}
@@ -131,4 +148,54 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 	}
 
 	return specs, nil
+}
+
+func getEnvVars(fileName string) (map[string]string, error) {
+	result := make(map[string]string)
+
+	fileName, err := normalizeFilePath(fileName)
+	if err != nil {
+		return map[string]string{}, err
+	}
+
+	fileData, err := os.Open(fileName)
+	if err != nil {
+		return map[string]string{}, err
+	}
+	defer fileData.Close()
+
+	scanner := bufio.NewScanner(fileData)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		tokens := strings.SplitN(line, "=", 2)
+
+		if len(tokens) == 2 {
+			key := strings.TrimSpace(tokens[0])
+			value := strings.TrimSpace(tokens[1])
+			value = strings.ReplaceAll(value, "\"", "")
+
+			result[key] = value
+		}
+	}
+
+	return result, err
+}
+
+func normalizeFilePath(fileName string) (string, error) {
+	currentUser, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+
+	username := currentUser.Username
+
+	fileName = strings.ReplaceAll(fileName, "~", fmt.Sprintf("/home/%s", username))
+
+	absFilePath, err := filepath.Abs(fileName)
+	if err != nil {
+		return "", err
+	}
+
+	return absFilePath, nil
 }
