@@ -18,6 +18,7 @@ package spec
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"os/user"
@@ -104,16 +105,35 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 		}
 
 		for _, m := range spec.Volumes {
-			tokens := strings.Split(m, ":")
+			tokens := strings.SplitN(m, ":", 2)
 			if len(tokens) != 2 {
 				log.Error("Volumes are not split on : in 2", "tokens", tokens)
-				os.Exit(1)
+				return []swarm.ServiceSpec{}, errors.New("invalid volumes")
+			}
+
+			key := tokens[0]
+			value := tokens[1]
+
+			volumeType := mount.TypeVolume // volume mount
+
+			// checking for Bind mounts
+			if strings.HasPrefix(key, ".") ||
+				strings.HasPrefix(key, "~") ||
+				strings.HasPrefix(key, "/") {
+
+				absPath, err := normalizeFilePath(key)
+				if err != nil {
+					return []swarm.ServiceSpec{}, err
+				}
+
+				key = absPath
+				volumeType = mount.TypeBind
 			}
 
 			targetSpec.TaskTemplate.ContainerSpec.Mounts = append(targetSpec.TaskTemplate.ContainerSpec.Mounts, mount.Mount{
-				Type:   mount.TypeVolume,
-				Source: tokens[0],
-				Target: tokens[1],
+				Type:   volumeType,
+				Source: key,
+				Target: value,
 			})
 		}
 
