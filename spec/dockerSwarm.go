@@ -168,7 +168,7 @@ func getEnvVars(fileName string) (map[string]string, error) {
 
 	for scanner.Scan() {
 		line := scanner.Text()
-		tokens := strings.Split(line, "=")
+		tokens := strings.SplitN(line, "=", 2)
 
 		if len(tokens) == 2 {
 			key := strings.TrimSpace(tokens[0])
