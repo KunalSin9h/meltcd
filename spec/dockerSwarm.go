@@ -120,7 +120,6 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 			if strings.HasPrefix(key, ".") ||
 				strings.HasPrefix(key, "~") ||
 				strings.HasPrefix(key, "/") {
-
 				absPath, err := normalizeFilePath(key)
 				if err != nil {
 					return []swarm.ServiceSpec{}, err
@@ -128,7 +127,6 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 
 				key = absPath
 				volumeType = mount.TypeBind
-
 			}
 
 			targetSpec.TaskTemplate.ContainerSpec.Mounts = append(targetSpec.TaskTemplate.ContainerSpec.Mounts, mount.Mount{
