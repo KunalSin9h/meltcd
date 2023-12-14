@@ -266,7 +266,6 @@ func (app *Application) Apply(targetState string) error {
 	}
 
 	for _, service := range services {
-
 		// check if already exists then only update
 		if svc, exists := checkServiceAlreadyExist(service.Name, &allServicesRunning); exists {
 			log.Info("Service already running", "name", service.Name)
