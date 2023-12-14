@@ -45,7 +45,7 @@ jobs:
           go-version: "1.21"
           cache: false
       - name: Run go test
-        run: go test
+        run: go test -v ./...
 
   build:
     needs: [frontend-lint, lint, test]
