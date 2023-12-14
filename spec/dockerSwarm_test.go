@@ -6,13 +6,13 @@ import (
 )
 
 func TestNormalizeFilePath(t *testing.T) {
-	testCase := []string{
+	testCaseNeg := []string{
 		".env",
 		"file.txt",
 		"~/.service.yaml",
 	}
 
-	for _, file := range testCase {
+	for _, file := range testCaseNeg {
 		res, err := normalizeFilePath(file)
 		if err != nil {
 			t.Error(err.Error())
@@ -23,9 +23,20 @@ func TestNormalizeFilePath(t *testing.T) {
 		//
 		// so the length should not equal to expanded result
 		if len(res) == len(file) {
-			t.Log("file does not example", file)
+			t.Log("file does not expanded", file)
 			t.Fail()
 		}
+	}
+
+	homePath := "/home/user/secret/something"
+	res, err := normalizeFilePath(homePath)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if res != homePath {
+		t.Log("file expanded even if the path is home", "path", homePath)
+		t.Fail()
 	}
 }
 
