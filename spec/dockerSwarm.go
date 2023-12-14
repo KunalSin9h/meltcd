@@ -91,7 +91,7 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 			}
 
 			for k, v := range envVars {
-				spec.Environment[k] = v
+				targetSpec.TaskTemplate.ContainerSpec.Env = append(targetSpec.TaskTemplate.ContainerSpec.Env, k+"="+v)
 			}
 		}
 
