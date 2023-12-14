@@ -105,13 +105,20 @@ install_success() {
 trap install_success EXIT
 
 configure_systemd() {
-    if ! id meltcd >/dev/null 2>&1; then
-        status "Creating meltcd user..."
-        $SUDO useradd -r -s /bin/false -m -d /usr/share/meltcd meltcd
-    fi
+    # Running meltcd application as meltcd user
+    # if enabled in future then add the bellow 2 linex in the meltcd.service file
+    # ---
+    # User=meltcd
+    # Group=meltcd
+    # ---
+    # 
+    # if ! id meltcd >/dev/null 2>&1; then
+    #     status "Creating meltcd user..."
+    #     $SUDO useradd -r -s /bin/false -m -d /usr/share/meltcd meltcd
+    # fi
 
-    status "Adding current user to meltcd group..."
-    $SUDO usermod -a -G meltcd $(whoami)
+    # status "Adding current user to meltcd group..."
+    # $SUDO usermod -a -G meltcd $(whoami)
 
     status "Creating meltcd systemd service..."
     cat <<EOF | $SUDO tee /etc/systemd/system/meltcd.service >/dev/null
@@ -121,8 +128,6 @@ After=network-online.target
 
 [Service]
 ExecStart=$BINDIR/meltcd serve
-User=meltcd
-Group=meltcd
 Restart=always
 RestartSec=3
 Environment="PATH=$PATH"
