@@ -85,10 +85,14 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 		}
 
 		for _, envFile := range spec.EnvFile {
+			log.Info("Using environment variable from files", "file", envFile)
+
 			envVars, err := getEnvVars(envFile)
 			if err != nil {
 				return []swarm.ServiceSpec{}, err
 			}
+
+			log.Info("Found environment from file", "count", len(envVars))
 
 			for k, v := range envVars {
 				targetSpec.TaskTemplate.ContainerSpec.Env = append(targetSpec.TaskTemplate.ContainerSpec.Env, k+"="+v)
