@@ -28,7 +28,7 @@ jobs:
       - name: Find and replace app version
         uses: jacobtomlinson/gha-find-replace@v3
         with:
-          find: "0.0.0"
+          find: "dev"
           replace: "${{ steps.vars.outputs.latest_tag }}"
           include: "version/version.go"
           regex: true
