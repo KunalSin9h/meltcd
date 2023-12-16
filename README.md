@@ -32,7 +32,7 @@ go install github.com/meltred/meltcd@latest
 
 ## Architecture
 
-![architecture](https://github.com/meltred/meltcd/assets/82411321/9af15c33-627d-4e10-9952-0bd9e6422bbd)
+![architecture](https://github.com/meltred/meltcd/assets/82411321/f73f80a5-a533-420d-aee9-6a06e2b13976)
 
 ## Local Setup
 
