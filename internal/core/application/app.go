@@ -237,7 +237,7 @@ func (app *Application) Apply(targetState string) error {
 	for volName, volOpts := range swarmSpec.Volumes {
 		labels := make(map[string]string)
 		for _, l := range volOpts.Labels {
-			tokens := strings.Split(l, "=")
+			tokens := strings.SplitN(l, "=", 2)
 			if len(tokens) != 2 {
 				return errors.New("invalid labels in volume")
 			}
@@ -253,7 +253,12 @@ func (app *Application) Apply(targetState string) error {
 		})
 	}
 
-	services, err := swarmSpec.GetServiceSpec(app.Name)
+	networkID, err := createNetwork(cli, app.Name)
+	if err != nil {
+		return err
+	}
+
+	services, err := swarmSpec.GetServiceSpec(app.Name, networkID)
 	if err != nil {
 		return err
 	}
@@ -282,6 +287,7 @@ func (app *Application) Apply(targetState string) error {
 			app.LastSyncedAt = time.Now()
 			continue
 		}
+
 		log.Info("Creating new service")
 		res, err := cli.ServiceCreate(context.Background(), service, types.ServiceCreateOptions{})
 		if err != nil {
@@ -316,4 +322,41 @@ func checkServiceAlreadyExist(serviceName string, allServices *[]swarm.Service) 
 		}
 	}
 	return swarm.Service{}, false
+}
+
+func createNetwork(cli *client.Client, appName string) (string, error) {
+	log.Info("Creating network")
+	networkName := appName + "_default"
+
+	nets, err := cli.NetworkList(context.Background(), types.NetworkListOptions{})
+	if err != nil {
+		return "", err
+	}
+
+	for _, network := range nets {
+		if network.Name == networkName {
+			log.Info("Network already exists")
+			return network.ID, nil
+		}
+	}
+
+	net, err := cli.NetworkCreate(context.Background(), networkName, types.NetworkCreate{
+		Scope: "swarm",
+		Labels: map[string]string{
+			"com.docker.stack.namespace": appName,
+		},
+		Driver: "overlay",
+	})
+
+	log.Info("Created network", "id", net.ID)
+
+	if err != nil {
+		return "", err
+	}
+
+	if net.Warning != "" {
+		log.Warn(net.Warning)
+	}
+
+	return net.ID, nil
 }

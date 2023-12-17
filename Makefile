@@ -3,6 +3,10 @@ run:
 	@swag init --output ./docs/swagger
 	@go run main.go serve --verbose
 
+.PHONY: fontend
+fontend:
+	@pnpm --prefix ./ui run build --emptyOutDir
+
 
 .PHONY: test
 test:

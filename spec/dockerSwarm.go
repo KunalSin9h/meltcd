@@ -68,7 +68,7 @@ type Volume struct {
 	Options    map[string]string `yaml:"options"`
 }
 
-func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error) {
+func (d *DockerSwarm) GetServiceSpec(appName string, networkID string) ([]swarm.ServiceSpec, error) {
 	log.Info("Getting service spec for app", "app name", appName)
 
 	specs := make([]swarm.ServiceSpec, 0)
@@ -78,12 +78,32 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 		log.Info("Making serviceSpec for service", "service_name", serviceName)
 
 		var targetSpec swarm.ServiceSpec
+
+		// Name of service like "stackName_serviceName"
 		targetSpec.Name = appName + "_" + serviceName
+
+		// Labels
+		targetSpec.Labels = map[string]string{
+			"com.docker.stack.image":     spec.Image,
+			"com.docker.stack.namespace": appName,
+		}
+
 		targetSpec.TaskTemplate = swarm.TaskSpec{
 			ContainerSpec: &swarm.ContainerSpec{
 				Image: spec.Image,
+				Labels: map[string]string{
+					"com.docker.stack.namespace": appName,
+				},
 			},
 		}
+
+		// Connection the service with the network
+		targetSpec.TaskTemplate.Networks = append(targetSpec.TaskTemplate.Networks, swarm.NetworkAttachmentConfig{
+			Target: networkID,
+			Aliases: []string{
+				serviceName,
+			},
+		})
 
 		for _, envFile := range spec.EnvFile {
 			log.Info("Using environment variable from files", "file", envFile)
