@@ -20,7 +20,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/docker/docker/api/types"
@@ -176,11 +175,27 @@ func RemoveApplication(appName string) error {
 		return err
 	}
 
+	// set (unique) of network to remove
+	networksToRemove := map[string]bool{}
+
 	for _, svc := range runningService {
-		if strings.HasPrefix(svc.Spec.Name, appName) {
+		name := svc.Spec.Labels["com.docker.stack.namespace"]
+
+		if name == appName {
 			if err := cli.ServiceRemove(context.Background(), svc.ID); err != nil {
 				return err
 			}
+
+			for _, nets := range svc.Spec.TaskTemplate.Networks {
+				// nets.Target is the network ID
+				networksToRemove[nets.Target] = true
+			}
+		}
+	}
+
+	for networkID := range networksToRemove {
+		if err := cli.NetworkRemove(context.Background(), networkID); err != nil {
+			return err
 		}
 	}
 
