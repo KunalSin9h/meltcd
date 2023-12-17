@@ -78,7 +78,16 @@ func (d *DockerSwarm) GetServiceSpec(appName string) ([]swarm.ServiceSpec, error
 		log.Info("Making serviceSpec for service", "service_name", serviceName)
 
 		var targetSpec swarm.ServiceSpec
+
+		// Name of service like "stackName_serviceName"
 		targetSpec.Name = appName + "_" + serviceName
+
+		// Labels
+		targetSpec.Labels = map[string]string{
+			"com.docker.stack.image":     spec.Image,
+			"com.docker.stack.namespace": appName,
+		}
+
 		targetSpec.TaskTemplate = swarm.TaskSpec{
 			ContainerSpec: &swarm.ContainerSpec{
 				Image: spec.Image,
