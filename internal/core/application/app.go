@@ -253,12 +253,12 @@ func (app *Application) Apply(targetState string) error {
 		})
 	}
 
-	networkId, err := createNetwork(cli, app.Name)
+	networkID, err := createNetwork(cli, app.Name)
 	if err != nil {
 		return err
 	}
 
-	services, err := swarmSpec.GetServiceSpec(app.Name, networkId)
+	services, err := swarmSpec.GetServiceSpec(app.Name, networkID)
 	if err != nil {
 		return err
 	}
