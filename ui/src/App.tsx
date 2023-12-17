@@ -17,7 +17,10 @@ limitations under the License.
 function App() {
   return (
     <center>
-      <h1>Melt CD</h1>
+      <div className="flex items-center gap-4">
+        <img src="/logo.png" alt="MeltCD Logo" width={"50px"} height={"50px"} />
+        <h1 className="text-2xl">Meltcd</h1>
+      </div>
     </center>
   );
 }
