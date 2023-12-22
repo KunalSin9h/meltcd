@@ -14,15 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-function App() {
-  return (
-    <center>
-      <div className="flex items-center gap-4">
-        <img src="/logo.png" alt="MeltCD Logo" width={"50px"} height={"50px"} />
-        <h1 className="text-2xl">Meltcd</h1>
-      </div>
-    </center>
-  );
+function Dashboard() {
+  return <h1>Dashboard</h1>;
 }
 
-export default App;
+export default Dashboard;
