@@ -27,4 +27,6 @@ limitations under the License.
   border-left: solid;
   border-left-width: 5px;
   border-left-color: aquamarine;
+  border-top-left-radius: none;
+  border-bottom-right-radius: none;
 }

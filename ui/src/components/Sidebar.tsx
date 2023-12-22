@@ -67,7 +67,7 @@ function Item({
     <NavLink
       to={to}
       end={true}
-      className={`hover:bg-sidebarLite px-2 flex gap-2 items-center ${
+      className={`hover:bg-sidebarLite hover:border-l hover:border-l-[5px] hover:border-white/40 rounded-r px-2 flex gap-2 items-center ${
         panelOpen ? "py-1" : "justify-center py-2"
       }`}
     >
