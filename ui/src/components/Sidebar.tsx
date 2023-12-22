@@ -37,7 +37,7 @@ export default function Sidebar() {
       <div className="mt-8 flex flex-col gap-4">
         <Item
           name="Apps"
-          to="/dash/apps"
+          to="/dash"
           icon={<AppsIcon />}
           panelOpen={panelOpen}
         />
@@ -66,7 +66,8 @@ function Item({
   return (
     <NavLink
       to={to}
-      className={`hover:bg-sidebarLite rounded px-2 flex gap-2 items-center ${
+      end
+      className={`hover:bg-sidebarLite px-2 flex gap-2 items-center ${
         panelOpen ? "py-1" : "justify-center py-2"
       }`}
     >
