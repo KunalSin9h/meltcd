@@ -200,7 +200,7 @@ function NewApplication() {
       </label>
       <div className="flex items-center gap-4">
         <button
-          className="text-black py-2 px-4 rounded font-bold hover:border-dashed bg-green-400 hover:bg-green-400/20 hover:bg-inherit hover:border-2 hover:border-green-500 transition ease-in-out delay-50 hover:-translate-y-1 duration-100"
+          className="text-black py-2 px-4 rounded font-bold hover:border-dashed bg-green-400 hover:bg-green-400/30 hover:bg-inherit hover:border-2 hover:border-green-500 transition ease-in-out delay-50 hover:-translate-y-1 duration-100"
           onClick={async (e) => {
             e.preventDefault();
 
