@@ -229,26 +229,43 @@ function NewApplication() {
               return;
             }
 
-            try {
-              const res = await fetch("/api/apps", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(bodyData),
-              });
+            const request = fetch("/api/apps", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(bodyData),
+            });
 
-              try {
-                const data = (await res.json()) as globalResponseData;
-                toast.success(data.message);
-              } catch (err) {
+            toast.promise(request, {
+              loading: "Creating new application",
+              success: (res) => {
+                let good = true;
+                if (res.status !== 200) {
+                  good = false;
+                }
+
+                res
+                  .json()
+                  .then((data: globalResponseData) => {
+                    if (good) {
+                      toast.success(data.message);
+                    } else {
+                      toast.error(data.message);
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    toast.error("Failed to create new application");
+                  });
+
+                return "Working...";
+              },
+              error: (err) => {
                 console.log(err);
-                toast.error("Failed to create new application");
-              }
-            } catch (err) {
-              console.log(err);
-              toast.error("Failed to create new application");
-            }
+                return "Failed to create new application";
+              },
+            });
           }}
         >
           Create
