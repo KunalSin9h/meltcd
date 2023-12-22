@@ -25,18 +25,18 @@ import Repos from "./Repos.tsx";
 
 const router = createBrowserRouter([
   {
-    path: "/login",
+    path: "/",
     element: <Login />,
   },
   {
-    path: "/",
+    path: "/dash",
     element: <Layout />,
     children: [
       {
-        index: true,
+        path: "/dash/apps",
         element: <Apps />,
       },
-      { path: "/repos", element: <Repos /> },
+      { path: "/dash/repos", element: <Repos /> },
     ],
   },
 ]);

@@ -35,10 +35,15 @@ export default function Sidebar() {
         </span>
       </div>
       <div className="mt-8 flex flex-col gap-4">
-        <Item name="Apps" to="/" icon={<AppsIcon />} panelOpen={panelOpen} />
+        <Item
+          name="Apps"
+          to="/dash/apps"
+          icon={<AppsIcon />}
+          panelOpen={panelOpen}
+        />
         <Item
           name="Repos"
-          to="/repos"
+          to="/dash/repos"
           icon={<ReposIcon />}
           panelOpen={panelOpen}
         />
