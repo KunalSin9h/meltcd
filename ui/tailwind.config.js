@@ -5,6 +5,7 @@ export default {
     extend: {
       colors: {
         sidebar: "#22272E",
+        sidebarLite: "#363e49",
       },
     },
   },
