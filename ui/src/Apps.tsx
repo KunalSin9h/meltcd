@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-function Dashboard() {
-  return <h1>Dashboard</h1>;
+export default function Apps() {
+  return <h1>Apps</h1>;
 }
-
-export default Dashboard;

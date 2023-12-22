@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { PanelIcon } from "../lib/icon";
+import { AppsIcon, PanelIcon, ReposIcon } from "../lib/icon";
+import { NavLink } from "react-router-dom";
 
 export default function Sidebar() {
   const [panelOpen, setPanelOpen] = useState(true);
@@ -33,6 +34,39 @@ export default function Sidebar() {
           <PanelIcon />
         </span>
       </div>
+      <div className="mt-8 flex flex-col gap-4">
+        <Item name="Apps" to="/" icon={<AppsIcon />} panelOpen={panelOpen} />
+        <Item
+          name="Repos"
+          to="/repos"
+          icon={<ReposIcon />}
+          panelOpen={panelOpen}
+        />
+      </div>
     </div>
+  );
+}
+
+function Item({
+  name,
+  to,
+  icon,
+  panelOpen,
+}: {
+  name: string;
+  to: string;
+  icon: JSX.Element;
+  panelOpen: boolean;
+}) {
+  return (
+    <NavLink
+      to={to}
+      className={`hover:bg-sidebarLite rounded px-2 flex gap-2 items-center ${
+        panelOpen ? "py-1" : "justify-center py-2"
+      }`}
+    >
+      {icon}
+      <span className={`${panelOpen ? "" : "hidden"}`}>{name}</span>
+    </NavLink>
   );
 }

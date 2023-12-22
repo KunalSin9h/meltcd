@@ -18,23 +18,25 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import Dashboard from "./Dashboard.tsx";
+import Apps from "./Apps.tsx";
 import Login from "./components/signup/Login.tsx";
 import Layout from "./components/Layout.tsx";
+import Repos from "./Repos.tsx";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/login",
     element: <Login />,
   },
   {
-    path: "/dashboard",
+    path: "/",
     element: <Layout />,
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: <Apps />,
       },
+      { path: "/repos", element: <Repos /> },
     ],
   },
 ]);

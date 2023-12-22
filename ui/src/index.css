@@ -22,3 +22,9 @@ limitations under the License.
   background-color: #14171c;
   color: aliceblue;
 }
+
+.active {
+  border-left: solid;
+  border-left-width: 5px;
+  border-left-color: aquamarine;
+}
