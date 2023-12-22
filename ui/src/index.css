@@ -14,32 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  background-color: #14171c;
+  color: aliceblue;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  justify-content: center;
-  min-width: 320px;
-  min-height: 100vh;
+.active {
+  border-left: solid;
+  border-left-width: 5px;
+  border-left-color: aquamarine;
+  border-top-left-radius: none;
+  border-bottom-right-radius: none;
 }

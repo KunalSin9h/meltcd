@@ -16,11 +16,33 @@ limitations under the License.
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
+import Apps from "./Apps.tsx";
+import Login from "./components/signup/Login.tsx";
+import Layout from "./components/Layout.tsx";
+import Repos from "./Repos.tsx";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Login />,
+  },
+  {
+    path: "/dash",
+    element: <Layout />,
+    children: [
+      {
+        index: true,
+        element: <Apps />,
+      },
+      { path: "/dash/repos", element: <Repos /> },
+    ],
+  },
+]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
