@@ -14,6 +14,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import getTitle from "./lib/getTitle";
+import { useEffect } from "react";
+
 export default function Apps() {
-  return <h1>Apps</h1>;
+  useEffect(() => {
+    document.title = getTitle("Applications");
+  }, []);
+
+  return (
+    <div className="h-screen p-8">
+      <div className="flex justify-between items-center">
+        <p className="text-2xl">Applications</p>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+          }}
+          className="bg-white text-black py-2 px-4 rounded font-bold border-dashed hover:bg-inherit hover:text-white border-2 border-white transition ease-in-out delay-50 hover:-translate-y-1 duration-100"
+        >
+          New Application
+        </button>
+      </div>
+    </div>
+  );
 }
