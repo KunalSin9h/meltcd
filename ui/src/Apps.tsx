@@ -259,7 +259,7 @@ function NewApplication() {
                     toast.error("Failed to create new application");
                   });
 
-                return "Working...";
+                return "Executing task";
               },
               error: (err) => {
                 console.log(err);
