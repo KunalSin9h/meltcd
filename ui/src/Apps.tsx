@@ -34,7 +34,7 @@ export default function Apps() {
             e.preventDefault();
             setOpenWindow(true);
           }}
-          className="bg-white text-black py-2 px-4 rounded font-bold border-dashed hover:bg-inherit hover:text-white border-2 border-white transition ease-in-out delay-50 hover:-translate-y-1 duration-100"
+          className="bg-white text-black py-2 px-4 rounded font-bold hover:bg-white/90"
         >
           New Application
         </button>
@@ -54,7 +54,7 @@ export default function Apps() {
               e.preventDefault();
               setOpenWindow(false);
             }}
-            className="text-black py-1 px-2 rounded font-bold border-dashed hover:bg-red-100 border-2 border-red-400 transition ease-in-out delay-50 hover:-translate-y-1 duration-100"
+            className="text-black py-2 px-4 rounded font-bold bg-red-300 hover:bg-red-400"
           >
             Close
           </button>
@@ -200,7 +200,7 @@ function NewApplication() {
       </label>
       <div className="flex items-center gap-4">
         <button
-          className="text-black py-2 px-4 rounded font-bold border-dashed bg-green-400 hover:bg-green-400/30 hover:border-2 hover:border-green-500 transition ease-in-out delay-50 hover:-translate-y-1 duration-100"
+          className="text-black py-2 px-4 rounded font-bold bg-green-400 hover:bg-green-500"
           onClick={async (e) => {
             e.preventDefault();
 
@@ -271,7 +271,7 @@ function NewApplication() {
           Create
         </button>
         <button
-          className="text-black py-2 px-4 rounded font-bold border-dashed hover:bg-yellow-100 border-2 border-orange-400 transition ease-in-out delay-50 hover:-translate-y-1 duration-100"
+          className="text-black py-2 px-4 rounded font-bold border hover:bg-gray-100 border-1 border-black"
           onClick={(e) => {
             e.preventDefault();
             setBodyData(initialData);
