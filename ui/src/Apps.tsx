@@ -17,6 +17,7 @@ limitations under the License.
 import getTitle from "./lib/getTitle";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { CloseIcon } from "./lib/icon";
 
 export default function Apps() {
   useEffect(() => {
@@ -54,9 +55,9 @@ export default function Apps() {
               e.preventDefault();
               setOpenWindow(false);
             }}
-            className="text-black py-2 px-4 rounded font-bold bg-red-300 hover:bg-red-400"
+            className="hover:bg-red-200 p-1 rounded"
           >
-            Close
+            <CloseIcon />
           </button>
           <p className="text-xl">Creating a new Application</p>
         </div>
