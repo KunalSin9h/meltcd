@@ -47,6 +47,7 @@ func Register(app *application.Application) error {
 	timeOfCreation := time.Now()
 	app.CreatedAt = timeOfCreation
 	app.UpdatedAt = timeOfCreation
+	app.LastSyncedAt = timeOfCreation
 
 	log.Info("Registered!")
 	return nil

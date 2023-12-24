@@ -16,7 +16,7 @@ limitations under the License.
 
 import { useQuery } from "@tanstack/react-query";
 import { ErrorIcon, Spinner, WarningIcon } from "../lib/icon";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type respData = {
   data: appData[];
@@ -82,8 +82,8 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
           <th>S.NO</th>
           <th>Name</th>
           <th>Last Synched At</th>
-          <th>Created At</th>
           <th>Updated At</th>
+          <th>Created At</th>
         </tr>
       </thead>
       <tbody>
@@ -96,9 +96,9 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
               {app.id}
             </td>
             <td>{app.name}</td>
-            <td>{getTimeDate(app.last_synced_at)}</td>
-            <td>{getTimeDate(app.created_at)}</td>
-            <td>{getTimeDate(app.updated_at)}</td>
+            <td>{<GetSinceTime time={app.last_synced_at} />}</td>
+            <td>{<GetSinceTime time={app.updated_at} />}</td>
+            <td>{<GetSinceTime time={app.created_at} />}</td>
           </tr>
         ))}
       </tbody>
@@ -138,13 +138,63 @@ function getBgColorForHealth(health: string): string {
   }
 }
 
-/**
- * TODO: Change the timezone with Settings
- * use the Settings window to change the timezone and apply here
- *
- * we can use redux for global state management
- */
-function getTimeDate(time: string): string {
-  const date = new Date(time);
-  return `${date.toLocaleTimeString()} ${date.toLocaleDateString()}`;
+function GetSinceTime({ time }: { time: string }) {
+  const [currentTime, setCurrentTime] = useState(Date.now());
+
+  useEffect(() => {
+    const refreshTimer = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 10000); // get counter by every minute
+
+    return () => {
+      clearInterval(refreshTimer);
+    };
+  }, []);
+
+  const t = new Date(time);
+  const elapsed = currentTime - t.getTime();
+
+  if (isNaN(elapsed)) {
+    return "now";
+  }
+
+  const seconds = elapsed / 1000;
+  let minutes = seconds / 60;
+  let hours = minutes / 60;
+  let days = hours / 24;
+  let weeks = days / 7;
+  let months = weeks / 4.34524;
+  let year = months / 12;
+
+  year = Math.floor(year);
+  if (year !== 0) {
+    return `${year} year ago`;
+  }
+
+  months = Math.floor(months);
+  if (months !== 0) {
+    return `${months} months ago`;
+  }
+
+  weeks = Math.floor(weeks);
+  if (weeks !== 0) {
+    return `${weeks} weeks ago`;
+  }
+
+  days = Math.floor(days);
+  if (days !== 0) {
+    return `${days} days ago`;
+  }
+
+  hours = Math.floor(hours);
+  if (hours !== 0) {
+    return `${hours} hours ago`;
+  }
+
+  minutes = Math.floor(minutes);
+  if (minutes !== 0) {
+    return `${minutes} minutes ago`;
+  }
+
+  return "now";
 }
