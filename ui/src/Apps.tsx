@@ -105,183 +105,160 @@ function NewApplication() {
 
   const [bodyData, setBodyData] = useState(initialData);
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const request = fetch("/api/apps", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyData),
+    });
+
+    toast.promise(request, {
+      loading: "Creating new application",
+      success: (res) => {
+        let good = true;
+        if (res.status !== 200) {
+          good = false;
+        }
+
+        res
+          .json()
+          .then((data: globalResponseData) => {
+            if (good) {
+              toast.success(data.message);
+            } else {
+              toast.error(data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error("Failed to create new application");
+          });
+
+        return "Executing task";
+      },
+      error: (err) => {
+        console.log(err);
+        return "Failed to create new application";
+      },
+    });
+  };
+
   return (
-    <div className="flex flex-col gap-8">
-      <label htmlFor="name" className="flex flex-col">
-        <span className="font-semibold my-1">Name</span>
-        <input
-          id="name"
-          required={true}
-          className="border p-1 rounded px-2"
-          type="text"
-          placeholder="auth-backend-server"
-          value={bodyData.name}
-          onChange={(e) => {
-            setBodyData({
-              ...bodyData,
-              name: e.target.value.trim(),
-            });
-          }}
-        />
-      </label>
-      <label htmlFor="sync" className="flex flex-col">
-        <span className="font-semibold my-1">Sync Timer</span>
-        <input
-          id="sync"
-          className="border p-1 rounded px-2"
-          type="text"
-          placeholder="3m30s (Default, for 3 minute and 30 seconds)"
-          value={bodyData.refresh_timer}
-          onChange={(e) => {
-            setBodyData({
-              ...bodyData,
-              refresh_timer: e.target.value.trim(),
-            });
-          }}
-        />
-      </label>
-      <label htmlFor="repo" className="flex flex-col">
-        <span className="font-semibold my-1">Repository URL</span>
-        <input
-          id="repo"
-          required={true}
-          className="border p-1 rounded px-2"
-          type="text"
-          placeholder="https://github.com/username/repo"
-          value={bodyData.source.repoURL}
-          onChange={(e) => {
-            setBodyData({
-              ...bodyData,
-              source: {
-                ...bodyData.source,
-                repoURL: e.target.value.trim(),
-              },
-            });
-          }}
-        />
-      </label>
-      <label htmlFor="path" className="flex flex-col">
-        <span className="font-semibold my-1">Service File Path</span>
-        <input
-          id="path"
-          required={true}
-          className="border p-1 rounded px-2"
-          type="text"
-          placeholder="deploy/service.yaml"
-          value={bodyData.source.path}
-          onChange={(e) => {
-            setBodyData({
-              ...bodyData,
-              source: {
-                ...bodyData.source,
-                path: e.target.value.trim(),
-              },
-            });
-          }}
-        />
-      </label>
-      <label htmlFor="rev" className="flex flex-col">
-        <span className="font-semibold my-1">Target Revision</span>
-        <input
-          id="rev"
-          className="border p-1 rounded px-2"
-          type="text"
-          placeholder="HEAD (Default, can be master, main, my_branch)"
-          value={bodyData.source.targetRevision}
-          onChange={(e) => {
-            setBodyData({
-              ...bodyData,
-              source: {
-                ...bodyData.source,
-                targetRevision: e.target.value.trim(),
-              },
-            });
-          }}
-        />
-      </label>
+    <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
+      <InputOption
+        name="Name"
+        placeholder="auth-backend-server"
+        value={bodyData.name}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setBodyData({
+            ...bodyData,
+            name: e.target.value.trim(),
+          });
+        }}
+      />
+      <InputOption
+        name="Sync Timer"
+        placeholder="3m30s (Default, for 3 minute and 30 seconds)"
+        value={bodyData.refresh_timer}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setBodyData({
+            ...bodyData,
+            refresh_timer: e.target.value.trim(),
+          });
+        }}
+      />
+      <InputOption
+        name="Repository URL"
+        placeholder="https://github.com/username/repo"
+        value={bodyData.source.repoURL}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setBodyData({
+            ...bodyData,
+            source: {
+              ...bodyData.source,
+              repoURL: e.target.value.trim(),
+            },
+          });
+        }}
+      />
+      <InputOption
+        name="Service File Path"
+        placeholder="deploy/service.yaml"
+        value={bodyData.source.path}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setBodyData({
+            ...bodyData,
+            source: {
+              ...bodyData.source,
+              path: e.target.value.trim(),
+            },
+          });
+        }}
+      />
+      <InputOption
+        name="Target Revision"
+        placeholder="HEAD (Default, can be master, main, my_branch)"
+        value={bodyData.source.targetRevision}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setBodyData({
+            ...bodyData,
+            source: {
+              ...bodyData.source,
+              targetRevision: e.target.value.trim(),
+            },
+          });
+        }}
+      />
       <div className="flex items-center gap-4">
-        <button
-          className="text-black py-2 px-4 rounded font-bold bg-green-400 hover:bg-green-500"
-          onClick={async (e) => {
-            e.preventDefault();
-
-            if (bodyData.name === "") {
-              toast.error("Name is empty");
-              return;
-            }
-
-            if (bodyData.refresh_timer === "") {
-              toast.error("Sync Timer is empty");
-              return;
-            }
-
-            if (bodyData.source.repoURL === "") {
-              toast.error("Repository URL is empty");
-              return;
-            }
-
-            if (bodyData.source.path === "") {
-              toast.error("Service file path is empty");
-              return;
-            }
-
-            if (bodyData.source.targetRevision === "") {
-              toast.error("Target Revision is empty");
-              return;
-            }
-
-            const request = fetch("/api/apps", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(bodyData),
-            });
-
-            toast.promise(request, {
-              loading: "Creating new application",
-              success: (res) => {
-                let good = true;
-                if (res.status !== 200) {
-                  good = false;
-                }
-
-                res
-                  .json()
-                  .then((data: globalResponseData) => {
-                    if (good) {
-                      toast.success(data.message);
-                    } else {
-                      toast.error(data.message);
-                    }
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                    toast.error("Failed to create new application");
-                  });
-
-                return "Executing task";
-              },
-              error: (err) => {
-                console.log(err);
-                return "Failed to create new application";
-              },
-            });
-          }}
-        >
-          Create
-        </button>
-        <button
-          className="text-black py-2 px-4 rounded font-bold border hover:bg-gray-100 border-1 border-black"
+        <input
+          className="text-black py-2 px-4 rounded font-bold bg-green-400 hover:bg-green-500 cursor-pointer"
+          value="Create"
+          type="submit"
+        />
+        <input
+          className="text-black py-2 px-4 rounded font-bold border hover:bg-gray-100 border-1 border-black cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
             setBodyData(initialData);
             toast.success("Input data reset");
           }}
-        >
-          Clear
-        </button>
+          type="button"
+          value="Clear"
+        />
       </div>
-    </div>
+    </form>
+  );
+}
+
+function InputOption({
+  name,
+  placeholder,
+  value,
+  onChange,
+}: {
+  name: string;
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+  const id = name.replace(" ", "_");
+
+  return (
+    <label htmlFor={id} className="flex flex-col">
+      <span className="font-semibold my-1">{name}</span>
+      <input
+        id={id}
+        required={true}
+        className="border p-1 rounded px-2"
+        type="text"
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+      />
+    </label>
   );
 }
