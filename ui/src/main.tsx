@@ -22,6 +22,9 @@ import Apps from "./Apps.tsx";
 import Login from "./components/signup/Login.tsx";
 import Layout from "./components/Layout.tsx";
 import Repos from "./Repos.tsx";
+import Secrets from "./Secrets.tsx";
+import User from "./User.tsx";
+import Settings from "./Settings.tsx";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +40,9 @@ const router = createBrowserRouter([
         element: <Apps />,
       },
       { path: "/dash/repos", element: <Repos /> },
+      { path: "/dash/secrets", element: <Secrets /> },
+      { path: "/dash/user", element: <User /> },
+      { path: "/dash/settings", element: <Settings /> },
     ],
   },
 ]);

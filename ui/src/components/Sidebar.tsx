@@ -15,7 +15,14 @@ limitations under the License.
 */
 
 import { useState } from "react";
-import { AppsIcon, PanelIcon, ReposIcon } from "../lib/icon";
+import {
+  AppsIcon,
+  PanelIcon,
+  ReposIcon,
+  SecretIcon,
+  SettingIcon,
+  UserIcon,
+} from "../lib/icon";
 import { NavLink } from "react-router-dom";
 
 export default function Sidebar() {
@@ -23,9 +30,7 @@ export default function Sidebar() {
 
   return (
     <div
-      className={`bg-sidebar animate-in flex flex-col ${
-        panelOpen ? "w-64" : "w-18"
-      } p-4`}
+      className={`bg-sidebar flex flex-col ${panelOpen ? "w-64" : "w-18"} p-4`}
     >
       <div
         className={`flex ${
@@ -50,7 +55,7 @@ export default function Sidebar() {
           <PanelIcon />
         </span>
       </div>
-      <div className="mt-8 flex flex-col gap-4">
+      <div className="mt-8 flex flex-col gap-4 flex-1">
         <Item
           name="Apps"
           to="/dash"
@@ -61,6 +66,26 @@ export default function Sidebar() {
           name="Repos"
           to="/dash/repos"
           icon={<ReposIcon />}
+          panelOpen={panelOpen}
+        />
+        <Item
+          name="Secrets"
+          to="/dash/secrets"
+          icon={<SecretIcon />}
+          panelOpen={panelOpen}
+        />
+      </div>
+      <div className="mb-2 flex flex-col gap-4">
+        <Item
+          name="Admin"
+          to="/dash/user"
+          icon={<UserIcon />}
+          panelOpen={panelOpen}
+        />
+        <Item
+          name="Settings"
+          to="/dash/settings"
+          icon={<SettingIcon />}
           panelOpen={panelOpen}
         />
       </div>
@@ -88,7 +113,7 @@ function Item({
       }`}
     >
       {icon}
-      <span className={`${panelOpen ? "" : "hidden"}`}>{name}</span>
+      <span className={`text-lg ${panelOpen ? "" : "hidden"}`}>{name}</span>
     </NavLink>
   );
 }
