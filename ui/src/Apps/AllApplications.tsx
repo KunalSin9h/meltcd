@@ -43,7 +43,6 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
   // fetching the current status of application on regular interval
   useEffect(() => {
     const refreshing = setInterval(() => {
-      console.log("Refetching");
       refetch();
     }, 2500);
 
