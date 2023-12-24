@@ -30,3 +30,14 @@ limitations under the License.
   border-top-left-radius: none;
   border-bottom-right-radius: none;
 }
+
+td,
+th {
+  border: 1px solid #2b323b;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #21252c;
+}

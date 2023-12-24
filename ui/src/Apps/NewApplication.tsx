@@ -14,36 +14,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import getTitle from "./lib/getTitle";
-import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
-import { CloseIcon } from "./lib/icon";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { CloseIcon } from "../lib/icon";
 
-export default function Apps() {
-  useEffect(() => {
-    document.title = getTitle("Applications");
-  }, []);
+type globalResponseData = {
+  message: string;
+};
 
-  const [openWindow, setOpenWindow] = useState(false);
-
-  return (
-    <div className="h-screen p-8">
-      <div className="flex justify-between items-center">
-        <p className="text-2xl">Applications</p>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            setOpenWindow(true);
-          }}
-          className="bg-white text-black py-2 px-4 rounded font-bold hover:bg-white/90"
-        >
-          New Application
-        </button>
-      </div>
-
-      {/* Slider Window
+export default function NewApplication({
+  openWindow,
+  setOpenWindow,
+  setRefresh,
+}: {
+  openWindow: boolean;
+  setOpenWindow: React.Dispatch<React.SetStateAction<boolean>>;
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  {
+    /* Slider Window
         This is used to create a new application
-       */}
+       */
+  }
+  return (
+    <>
       <div
         className={`fixed z-50 bg-white h-full w-[40%] top-0 left-[60%] p-4 text-black ${
           openWindow ? "" : "hidden"
@@ -62,23 +56,21 @@ export default function Apps() {
           <p className="text-xl">Creating a new Application</p>
         </div>
         <div className="h-full px-8 py-16">
-          <NewApplication />
+          <CreateApplication
+            setRefresh={setRefresh}
+            setOpenWindow={setOpenWindow}
+          />
         </div>
       </div>
-
       {/* Overlay for Slider */}
       <div
         className={`fixed  h-full w-full top-0 left-0 backdrop-blur-sm ${
           openWindow ? "" : "hidden"
         }`}
       ></div>
-    </div>
+    </>
   );
 }
-
-type globalResponseData = {
-  message: string;
-};
 
 // USING api POST /api/apps
 /**
@@ -92,7 +84,13 @@ type globalResponseData = {
     },
   } 
  */
-function NewApplication() {
+function CreateApplication({
+  setRefresh,
+  setOpenWindow,
+}: {
+  setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenWindow: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const initialData = {
     name: "",
     refresh_timer: "3m0s",
@@ -129,6 +127,11 @@ function NewApplication() {
           .then((data: globalResponseData) => {
             if (good) {
               toast.success(data.message);
+              // we are good here
+              // and refresh the app list
+              setRefresh(true);
+              // we can close modal window
+              setOpenWindow(false);
             } else {
               toast.error(data.message);
             }
@@ -156,7 +159,7 @@ function NewApplication() {
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setBodyData({
             ...bodyData,
-            name: e.target.value.trim(),
+            name: e.target.value.trim().replace(" ", "_"), // replacing " " with "_" in app name
           });
         }}
       />
