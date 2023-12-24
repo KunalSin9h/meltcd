@@ -17,5 +17,6 @@ limitations under the License.
 package version
 
 // Version will be altered at CI step when new version release
-// is published
+// using ldflags we can change the version at compile time
+// go build -ldflags "-X github.com/meltred/meltcd/version.Version=0.3.1" main.go
 var Version string = "dev" // nolint:all

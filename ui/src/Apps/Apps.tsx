@@ -14,26 +14,46 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { useEffect } from "react";
-import getTitle from "./lib/getTitle";
+import getTitle from "../lib/getTitle";
+import { useEffect, useState } from "react";
+import NewApplication from "./NewApplication";
+import AllApplications from "./AllApplications";
 
-export default function Repos() {
+export default function Apps() {
+  const [openWindow, setOpenWindow] = useState(false);
+  // this is used to refetch the app list when new app is
+  // created
+  const [refresh, setRefresh] = useState(false);
+
   useEffect(() => {
-    document.title = getTitle("Repositories");
+    document.title = getTitle("Applications");
   }, []);
 
   return (
     <div className="h-screen p-8">
       <div className="flex justify-between items-center">
-        <p className="text-2xl">Repositories</p>
+        <p className="text-2xl">Applications</p>
         <button
           onClick={(e) => {
             e.preventDefault();
+            setOpenWindow(true);
           }}
           className="bg-white text-black py-2 px-4 rounded font-bold hover:bg-white/90"
         >
-          New Repository
+          New Application
         </button>
+      </div>
+
+      {/* New Application window modal*/}
+      <NewApplication
+        openWindow={openWindow}
+        setOpenWindow={setOpenWindow}
+        setRefresh={setRefresh}
+      />
+
+      {/* Showing All Applications */}
+      <div className="h-screen m-8 mt-32">
+        <AllApplications refresh={refresh} />
       </div>
     </div>
   );

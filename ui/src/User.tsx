@@ -17,23 +17,15 @@ limitations under the License.
 import { useEffect } from "react";
 import getTitle from "./lib/getTitle";
 
-export default function Repos() {
+export default function User() {
   useEffect(() => {
-    document.title = getTitle("Repositories");
+    document.title = getTitle("User");
   }, []);
 
   return (
     <div className="h-screen p-8">
       <div className="flex justify-between items-center">
-        <p className="text-2xl">Repositories</p>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-          }}
-          className="bg-white text-black py-2 px-4 rounded font-bold hover:bg-white/90"
-        >
-          New Repository
-        </button>
+        <p className="text-2xl">User</p>
       </div>
     </div>
   );

@@ -25,14 +25,6 @@ jobs:
       - name: Check outputs
         run: echo ${{ steps.vars.outputs.latest_tag }}
 
-      - name: Find and replace app version
-        uses: jacobtomlinson/gha-find-replace@v3
-        with:
-          find: "dev"
-          replace: "${{ steps.vars.outputs.latest_tag }}"
-          include: "version/version.go"
-          regex: true
-
       - uses: actions/setup-go@v4
         with:
           go-version: stable
