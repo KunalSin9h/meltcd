@@ -17,6 +17,7 @@ limitations under the License.
 import { useQuery } from "@tanstack/react-query";
 import { ErrorIcon, Spinner, WarningIcon } from "../lib/icon";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type respData = {
   data: appData[];
@@ -39,6 +40,9 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
     queryKey: ["GET /api/apps", "GET_ALL_APPLICATIONS"],
     queryFn: fetchApps,
   });
+
+  const navigate = useNavigate(); // react router dom navigator for programmatically
+  // navigate, used here to go to specific application
 
   // fetching the current status of application on regular interval
   useEffect(() => {
@@ -89,8 +93,12 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
       <tbody>
         {data.data.map((app, index) => (
           <tr
-            className="group/app hover:bg-[#414b58] cursor-pointer"
+            className="group/app hover:bg-[#373d49] cursor-pointer"
             key={index}
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(`/apps/${app.name}`);
+            }}
           >
             <td className={`font-bold ${getBgColorForHealth(app.health)}`}>
               {app.id}
