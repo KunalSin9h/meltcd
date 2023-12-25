@@ -205,7 +205,14 @@ func getEnvVars(fileName string) (map[string]string, error) {
 
 	fileData, err := os.Open(fileName)
 	if err != nil {
-		return map[string]string{}, err
+		log.Warn("file path does not exist", "file", fileName)
+		fileName, _ = strings.CutPrefix(fileName, "/home")
+
+		fileData, err = os.Open(fileName)
+		if err != nil {
+			log.Warn("file path does not exist", "file", fileName)
+			return map[string]string{}, err
+		}
 	}
 	defer fileData.Close()
 
