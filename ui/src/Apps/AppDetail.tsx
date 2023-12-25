@@ -66,7 +66,7 @@ export default function AppsDetail() {
     };
   }, [name, refetch]);
 
-  if (isError || data === undefined) {
+  if (isError) {
     return (
       <MessageWithIcon
         icon={<ErrorIcon />}
@@ -75,7 +75,7 @@ export default function AppsDetail() {
     );
   }
 
-  if (isLoading) {
+  if (isLoading || data === undefined) {
     return <MessageWithIcon icon={<Spinner />} message="Loading" />;
   }
 
