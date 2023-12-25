@@ -75,8 +75,6 @@ func Update(app *application.Application) error {
 }
 
 func Details(appName string) (application.Application, error) {
-	log.Info("Getting application details", "name", appName)
-
 	runningApp, exists := getApp(appName)
 	if !exists {
 		return application.Application{}, fmt.Errorf("app does not exists, create a new application first")
@@ -84,7 +82,6 @@ func Details(appName string) (application.Application, error) {
 
 	runningApp.HealthStatus = runningApp.Health.ToString()
 
-	log.Info("Done!")
 	return *runningApp, nil
 }
 
