@@ -48,7 +48,7 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
   useEffect(() => {
     const refreshing = setInterval(() => {
       refetch();
-    }, 2500);
+    }, 5000);
 
     return () => {
       clearInterval(refreshing);
