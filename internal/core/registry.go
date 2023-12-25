@@ -41,13 +41,13 @@ func Register(app *application.Application) error {
 
 	app.SyncTrigger = make(chan application.SyncType, 1)
 
-	go app.Run()
-	Applications = append(Applications, app)
-
 	timeOfCreation := time.Now()
 	app.CreatedAt = timeOfCreation
 	app.UpdatedAt = timeOfCreation
 	app.LastSyncedAt = timeOfCreation
+
+	go app.Run()
+	Applications = append(Applications, app)
 
 	log.Info("Registered!")
 	return nil

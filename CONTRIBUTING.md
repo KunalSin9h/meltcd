@@ -92,6 +92,8 @@ pnpm --prefix ./ui build
 
 ```bash
 go mod download
+
+pnpm install # some npm packages are used like husky for pre-commit
 ```
 
 6. Start the server

@@ -26,24 +26,29 @@ import Repos from "./Repos.tsx";
 import Secrets from "./Secrets.tsx";
 import User from "./User.tsx";
 import Settings from "./Settings.tsx";
+import AppsDetail from "./Apps/AppDetail.tsx";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/login",
     element: <Login />,
   },
   {
-    path: "/dash",
+    path: "/",
     element: <Layout />,
     children: [
       {
-        index: true,
+        path: "/apps",
         element: <Apps />,
       },
-      { path: "/dash/repos", element: <Repos /> },
-      { path: "/dash/secrets", element: <Secrets /> },
-      { path: "/dash/user", element: <User /> },
-      { path: "/dash/settings", element: <Settings /> },
+      {
+        path: "/apps/:name",
+        element: <AppsDetail />,
+      },
+      { path: "/repos", element: <Repos /> },
+      { path: "/secrets", element: <Secrets /> },
+      { path: "/user", element: <User /> },
+      { path: "/settings", element: <Settings /> },
     ],
   },
 ]);

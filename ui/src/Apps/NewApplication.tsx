@@ -159,7 +159,7 @@ function CreateApplication({
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setBodyData({
             ...bodyData,
-            name: e.target.value.trim().replace(" ", "_"), // replacing " " with "_" in app name
+            name: normalizeInput(e.target.value, ["_"]),
           });
         }}
       />
@@ -170,7 +170,7 @@ function CreateApplication({
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setBodyData({
             ...bodyData,
-            refresh_timer: e.target.value.trim(),
+            refresh_timer: normalizeInput(e.target.value, []),
           });
         }}
       />
@@ -183,7 +183,7 @@ function CreateApplication({
             ...bodyData,
             source: {
               ...bodyData.source,
-              repoURL: e.target.value.trim(),
+              repoURL: normalizeInput(e.target.value, [":", "/", ".", "_"]),
             },
           });
         }}
@@ -197,7 +197,7 @@ function CreateApplication({
             ...bodyData,
             source: {
               ...bodyData.source,
-              path: e.target.value.trim(),
+              path: normalizeInput(e.target.value, [".", "/", "_"]),
             },
           });
         }}
@@ -211,7 +211,7 @@ function CreateApplication({
             ...bodyData,
             source: {
               ...bodyData.source,
-              targetRevision: e.target.value.trim(),
+              targetRevision: normalizeInput(e.target.value, []),
             },
           });
         }}
@@ -264,4 +264,26 @@ function InputOption({
       />
     </label>
   );
+}
+
+function normalizeInput(givenText: string, allowed: string[]): string {
+  const len = givenText.length;
+  let result = "";
+
+  for (let i = 0; i < len; i++) {
+    const code = givenText.charCodeAt(i);
+
+    if (
+      (code > 47 && code < 58) || // numeric (0-9)
+      (code > 64 && code < 91) || // upper alpha (A-Z)
+      (code > 96 && code < 123) || // lower alpha (a-z)
+      allowed.includes(givenText[i])
+    ) {
+      result += givenText[i];
+    } else {
+      toast.error(`${givenText[i]} is not allowed in input here!`);
+    }
+  }
+
+  return result;
 }
