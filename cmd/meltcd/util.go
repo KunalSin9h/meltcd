@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 )
@@ -43,4 +44,46 @@ func info(text string, args ...any) { // nolint
 
 func errorMsg(text string, args ...any) { //nolint
 	fmt.Printf(text+"\n", args...)
+}
+
+func getSinceTime(t time.Time) string {
+	elapsed := time.Since(t).Milliseconds()
+
+	if elapsed == 0 {
+		return "Just now"
+	}
+
+	sec := elapsed / 1000
+	mins := sec / 60
+	hrs := mins / 60
+	days := hrs / 24
+	weeks := days / 7
+	months := weeks / 4
+	year := months / 12
+
+	if year > 0 {
+		return fmt.Sprintf("%d year ago", year)
+	}
+
+	if months > 0 {
+		return fmt.Sprintf("%d months ago", months)
+	}
+
+	if weeks > 0 {
+		return fmt.Sprintf("%d weeks ago", weeks)
+	}
+
+	if days > 0 {
+		return fmt.Sprintf("%d days ago", days)
+	}
+
+	if hrs > 0 {
+		return fmt.Sprintf("%d hours ago", hrs)
+	}
+
+	if mins > 0 {
+		return fmt.Sprintf("%d minutes ago", mins)
+	}
+
+	return "Just now"
 }

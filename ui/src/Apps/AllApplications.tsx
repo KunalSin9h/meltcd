@@ -155,7 +155,7 @@ function GetSinceTime({ time }: { time: string }) {
   const elapsed = currentTime - t.getTime();
 
   if (isNaN(elapsed)) {
-    return "now";
+    return "Just now";
   }
 
   const seconds = elapsed / 1000;
@@ -167,34 +167,34 @@ function GetSinceTime({ time }: { time: string }) {
   let year = months / 12;
 
   year = Math.floor(year);
-  if (year !== 0) {
+  if (year > 0) {
     return `${year} year ago`;
   }
 
   months = Math.floor(months);
-  if (months !== 0) {
+  if (months > 0) {
     return `${months} months ago`;
   }
 
   weeks = Math.floor(weeks);
-  if (weeks !== 0) {
+  if (weeks > 0) {
     return `${weeks} weeks ago`;
   }
 
   days = Math.floor(days);
-  if (days !== 0) {
+  if (days > 0) {
     return `${days} days ago`;
   }
 
   hours = Math.floor(hours);
-  if (hours !== 0) {
+  if (hours > 0) {
     return `${hours} hours ago`;
   }
 
   minutes = Math.floor(minutes);
-  if (minutes !== 0) {
+  if (minutes > 0) {
     return `${minutes} minutes ago`;
   }
 
-  return "now";
+  return "Just now";
 }
