@@ -53,7 +53,7 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
     return () => {
       clearInterval(refreshing);
     };
-  });
+  }, [refetch]);
 
   // when adding a new application
   // this refresh will be updated by other component NewApplication.tsx

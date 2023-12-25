@@ -64,7 +64,7 @@ export default function AppsDetail() {
     return () => {
       clearInterval(refetchTimer);
     };
-  });
+  }, [name, refetch]);
 
   if (isError || data === undefined) {
     return (

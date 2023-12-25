@@ -28,7 +28,7 @@ export default function Layout() {
   // and if not authorized then redirect to /login
   useEffect(() => {
     navigate("/apps");
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="flex flex-row h-screen w-screen overflow-hidden">
