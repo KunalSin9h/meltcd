@@ -114,7 +114,7 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
   );
 }
 
-function MessageWithIcon({
+export function MessageWithIcon({
   icon,
   message,
 }: {

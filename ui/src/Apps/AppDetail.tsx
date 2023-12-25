@@ -18,10 +18,37 @@ import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import getTitle from "../lib/getTitle";
 import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
+import { MessageWithIcon } from "./AllApplications";
+import { ErrorIcon, Spinner } from "../lib/icon";
+
+type respData = {
+  created_at: string;
+  health: number;
+  health_status: string;
+  id: number;
+  last_synced_at: string;
+  name: string;
+  refresh_timer: string;
+  source: {
+    path: string;
+    repoURL: string;
+    targetRevision: string;
+  };
+  updated_at: string;
+};
 
 export default function AppsDetail() {
   const { name } = useParams();
   const navigate = useNavigate();
+
+  const fetchAppDetail = (): Promise<respData> =>
+    fetch(`/api/apps/${name}`).then(async (resp) => await resp.json());
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["GET /api/apps/:name", "GET_APPLICATION_DETAILS"],
+    queryFn: fetchAppDetail,
+  });
 
   useEffect(() => {
     let title = name;
@@ -29,7 +56,28 @@ export default function AppsDetail() {
       title = "Applications";
     }
     document.title = getTitle(title);
-  }, [name]);
+
+    const refetchTimer = setInterval(() => {
+      refetch();
+    }, 2500);
+
+    return () => {
+      clearInterval(refetchTimer);
+    };
+  });
+
+  if (isError || data === undefined) {
+    return (
+      <MessageWithIcon
+        icon={<ErrorIcon />}
+        message="Something wend wrong while fetching application details"
+      />
+    );
+  }
+
+  if (isLoading) {
+    return <MessageWithIcon icon={<Spinner />} message="Loading" />;
+  }
 
   return (
     <div className="h-screen p-8">
@@ -65,6 +113,11 @@ export default function AppsDetail() {
         >
           Synchronize
         </button>
+      </div>
+      <div className="p-8 mt-16">
+        <pre>
+          <code>{JSON.stringify(data, null, "\t")}</code>
+        </pre>
       </div>
     </div>
   );
