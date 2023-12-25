@@ -17,6 +17,7 @@ limitations under the License.
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import getTitle from "../lib/getTitle";
+import toast from "react-hot-toast";
 
 export default function AppsDetail() {
   const { name } = useParams();
@@ -48,6 +49,17 @@ export default function AppsDetail() {
         <button
           onClick={(e) => {
             e.preventDefault();
+            const syncAPI = `/api/apps/${name}/refresh`;
+
+            const request = fetch(syncAPI, {
+              method: "POST",
+            });
+
+            toast.promise(request, {
+              loading: "Synchronizing application",
+              success: "Application synched successfully",
+              error: "Failed to sync application",
+            });
           }}
           className="bg-green-500 text-white py-2 px-4 rounded font-bold hover:bg-green-500/90"
         >
