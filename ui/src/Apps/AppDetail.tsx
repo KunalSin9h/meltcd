@@ -59,7 +59,7 @@ export default function AppsDetail() {
 
     const refetchTimer = setInterval(() => {
       refetch();
-    }, 2500);
+    }, 5000);
 
     return () => {
       clearInterval(refetchTimer);
