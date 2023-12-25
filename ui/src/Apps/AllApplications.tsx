@@ -62,7 +62,7 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
     refetch();
   }
 
-  if (isError || data === undefined) {
+  if (isError) {
     return (
       <MessageWithIcon
         icon={<ErrorIcon />}
@@ -71,7 +71,7 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
     );
   }
 
-  if (isLoading) {
+  if (isLoading || data === undefined) {
     return <MessageWithIcon icon={<Spinner />} message="Loading" />;
   }
 
