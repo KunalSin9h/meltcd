@@ -17,6 +17,7 @@ limitations under the License.
 import { useState } from "react";
 import {
   AppsIcon,
+  HelpIcon,
   PanelIcon,
   ReposIcon,
   SecretIcon,
@@ -25,12 +26,20 @@ import {
 } from "../lib/icon";
 import { NavLink } from "react-router-dom";
 
-export default function Sidebar() {
+export default function Sidebar({
+  openHelpPanel,
+  setOpenHelpPanel,
+}: {
+  openHelpPanel: boolean;
+  setOpenHelpPanel: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [panelOpen, setPanelOpen] = useState(true);
 
   return (
     <div
-      className={`bg-sidebar flex flex-col ${panelOpen ? "w-64" : "w-18"} p-4`}
+      className={`bg-sidebar relative flex flex-col ${
+        panelOpen ? "w-64" : "w-18"
+      } p-4`}
     >
       <div
         className={`flex ${
@@ -88,6 +97,22 @@ export default function Sidebar() {
           icon={<SettingIcon />}
           panelOpen={panelOpen}
         />
+        <div
+          className={`hover:bg-sidebarLite hover:border-l hover:border-l-[5px] hover:border-white/40 rounded-r px-2 flex gap-2 items-center cursor-pointer ${
+            panelOpen ? "py-1" : "justify-center py-2"
+          }
+          ${openHelpPanel ? "bg-sidebarLite rounded" : ""}
+          `}
+          onClick={(e) => {
+            e.preventDefault();
+            setOpenHelpPanel(!openHelpPanel);
+          }}
+        >
+          <HelpIcon />
+          <span className={`text-lg ${panelOpen ? "" : "hidden"}`}>
+            Help & Support
+          </span>
+        </div>
       </div>
     </div>
   );
