@@ -42,42 +42,13 @@ export default function AppsDetail() {
   const { name } = useParams();
   const navigate = useNavigate();
 
-  const fetchAppDetail = (): Promise<respData> =>
-    fetch(`/api/apps/${name}`).then(async (resp) => await resp.json());
-
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["GET /api/apps/:name", "GET_APPLICATION_DETAILS"],
-    queryFn: fetchAppDetail,
-  });
-
   useEffect(() => {
     let title = name;
     if (title === undefined) {
       title = "Applications";
     }
     document.title = getTitle(title);
-
-    const refetchTimer = setInterval(() => {
-      refetch();
-    }, 5000);
-
-    return () => {
-      clearInterval(refetchTimer);
-    };
-  }, [name, refetch]);
-
-  if (isError) {
-    return (
-      <MessageWithIcon
-        icon={<ErrorIcon />}
-        message="Something wend wrong while fetching application details"
-      />
-    );
-  }
-
-  if (isLoading || data === undefined) {
-    return <MessageWithIcon icon={<Spinner />} message="Loading" />;
-  }
+  }, [name]);
 
   return (
     <div className="h-screen p-8">
@@ -115,10 +86,49 @@ export default function AppsDetail() {
         </button>
       </div>
       <div className="p-8 mt-16">
-        <pre>
-          <code>{JSON.stringify(data, null, "\t")}</code>
-        </pre>
+        <ShowAppDetails name={name} />
       </div>
+    </div>
+  );
+}
+
+function ShowAppDetails({ name }: { name: string | undefined }) {
+  const fetchAppDetail = (): Promise<respData> =>
+    fetch(`/api/apps/${name}`).then(async (resp) => await resp.json());
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["GET /api/apps/:name", "GET_APPLICATION_DETAILS"],
+    queryFn: fetchAppDetail,
+  });
+
+  useEffect(() => {
+    const refetchTimer = setInterval(() => {
+      refetch();
+    }, 5000);
+
+    return () => {
+      clearInterval(refetchTimer);
+    };
+  }, [refetch]);
+
+  if (isError) {
+    return (
+      <MessageWithIcon
+        icon={<ErrorIcon />}
+        message="Something wend wrong while fetching application details"
+      />
+    );
+  }
+
+  if (isLoading || data === undefined || name == undefined) {
+    return <MessageWithIcon icon={<Spinner />} message="Loading" />;
+  }
+
+  return (
+    <div>
+      <pre>
+        <code>{JSON.stringify(data, null, "\t")}</code>
+      </pre>
     </div>
   );
 }
