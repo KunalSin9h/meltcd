@@ -17,7 +17,6 @@ limitations under the License.
 package spec
 
 import (
-	"os"
 	"testing"
 )
 
@@ -53,35 +52,5 @@ func TestNormalizeFilePath(t *testing.T) {
 	if res != homePath {
 		t.Log("file expanded even if the path is home", "path", homePath)
 		t.Fail()
-	}
-}
-
-func TestGetEnvVars(t *testing.T) {
-	tempFile, err := os.CreateTemp(os.TempDir(), "test_file-*")
-	if err != nil {
-		t.Error(err.Error())
-	}
-	defer tempFile.Close()
-
-	tempFile.WriteString(`
-	ENV_1="1"
-	ENV_2="2"
-	ENV_3=3
-	ENV_4=4
-	# Comment
-	`)
-
-	path := tempFile.Name()
-
-	res, err := getEnvVars(path)
-	if err != nil {
-		t.Error(err.Error())
-	}
-
-	if res["ENV_1"] != "1" ||
-		res["ENV_2"] != "2" ||
-		res["ENV_3"] != "3" ||
-		res["ENV_4"] != "4" {
-		t.Error("failed to convert env file into map[string]string", res)
 	}
 }
