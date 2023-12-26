@@ -115,7 +115,14 @@ func (d *DockerSwarm) GetServiceSpec(appName string, networkID string) ([]swarm.
 
 			file, err := os.Open(fileName)
 			if err != nil {
-				return []swarm.ServiceSpec{}, err
+				log.Warn("file path does not exist", "file", fileName)
+				fileName, _ = strings.CutPrefix(fileName, "/home")
+
+				file, err = os.Open(fileName)
+				if err != nil {
+					log.Warn("file path does not exist", "file", fileName)
+					return []swarm.ServiceSpec{}, err
+				}
 			}
 
 			envVars, err := envparse.Parse(file)
