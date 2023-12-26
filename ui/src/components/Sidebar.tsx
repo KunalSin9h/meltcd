@@ -35,6 +35,13 @@ export default function Sidebar({
 }) {
   const [panelOpen, setPanelOpen] = useState(true);
 
+  window.onresize = () => {
+    const width = window.outerWidth;
+    if (width <= 1000) {
+      setPanelOpen(false);
+    }
+  };
+
   return (
     <div
       className={`bg-sidebar relative flex flex-col ${
