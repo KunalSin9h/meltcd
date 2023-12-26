@@ -18,6 +18,7 @@ import { useState } from "react";
 import {
   AppsIcon,
   HelpIcon,
+  LogIcon,
   PanelIcon,
   ReposIcon,
   SecretIcon,
@@ -90,6 +91,7 @@ export default function Sidebar({
           icon={<SecretIcon />}
           panelOpen={panelOpen}
         />
+        <Item name="Logs" to="/logs" icon={<LogIcon />} panelOpen={panelOpen} />
       </div>
       <div className="mb-2 flex flex-col gap-4">
         <Item

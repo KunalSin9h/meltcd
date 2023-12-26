@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import getTitle from "../lib/getTitle";
 import toast from "react-hot-toast";
@@ -41,6 +41,8 @@ type respData = {
 export default function AppsDetail() {
   const { name } = useParams();
   const navigate = useNavigate();
+
+  const [deleteModal, setDeleteModal] = useState(false);
 
   useEffect(() => {
     let title = name;
@@ -89,28 +91,55 @@ export default function AppsDetail() {
             className="text-red-400 py-2 px-4 rounded border border-red-400 font-bold hover:bg-red-400/20"
             onClick={(e) => {
               e.preventDefault();
-
-              const deleteConfirm = confirm(
-                "Are you sure you want to delete the application?"
-              );
-
-              if (deleteConfirm) {
-                const deleteAPI = `/api/apps/${name}`;
-
-                const request = fetch(deleteAPI, {
-                  method: "DELETE",
-                });
-
-                toast.promise(request, {
-                  loading: "Deleting application",
-                  success: "Application deleted successfully",
-                  error: "Failed to delete application",
-                });
-              }
+              setDeleteModal(true);
             }}
           >
             Delete
           </button>
+
+          {/**Modal window for deleting application */}
+          <div
+            className={`overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center h-full w-full bg-black/40
+            ${deleteModal ? "" : "hidden"}
+            `}
+          >
+            <div className="bg-sidebar p-4 rounded flex flex-col gap-2">
+              <p className="text-xl font-bold">Delete Application?</p>
+              <p>Are you sure you want to delete application!</p>
+              <div className="flex justify-end gap-4 items-center">
+                <button
+                  className={`py-1 px-2 border border-white/30 rounded font-bold hover:bg-white/10`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setDeleteModal(false);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className={`py-1 px-2 rounded bg-red-500 text-white hover:bg-red-400 font-bold`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const deleteAPI = `/api/apps/${name}`;
+
+                    const request = fetch(deleteAPI, {
+                      method: "DELETE",
+                    });
+
+                    toast.promise(request, {
+                      loading: "Deleting application",
+                      success: "Application deleted successfully",
+                      error: "Failed to delete application",
+                    });
+
+                    setDeleteModal(false);
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div className="p-8 mt-16">

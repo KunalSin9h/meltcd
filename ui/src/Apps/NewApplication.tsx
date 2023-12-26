@@ -64,7 +64,7 @@ export default function NewApplication({
       </div>
       {/* Overlay for Slider */}
       <div
-        className={`fixed  h-full w-full top-0 left-0 backdrop-blur-sm ${
+        className={`fixed  h-full w-full top-0 left-0 bg-black/40 ${
           openWindow ? "" : "hidden"
         }`}
       ></div>
@@ -183,7 +183,13 @@ function CreateApplication({
             ...bodyData,
             source: {
               ...bodyData.source,
-              repoURL: normalizeInput(e.target.value, [":", "/", ".", "_"]),
+              repoURL: normalizeInput(e.target.value, [
+                ":",
+                "/",
+                ".",
+                "_",
+                "-",
+              ]),
             },
           });
         }}

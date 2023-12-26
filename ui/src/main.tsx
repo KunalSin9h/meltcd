@@ -27,6 +27,7 @@ import Secrets from "./Secrets.tsx";
 import User from "./User.tsx";
 import Settings from "./Settings.tsx";
 import AppsDetail from "./Apps/AppDetail.tsx";
+import Logs from "./Logs.tsx";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,7 @@ const router = createBrowserRouter([
       { path: "/secrets", element: <Secrets /> },
       { path: "/user", element: <User /> },
       { path: "/settings", element: <Settings /> },
+      { path: "/logs", element: <Logs /> },
     ],
   },
 ]);
