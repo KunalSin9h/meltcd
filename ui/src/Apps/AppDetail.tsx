@@ -38,6 +38,11 @@ type respData = {
   updated_at: string;
 };
 
+type response = {
+  code: number;
+  data: respData;
+};
+
 export default function AppsDetail() {
   const { name } = useParams();
   const navigate = useNavigate();
@@ -150,8 +155,20 @@ export default function AppsDetail() {
 }
 
 function ShowAppDetails({ name }: { name: string | undefined }) {
-  const fetchAppDetail = (): Promise<respData> =>
-    fetch(`/api/apps/${name}`).then(async (resp) => await resp.json());
+  const [storedData, setStoredData] = useState<respData>();
+
+  const navigate = useNavigate();
+
+  const fetchAppDetail = (): Promise<response> =>
+    fetch(`/api/apps/${name}`).then(async (resp) => {
+      const code = resp.status;
+      const data = await resp.json();
+
+      return {
+        code,
+        data,
+      };
+    });
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["GET /api/apps/:name", "GET_APPLICATION_DETAILS"],
@@ -163,12 +180,16 @@ function ShowAppDetails({ name }: { name: string | undefined }) {
       refetch();
     }, 5000);
 
+    if (data !== undefined && data.code === 200) {
+      setStoredData(data.data);
+    }
+
     return () => {
       clearInterval(refetchTimer);
     };
-  }, [refetch]);
+  }, [refetch, data]);
 
-  if (isError) {
+  if (isError || name == undefined) {
     return (
       <MessageWithIcon
         icon={<ErrorIcon />}
@@ -177,8 +198,53 @@ function ShowAppDetails({ name }: { name: string | undefined }) {
     );
   }
 
-  if (isLoading || data === undefined || name == undefined) {
+  if (isLoading || data === undefined) {
     return <MessageWithIcon icon={<Spinner />} message="Loading" />;
+  }
+
+  if (data.code !== 200) {
+    if (storedData === undefined) {
+      navigate("/apps");
+    }
+
+    return (
+      <div className="flex items-center gap-4 justify-center">
+        <button
+          className="py-2 px-4 border border-white/30 rounded hover:bg-white/10"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate("/apps");
+          }}
+        >
+          <span className="mr-4">&#8592;</span>
+          Go to all Applications
+        </button>
+        <button
+          className="py-2 px-4 rounded bg-white/20 hover:bg-white/10"
+          onClick={(e) => {
+            e.preventDefault();
+
+            const request = fetch("/api/apps", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(storedData),
+            });
+
+            toast.promise(request, {
+              loading: `Creating application "${name}" again`,
+              success: `Created application "${name}"`,
+              error: "Failed to create application",
+            });
+
+            refetch();
+          }}
+        >
+          Create same Application again
+        </button>
+      </div>
+    );
   }
 
   return (
