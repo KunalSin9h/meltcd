@@ -43,7 +43,7 @@ func Setup() error {
 }
 
 func meltcdState() error {
-	meltcdDir := GetMeltcdDir()
+	meltcdDir := getMeltcdDir()
 
 	_, err := os.Stat(meltcdDir)
 	if err != nil {
@@ -125,7 +125,7 @@ func ShutDown() error {
 	return os.WriteFile(repoFile, repoData, os.ModePerm)
 }
 
-func GetMeltcdDir() string {
+func getMeltcdDir() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		log.Warn("failed to get home dir (using default \".\")")
@@ -138,11 +138,11 @@ func GetMeltcdDir() string {
 }
 
 func getAppFile() string {
-	meltcdDir := GetMeltcdDir()
+	meltcdDir := getMeltcdDir()
 	return path.Join(meltcdDir, MELTCD_APPLICATIONS_FILE)
 }
 
 func getRepositoryFile() string {
-	meltcdDir := GetMeltcdDir()
+	meltcdDir := getMeltcdDir()
 	return path.Join(meltcdDir, MELTCD_REPOSITORY_FILE)
 }

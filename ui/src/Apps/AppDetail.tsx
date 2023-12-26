@@ -237,8 +237,6 @@ function ShowAppDetails({ name }: { name: string | undefined }) {
               success: `Created application "${name}"`,
               error: "Failed to create application",
             });
-
-            refetch();
           }}
         >
           Create same Application again
