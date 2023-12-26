@@ -17,7 +17,6 @@ limitations under the License.
 package spec
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"os"
@@ -29,6 +28,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/swarm"
+	"github.com/hashicorp/go-envparse"
 )
 
 type DockerSwarm struct {
@@ -108,7 +108,17 @@ func (d *DockerSwarm) GetServiceSpec(appName string, networkID string) ([]swarm.
 		for _, envFile := range spec.EnvFile {
 			log.Info("Using environment variable from files", "file", envFile)
 
-			envVars, err := getEnvVars(envFile)
+			fileName, err := normalizeFilePath(envFile)
+			if err != nil {
+				return []swarm.ServiceSpec{}, err
+			}
+
+			file, err := os.Open(fileName)
+			if err != nil {
+				return []swarm.ServiceSpec{}, err
+			}
+
+			envVars, err := envparse.Parse(file)
 			if err != nil {
 				return []swarm.ServiceSpec{}, err
 			}
@@ -193,45 +203,6 @@ func (d *DockerSwarm) GetServiceSpec(appName string, networkID string) ([]swarm.
 	}
 
 	return specs, nil
-}
-
-func getEnvVars(fileName string) (map[string]string, error) {
-	result := make(map[string]string)
-
-	fileName, err := normalizeFilePath(fileName)
-	if err != nil {
-		return map[string]string{}, err
-	}
-
-	fileData, err := os.Open(fileName)
-	if err != nil {
-		log.Warn("file path does not exist", "file", fileName)
-		fileName, _ = strings.CutPrefix(fileName, "/home")
-
-		fileData, err = os.Open(fileName)
-		if err != nil {
-			log.Warn("file path does not exist", "file", fileName)
-			return map[string]string{}, err
-		}
-	}
-	defer fileData.Close()
-
-	scanner := bufio.NewScanner(fileData)
-
-	for scanner.Scan() {
-		line := scanner.Text()
-		tokens := strings.SplitN(line, "=", 2)
-
-		if len(tokens) == 2 {
-			key := strings.TrimSpace(tokens[0])
-			value := strings.TrimSpace(tokens[1])
-			value = strings.ReplaceAll(value, "\"", "")
-
-			result[key] = value
-		}
-	}
-
-	return result, err
 }
 
 func normalizeFilePath(fileName string) (string, error) {
