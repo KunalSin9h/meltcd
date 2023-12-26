@@ -20,13 +20,15 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/meltred/meltcd/internal/core/repository"
+	"github.com/meltred/meltcd/internal/core/uuid"
 	"github.com/meltred/meltcd/spec"
 
-	"github.com/charmbracelet/log"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/swarm"
 	"github.com/docker/docker/api/types/volume"
@@ -336,7 +338,16 @@ func createNetwork(cli *client.Client, appName string) (string, error) {
 	for _, network := range nets {
 		if network.Name == networkName {
 			log.Info("Network already exists")
-			return network.ID, nil
+
+			randString, err := uuid.New(5)
+			if err != nil {
+				log.Error(err.Error())
+				return "", err
+			}
+
+			networkName += fmt.Sprintf("_%s", randString)
+
+			log.Info("Using new network name", "name", networkName)
 		}
 	}
 

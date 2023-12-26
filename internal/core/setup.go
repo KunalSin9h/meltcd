@@ -27,6 +27,8 @@ import (
 const MELTCD_DIR = ".meltcd"                         //nolint
 const MELTCD_APPLICATIONS_FILE = "applications.json" //nolint
 const MELTCD_REPOSITORY_FILE = "repositories.json"   //nolint
+const LOG_DIR = "logs"                               //nolint
+const GENERAL_LOG_FILE = "general.log"               //nolint
 
 // Setup will setup require
 // settings to make use of MeltCD
@@ -48,6 +50,20 @@ func meltcdState() error {
 		log.Infof("Creating directory: %s", meltcdDir)
 
 		err = os.Mkdir(meltcdDir, os.ModePerm)
+		if err != nil {
+			return err
+		}
+
+		logDir := path.Join(meltcdDir, LOG_DIR)
+		log.Info("Creating log directory", "logDir", logDir)
+		err := os.Mkdir(logDir, os.ModePerm)
+		if err != nil {
+			return err
+		}
+
+		generalLogFile := path.Join(logDir, GENERAL_LOG_FILE)
+		log.Info("Creating general log file", "log file", generalLogFile)
+		_, err = os.Create(generalLogFile)
 		if err != nil {
 			return err
 		}
