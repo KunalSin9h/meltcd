@@ -39,6 +39,7 @@ jobs:
 
       - name: build frontend
         run: |
+          pnpm --prefix=./ui install
           pnpm --prefix=./ui build --emptyOutDir
 
       - uses: actions/setup-go@v4
