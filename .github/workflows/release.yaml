@@ -25,6 +25,22 @@ jobs:
       - name: Check outputs
         run: echo ${{ steps.vars.outputs.latest_tag }}
 
+      - name: find and replace metlcd version in frontend
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: "dev"
+          replace: "${{ steps.vars.outputs.latest_tag }}"
+          include: "ui/src/version.ts"
+          regex: true
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: build frontend
+        run: |
+          pnpm --prefix=./ui build --emptyOutDir
+
       - uses: actions/setup-go@v4
         with:
           go-version: stable

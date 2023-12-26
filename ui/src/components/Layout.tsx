@@ -19,6 +19,7 @@ import Sidebar from "./Sidebar";
 import { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { LinkIcon } from "../lib/icon";
+import version from "../version";
 
 export default function Layout() {
   const [openHelpPanel, setOpenHelpPanel] = useState(false);
@@ -52,6 +53,9 @@ export default function Layout() {
           <Linker name="GitHub" url="https://github.com/meltred/meltcd" />
           <Linker name="Discord" url="https://discord.gg/Y2C6mEhhf3" />
           <Linker name="Twitter" url="https://twitter.com/meltredhq" />
+          <div className="text-center border-t border-t-white/20 pt-2">
+            v<span className="font-bold">{version}</span>
+          </div>
         </div>
       </div>
       <Toaster />
