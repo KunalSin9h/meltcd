@@ -24,11 +24,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charmbracelet/log"
 	"github.com/meltred/meltcd/internal/core/repository"
-	uuid "github.com/meltred/meltcd/internal/core/utils"
+	"github.com/meltred/meltcd/internal/core/uuid"
 	"github.com/meltred/meltcd/spec"
 
-	"github.com/charmbracelet/log"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/swarm"
 	"github.com/docker/docker/api/types/volume"
