@@ -78,8 +78,8 @@ func TestGetEnvVars(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	if res["ENV_1"] != "1" ||
-		res["ENV_2"] != "2" ||
+	if res["ENV_1"] != "\"1\"" ||
+		res["ENV_2"] != "\"2\"" ||
 		res["ENV_3"] != "3" ||
 		res["ENV_4"] != "4" {
 		t.Error("failed to convert env file into map[string]string", res)

@@ -225,7 +225,6 @@ func getEnvVars(fileName string) (map[string]string, error) {
 		if len(tokens) == 2 {
 			key := strings.TrimSpace(tokens[0])
 			value := strings.TrimSpace(tokens[1])
-			value = strings.ReplaceAll(value, "\"", "")
 
 			result[key] = value
 		}
