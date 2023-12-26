@@ -65,25 +65,53 @@ export default function AppsDetail() {
           </span>{" "}
           {name}
         </p>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            const syncAPI = `/api/apps/${name}/refresh`;
+        <div className="flex items-center gap-4">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              const syncAPI = `/api/apps/${name}/refresh`;
 
-            const request = fetch(syncAPI, {
-              method: "POST",
-            });
+              const request = fetch(syncAPI, {
+                method: "POST",
+              });
 
-            toast.promise(request, {
-              loading: "Synchronizing application",
-              success: "Application synched successfully",
-              error: "Failed to sync application",
-            });
-          }}
-          className="bg-green-500 text-white py-2 px-4 rounded font-bold hover:bg-green-500/90"
-        >
-          Synchronize
-        </button>
+              toast.promise(request, {
+                loading: "Synchronizing application",
+                success: "Application synched successfully",
+                error: "Failed to sync application",
+              });
+            }}
+            className="bg-green-500 text-white py-2 px-4 rounded font-bold hover:bg-green-500/90"
+          >
+            Synchronize
+          </button>
+          <button
+            className="text-red-400 py-2 px-4 rounded border border-red-400 font-bold hover:bg-red-400/20"
+            onClick={(e) => {
+              e.preventDefault();
+
+              const deleteConfirm = confirm(
+                "Are you sure you want to delete the application?"
+              );
+
+              if (deleteConfirm) {
+                const deleteAPI = `/api/apps/${name}`;
+
+                const request = fetch(deleteAPI, {
+                  method: "DELETE",
+                });
+
+                toast.promise(request, {
+                  loading: "Deleting application",
+                  success: "Application deleted successfully",
+                  error: "Failed to delete application",
+                });
+              }
+            }}
+          >
+            Delete
+          </button>
+        </div>
       </div>
       <div className="p-8 mt-16">
         <ShowAppDetails name={name} />
