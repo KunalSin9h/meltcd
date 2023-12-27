@@ -52,7 +52,7 @@ export default function Apps() {
       />
 
       {/* Showing All Applications */}
-      <div className="h-screen m-8 mt-32">
+      <div className="h-full m-8 mt-32 overflow-auto">
         <AllApplications refresh={refresh} />
       </div>
     </div>

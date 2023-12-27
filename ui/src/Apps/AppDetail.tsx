@@ -104,11 +104,11 @@ export default function AppsDetail() {
 
           {/**Modal window for deleting application */}
           <div
-            className={`overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center h-full w-full bg-black/40
+            className={`overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center h-full w-full bg-black/50
             ${deleteModal ? "" : "hidden"}
             `}
           >
-            <div className="bg-sidebar p-4 rounded flex flex-col gap-2">
+            <div className="bg-sidebar py-6 px-8 rounded flex flex-col gap-4">
               <p className="text-xl font-bold">Delete Application?</p>
               <p>Are you sure you want to delete application!</p>
               <div className="flex justify-end gap-4 items-center">
@@ -122,7 +122,7 @@ export default function AppsDetail() {
                   Cancel
                 </button>
                 <button
-                  className={`py-1 px-2 rounded bg-red-500 text-white hover:bg-red-400 font-bold`}
+                  className={`py-1 px-2 rounded bg-red-500 text-white hover:bg-red-600 font-bold`}
                   onClick={(e) => {
                     e.preventDefault();
                     const deleteAPI = `/api/apps/${name}`;

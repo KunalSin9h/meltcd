@@ -39,7 +39,7 @@ export default function NewApplication({
   return (
     <>
       <div
-        className={`fixed z-50 bg-white h-full w-[40%] top-0 left-[60%] p-4 text-black ${
+        className={`fixed z-50 overflow-auto  bg-white h-full w-[40%] top-0 left-[60%] p-4 text-black ${
           openWindow ? "" : "hidden"
         }`}
       >
@@ -64,7 +64,7 @@ export default function NewApplication({
       </div>
       {/* Overlay for Slider */}
       <div
-        className={`fixed  h-full w-full top-0 left-0 bg-black/40 ${
+        className={`fixed  h-full w-full top-0 left-0 bg-black/50 ${
           openWindow ? "" : "hidden"
         }`}
       ></div>
