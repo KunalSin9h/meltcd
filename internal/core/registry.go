@@ -219,10 +219,12 @@ func Recreate(appName string) error {
 	if err != nil {
 		return err
 	}
+	log.Info("Got details of application", "app_name", appName)
 
 	if err := RemoveApplication(appName); err != nil {
 		return err
 	}
+	log.Info("Removed application", "app_name", appName)
 
 	return Register(&data)
 }
