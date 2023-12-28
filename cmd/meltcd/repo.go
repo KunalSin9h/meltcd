@@ -25,7 +25,9 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/meltred/meltcd/server/api"
+	"github.com/meltred/meltcd/server/api/app"
+	"github.com/meltred/meltcd/server/api/repo"
+	"github.com/meltred/meltcd/util"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 )
@@ -37,7 +39,7 @@ func addPrivateGitRepository(cmd *cobra.Command, args []string) error {
 	username, _ := cmd.Flags().GetString("username")
 	password, _ := cmd.Flags().GetString("password")
 
-	payload := api.PrivateRepoDetails{
+	payload := repo.PrivateRepoDetails{
 		URL:      repoURL,
 		Username: username,
 		Password: password,
@@ -48,13 +50,13 @@ func addPrivateGitRepository(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	res, err := http.Post(fmt.Sprintf("%s/api/repo", getServer()), "application/json", buf)
+	res, err := http.Post(fmt.Sprintf("%s/api/repo", util.GetServer()), "application/json", buf)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
 
-	var resBody api.GlobalResponse
+	var resBody app.GlobalResponse
 	if err := json.NewDecoder(res.Body).Decode(&resBody); err != nil {
 		return err
 	}
@@ -68,19 +70,19 @@ func addPrivateGitRepository(cmd *cobra.Command, args []string) error {
 }
 
 func getAllRepoAdded(_ *cobra.Command, _ []string) error {
-	res, err := http.Get(fmt.Sprintf("%s/api/repo", getServer()))
+	res, err := http.Get(fmt.Sprintf("%s/api/repo", util.GetServer()))
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
 
-	var resData api.RepoListData
+	var resData repo.ListData
 	if err := json.NewDecoder(res.Body).Decode(&resData); err != nil {
 		return err
 	}
 
 	table := table.New("S.NO", "Repository URL")
-	table.WithHeaderFormatter(headerFmt).WithFirstColumnFormatter(columnFmt)
+	table.WithHeaderFormatter(util.HeaderFmt).WithFirstColumnFormatter(util.ColumnFmt)
 
 	for idx, url := range resData.Data {
 		table.AddRow(idx, url)
@@ -94,7 +96,7 @@ func removePrivateRepo(_ *cobra.Command, args []string) error {
 	repoURL := args[0]
 	repoURL, _ = strings.CutSuffix(repoURL, "/")
 
-	payload := api.RepoRemovePayload{
+	payload := repo.RemovePayload{
 		Repo: repoURL,
 	}
 
@@ -105,7 +107,7 @@ func removePrivateRepo(_ *cobra.Command, args []string) error {
 
 	client := &http.Client{}
 
-	request, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("%s/api/repo", getServer()), buf)
+	request, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("%s/api/repo", util.GetServer()), buf)
 	request.Header.Add("Content-Type", "application/json")
 
 	if err != nil {
@@ -118,7 +120,7 @@ func removePrivateRepo(_ *cobra.Command, args []string) error {
 	}
 	defer res.Body.Close()
 
-	var data api.GlobalResponse
+	var data app.GlobalResponse
 
 	if err := json.NewDecoder(res.Body).Decode(&data); err != nil {
 		return err
@@ -135,7 +137,7 @@ func updatePrivateRepo(cmd *cobra.Command, args []string) error {
 	username, _ := cmd.Flags().GetString("username")
 	password, _ := cmd.Flags().GetString("password")
 
-	payload := api.PrivateRepoDetails{
+	payload := repo.PrivateRepoDetails{
 		URL:      repoURL,
 		Username: username,
 		Password: password,
@@ -148,7 +150,7 @@ func updatePrivateRepo(cmd *cobra.Command, args []string) error {
 
 	client := &http.Client{}
 
-	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/api/repo", getServer()), buf)
+	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/api/repo", util.GetServer()), buf)
 	req.Header.Add("Content-Type", "application/json")
 
 	if err != nil {
@@ -162,7 +164,7 @@ func updatePrivateRepo(cmd *cobra.Command, args []string) error {
 
 	defer res.Body.Close()
 
-	var data api.GlobalResponse
+	var data app.GlobalResponse
 	if err := json.NewDecoder(res.Body).Decode(&data); err != nil {
 		return err
 	}

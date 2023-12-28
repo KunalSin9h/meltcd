@@ -26,7 +26,8 @@ import (
 	"syscall"
 
 	"github.com/meltred/meltcd/internal/core"
-	meltcdApi "github.com/meltred/meltcd/server/api"
+	appApi "github.com/meltred/meltcd/server/api/app"
+	repoApi "github.com/meltred/meltcd/server/api/repo"
 	"github.com/meltred/meltcd/version"
 
 	"github.com/charmbracelet/log"
@@ -82,18 +83,19 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	api.Get("/", CheckAPIStatus)
 
 	apps := api.Group("apps")
-	apps.Get("/", meltcdApi.AllApplications)
-	apps.Post("/", meltcdApi.Register)
-	apps.Get("/:app_name", meltcdApi.Details)
-	apps.Delete("/:app_name", meltcdApi.Remove)
-	apps.Put("/", meltcdApi.Update)
-	apps.Post("/:app_name/refresh", meltcdApi.Refresh)
+	apps.Get("/", appApi.AllApplications)
+	apps.Post("/", appApi.Register)
+	apps.Get("/:app_name", appApi.Details)
+	apps.Delete("/:app_name", appApi.Remove)
+	apps.Put("/", appApi.Update)
+	apps.Post("/:app_name/refresh", appApi.Refresh)
+	apps.Post("/:app_name/recreate", appApi.Recreate)
 
 	repo := api.Group("repo")
-	repo.Get("/", meltcdApi.RepoList)
-	repo.Post("/", meltcdApi.RepoAdd) // url, username and password will be send in body
-	repo.Delete("/", meltcdApi.RepoRemove)
-	repo.Put("/", meltcdApi.RepoUpdate)
+	repo.Get("/", repoApi.List)
+	repo.Post("/", repoApi.Add) // url, username and password will be send in body
+	repo.Delete("/", repoApi.Remove)
+	repo.Put("/", repoApi.Update)
 
 	err := core.Setup()
 	if err != nil {

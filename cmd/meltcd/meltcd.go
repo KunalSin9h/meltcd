@@ -19,6 +19,7 @@ package meltcd
 import (
 	"log"
 
+	"github.com/meltred/meltcd/cmd/meltcd/app"
 	"github.com/meltred/meltcd/version"
 
 	"github.com/spf13/cobra"
@@ -65,7 +66,7 @@ func NewCLI() *cobra.Command {
 		Use:   "create",
 		Short: "Create a new application",
 		Args:  cobra.RangeArgs(0, 1),
-		RunE:  createNewApplication,
+		RunE:  app.CreateNewApplication,
 	}
 
 	appCreateCmd.Flags().String("repo", "", "The git repository where the service file is hosted")
@@ -78,7 +79,7 @@ func NewCLI() *cobra.Command {
 		Use:   "update",
 		Short: "Update existing application",
 		Args:  cobra.RangeArgs(0, 1),
-		RunE:  updateExistingApplication,
+		RunE:  app.UpdateExistingApplication,
 	}
 
 	appUpdateCmd.Flags().String("repo", "", "The git repository where the service file is hosted")
@@ -92,7 +93,7 @@ func NewCLI() *cobra.Command {
 		Aliases: []string{"inspect"},
 		Short:   "Get details about the application",
 		Args:    cobra.ExactArgs(1),
-		RunE:    getDetailsAboutApplication,
+		RunE:    app.GetDetailsAboutApplication,
 	}
 
 	appListCmd := &cobra.Command{
@@ -100,7 +101,7 @@ func NewCLI() *cobra.Command {
 		Aliases: []string{"ls"},
 		Short:   "Get all the applications registered",
 		Args:    cobra.ExactArgs(0),
-		RunE:    getAllApplications,
+		RunE:    app.GetAllApplications,
 	}
 
 	appRefreshCmd := &cobra.Command{
@@ -108,7 +109,7 @@ func NewCLI() *cobra.Command {
 		Aliases: []string{"sync"},
 		Short:   "Force refresh (synchronize) application",
 		Args:    cobra.ExactArgs(1),
-		RunE:    refreshApplication,
+		RunE:    app.RefreshApplication,
 	}
 
 	appRemoveCmd := &cobra.Command{
@@ -116,7 +117,15 @@ func NewCLI() *cobra.Command {
 		Aliases: []string{"rm"},
 		Short:   "Remove Application",
 		Args:    cobra.ExactArgs(1),
-		RunE:    removeApplication,
+		RunE:    app.RemoveApplication,
+	}
+
+	appRecreateCmd := &cobra.Command{
+		Use:     "recreate [APP_NAME]",
+		Aliases: []string{"rc"},
+		Short:   "Recreate Application",
+		Args:    cobra.ExactArgs(1),
+		RunE:    app.RecreateApplication,
 	}
 
 	appCmd.AddCommand(appCreateCmd)
@@ -125,6 +134,7 @@ func NewCLI() *cobra.Command {
 	appCmd.AddCommand(appListCmd)
 	appCmd.AddCommand(appRefreshCmd)
 	appCmd.AddCommand(appRemoveCmd)
+	appCmd.AddCommand(appRecreateCmd)
 
 	// meltcd repo
 	repoCmd := &cobra.Command{

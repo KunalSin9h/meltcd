@@ -51,7 +51,13 @@ meltcd app refresh <app-name>
 meltcd app sync <app-name>
 ```
 
-7. Remove an application [DONE]
+7. Recreate application [TODO]
+
+```bash
+meltcd app recreate <app-name>
+```
+
+8. Remove an application [DONE]
 
 ```bash
 meltcd app remove <app-name>

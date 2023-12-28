@@ -28,7 +28,7 @@ export default function Layout() {
   // check login here
   // and if not authorized then redirect to /login
   useEffect(() => {
-    navigate("/apps");
+    navigate("/apps/testing");
   }, [navigate]);
 
   return (
