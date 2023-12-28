@@ -1,29 +1,8 @@
 basePath: /api
 definitions:
-  api.GlobalResponse:
+  app.GlobalResponse:
     properties:
       message:
-        type: string
-    type: object
-  api.PrivateRepoDetails:
-    properties:
-      password:
-        type: string
-      url:
-        type: string
-      username:
-        type: string
-    type: object
-  api.RepoListData:
-    properties:
-      data:
-        items:
-          type: string
-        type: array
-    type: object
-  api.RepoRemovePayload:
-    properties:
-      repo:
         type: string
     type: object
   application.Application:
@@ -91,6 +70,27 @@ definitions:
       updated_at:
         type: string
     type: object
+  repo.ListData:
+    properties:
+      data:
+        items:
+          type: string
+        type: array
+    type: object
+  repo.PrivateRepoDetails:
+    properties:
+      password:
+        type: string
+      url:
+        type: string
+      username:
+        type: string
+    type: object
+  repo.RemovePayload:
+    properties:
+      repo:
+        type: string
+    type: object
 externalDocs:
   description: Meltcd Docs
   url: https://cd.meltred.tech/docs
@@ -138,15 +138,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
       summary: Create a new application
       tags:
       - Apps
@@ -168,11 +168,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
       summary: Update an application
       tags:
       - Apps
@@ -190,7 +190,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
       summary: Remove an application
       tags:
       - Apps
@@ -211,12 +211,30 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
       summary: Get details of an application
+      tags:
+      - Apps
+  /apps/{app_name}/recreate:
+    post:
+      parameters:
+      - description: Application name
+        in: path
+        name: app_name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/app.GlobalResponse'
+      summary: Recreate application
       tags:
       - Apps
   /apps/{app_name}/refresh:
@@ -233,7 +251,7 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
       summary: Refresh/Synchronize an application
       tags:
       - Apps
@@ -247,22 +265,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/api.RepoRemovePayload'
+          $ref: '#/definitions/repo.RemovePayload'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
       summary: Remove a repository
       tags:
       - Repo
@@ -273,7 +291,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/api.RepoListData'
+            $ref: '#/definitions/repo.ListData'
       summary: Get a list all repositories
       tags:
       - Repo
@@ -286,22 +304,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/api.PrivateRepoDetails'
+          $ref: '#/definitions/repo.PrivateRepoDetails'
       produces:
       - application/json
       responses:
         "202":
           description: Accepted
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
       summary: Add a new repository
       tags:
       - Repo
@@ -314,22 +332,22 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/api.PrivateRepoDetails'
+          $ref: '#/definitions/repo.PrivateRepoDetails'
       produces:
       - application/json
       responses:
         "202":
           description: Accepted
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/api.GlobalResponse'
+            $ref: '#/definitions/app.GlobalResponse'
       summary: Update a repository
       tags:
       - Repo

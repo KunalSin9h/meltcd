@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package meltcd
+package util
 
 import (
 	"fmt"
@@ -25,10 +25,10 @@ import (
 	"github.com/fatih/color"
 )
 
-var headerFmt = color.New(color.FgGreen, color.Underline).SprintfFunc()
-var columnFmt = color.New(color.FgYellow).SprintfFunc()
+var HeaderFmt = color.New(color.FgGreen, color.Underline).SprintfFunc()
+var ColumnFmt = color.New(color.FgYellow).SprintfFunc()
 
-func getServer() string {
+func GetServer() string {
 	server := "http://127.0.0.1:11771"
 	serverEnvVar := os.Getenv("MELTCD_SERVER")
 	if serverEnvVar != "" {
@@ -38,7 +38,7 @@ func getServer() string {
 	return server
 }
 
-func info(text string, args ...any) { // nolint
+func Info(text string, args ...any) { // nolint
 	fmt.Printf(text+"\n", args...)
 }
 
@@ -46,7 +46,7 @@ func errorMsg(text string, args ...any) { //nolint
 	fmt.Printf(text+"\n", args...)
 }
 
-func getSinceTime(t time.Time) string {
+func GetSinceTime(t time.Time) string {
 	elapsed := time.Since(t).Milliseconds()
 
 	if elapsed == 0 {

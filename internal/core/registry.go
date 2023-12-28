@@ -213,3 +213,16 @@ func removeSvcFromApps(appName string) {
 
 	Applications = tmp
 }
+
+func Recreate(appName string) error {
+	data, err := Details(appName)
+	if err != nil {
+		return err
+	}
+
+	if err := RemoveApplication(appName); err != nil {
+		return err
+	}
+
+	return Register(&data)
+}

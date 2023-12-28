@@ -72,13 +72,13 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     }
                 }
@@ -109,19 +109,19 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     }
                 }
@@ -155,13 +155,13 @@
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     }
                 }
@@ -187,7 +187,35 @@
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/apps/{app_name}/recreate": {
+            "post": {
+                "tags": [
+                    "Apps"
+                ],
+                "summary": "Recreate application",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Application name",
+                        "name": "app_name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     }
                 }
@@ -215,7 +243,7 @@
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     }
                 }
@@ -234,7 +262,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.RepoListData"
+                            "$ref": "#/definitions/repo.ListData"
                         }
                     }
                 }
@@ -257,7 +285,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.PrivateRepoDetails"
+                            "$ref": "#/definitions/repo.PrivateRepoDetails"
                         }
                     }
                 ],
@@ -265,19 +293,19 @@
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     }
                 }
@@ -300,7 +328,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.PrivateRepoDetails"
+                            "$ref": "#/definitions/repo.PrivateRepoDetails"
                         }
                     }
                 ],
@@ -308,19 +336,19 @@
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     }
                 }
@@ -343,7 +371,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.RepoRemovePayload"
+                            "$ref": "#/definitions/repo.RemovePayload"
                         }
                     }
                 ],
@@ -351,19 +379,19 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/api.GlobalResponse"
+                            "$ref": "#/definitions/app.GlobalResponse"
                         }
                     }
                 }
@@ -371,43 +399,10 @@
         }
     },
     "definitions": {
-        "api.GlobalResponse": {
+        "app.GlobalResponse": {
             "type": "object",
             "properties": {
                 "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.PrivateRepoDetails": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.RepoListData": {
-            "type": "object",
-            "properties": {
-                "data": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "api.RepoRemovePayload": {
-            "type": "object",
-            "properties": {
-                "repo": {
                     "type": "string"
                 }
             }
@@ -504,6 +499,39 @@
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "repo.ListData": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "repo.PrivateRepoDetails": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "repo.RemovePayload": {
+            "type": "object",
+            "properties": {
+                "repo": {
                     "type": "string"
                 }
             }
