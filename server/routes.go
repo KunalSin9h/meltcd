@@ -26,6 +26,7 @@ import (
 	"syscall"
 
 	"github.com/meltred/meltcd/internal/core"
+	Api "github.com/meltred/meltcd/server/api"
 	appApi "github.com/meltred/meltcd/server/api/app"
 	repoApi "github.com/meltred/meltcd/server/api/repo"
 	"github.com/meltred/meltcd/version"
@@ -81,6 +82,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	api := app.Group("api")
 
 	api.Get("/", CheckAPIStatus)
+	api.Post("/login", Api.Login)
 
 	apps := api.Group("apps")
 	apps.Get("/", appApi.AllApplications)

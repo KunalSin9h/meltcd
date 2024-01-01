@@ -255,6 +255,18 @@ paths:
       summary: Refresh/Synchronize an application
       tags:
       - Apps
+  /login:
+    post:
+      responses:
+        "302":
+          description: Found
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+      summary: Login user
+      tags:
+      - General
   /repo:
     delete:
       consumes:

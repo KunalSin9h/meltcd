@@ -252,6 +252,25 @@ const docTemplate = `{
                 }
             }
         },
+        "/login": {
+            "post": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Login user",
+                "responses": {
+                    "302": {
+                        "description": "Found"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
         "/repo": {
             "get": {
                 "produces": [
