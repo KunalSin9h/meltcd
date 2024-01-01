@@ -26,13 +26,16 @@ import (
 	"syscall"
 
 	"github.com/meltred/meltcd/internal/core"
+	Api "github.com/meltred/meltcd/server/api"
 	appApi "github.com/meltred/meltcd/server/api/app"
 	repoApi "github.com/meltred/meltcd/server/api/repo"
+	"github.com/meltred/meltcd/server/middleware"
 	"github.com/meltred/meltcd/version"
 
 	"github.com/charmbracelet/log"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -64,6 +67,15 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	app.Use(cors.New(config))
 	app.Use(recover.New())
 
+	encryptionKey, err := Api.GenerateToken(64)
+	if err != nil {
+		return err
+	}
+
+	app.Use(encryptcookie.New(encryptcookie.Config{
+		Key: encryptionKey[:32],
+	}))
+
 	if verboseOutput {
 		app.Use(logger.New())
 	}
@@ -81,8 +93,12 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	api := app.Group("api")
 
 	api.Get("/", CheckAPIStatus)
+	api.Post("/login", Api.Login)
 
-	apps := api.Group("apps")
+	user := api.Group("user", middleware.VerifyUser)
+	user.Get("/", Api.GetUser)
+
+	apps := api.Group("apps", middleware.VerifyUser)
 	apps.Get("/", appApi.AllApplications)
 	apps.Post("/", appApi.Register)
 	apps.Get("/:app_name", appApi.Details)
@@ -91,13 +107,13 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	apps.Post("/:app_name/refresh", appApi.Refresh)
 	apps.Post("/:app_name/recreate", appApi.Recreate)
 
-	repo := api.Group("repo")
+	repo := api.Group("repo", middleware.VerifyUser)
 	repo.Get("/", repoApi.List)
 	repo.Post("/", repoApi.Add) // url, username and password will be send in body
 	repo.Delete("/", repoApi.Remove)
 	repo.Put("/", repoApi.Update)
 
-	err := core.Setup()
+	err = core.Setup()
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)

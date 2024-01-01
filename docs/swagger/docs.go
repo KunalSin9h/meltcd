@@ -252,6 +252,25 @@ const docTemplate = `{
                 }
             }
         },
+        "/login": {
+            "post": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Login user",
+                "responses": {
+                    "302": {
+                        "description": "Found"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
         "/repo": {
             "get": {
                 "produces": [
@@ -396,6 +415,25 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/app.GlobalResponse"
                         }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get username of current logged-in user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
                     }
                 }
             }
@@ -548,7 +586,7 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "0.5",
+	Version:          "0.6",
 	Host:             "localhost:11771",
 	BasePath:         "/api",
 	Schemes:          []string{"http"},

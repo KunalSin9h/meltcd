@@ -17,6 +17,8 @@ limitations under the License.
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { CloseIcon } from "../lib/icon";
+import { useNavigate } from "react-router-dom";
+import normalizeInput from "../utils/normalizeInput";
 
 type globalResponseData = {
   message: string;
@@ -91,6 +93,8 @@ function CreateApplication({
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenWindow: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const navigate = useNavigate();
+
   const initialData = {
     name: "",
     refresh_timer: "3m0s",
@@ -118,6 +122,9 @@ function CreateApplication({
       loading: "Creating new application",
       success: (res) => {
         let good = true;
+        if (res.status === 401) {
+          navigate("/login");
+        }
         if (res.status !== 200) {
           good = false;
         }
@@ -154,7 +161,7 @@ function CreateApplication({
     <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
       <InputOption
         name="Name"
-        placeholder="auth-backend-server"
+        placeholder="auth_backend_server"
         value={bodyData.name}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setBodyData({
@@ -270,26 +277,4 @@ function InputOption({
       />
     </label>
   );
-}
-
-function normalizeInput(givenText: string, allowed: string[]): string {
-  const len = givenText.length;
-  let result = "";
-
-  for (let i = 0; i < len; i++) {
-    const code = givenText.charCodeAt(i);
-
-    if (
-      (code > 47 && code < 58) || // numeric (0-9)
-      (code > 64 && code < 91) || // upper alpha (A-Z)
-      (code > 96 && code < 123) || // lower alpha (a-z)
-      allowed.includes(givenText[i])
-    ) {
-      result += givenText[i];
-    } else {
-      toast.error(`${givenText[i]} is not allowed in input here!`);
-    }
-  }
-
-  return result;
 }

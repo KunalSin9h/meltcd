@@ -11,7 +11,7 @@
             "name": "Apache 2.0",
             "url": "https://github.com/meltred/meltcd/blob/main/LICENSE"
         },
-        "version": "0.5"
+        "version": "0.6"
     },
     "host": "localhost:11771",
     "basePath": "/api",
@@ -249,6 +249,25 @@
                 }
             }
         },
+        "/login": {
+            "post": {
+                "tags": [
+                    "General"
+                ],
+                "summary": "Login user",
+                "responses": {
+                    "302": {
+                        "description": "Found"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
         "/repo": {
             "get": {
                 "produces": [
@@ -393,6 +412,25 @@
                         "schema": {
                             "$ref": "#/definitions/app.GlobalResponse"
                         }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get username of current logged-in user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
                     }
                 }
             }

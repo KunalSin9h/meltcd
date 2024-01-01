@@ -17,7 +17,8 @@ limitations under the License.
 import { useQuery } from "@tanstack/react-query";
 import { ErrorIcon, Spinner, WarningIcon } from "../lib/icon";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 type respData = {
   data: appData[];
@@ -32,17 +33,26 @@ type appData = {
   updated_at: string;
 };
 
-const fetchApps = (): Promise<respData> =>
-  fetch("/api/apps").then(async (resp) => await resp.json());
+const fetchApps = (navigate: NavigateFunction): Promise<respData> =>
+  fetch("/api/apps").then(async (resp) => {
+    if (resp.status === 401) {
+      navigate("/login");
+    } else if (resp.status !== 200) {
+      toast.error("Something wend wrong, server didn't respond with 200");
+      return;
+    }
 
-export default function AllApplications({ refresh }: { refresh: boolean }) {
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["GET /api/apps", "GET_ALL_APPLICATIONS"],
-    queryFn: fetchApps,
+    return await resp.json();
   });
 
+export default function AllApplications({ refresh }: { refresh: boolean }) {
   const navigate = useNavigate(); // react router dom navigator for programmatically
   // navigate, used here to go to specific application
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["GET /api/apps", "GET_ALL_APPLICATIONS"],
+    queryFn: () => fetchApps(navigate),
+  });
 
   // fetching the current status of application on regular interval
   useEffect(() => {
