@@ -29,6 +29,7 @@ import (
 	Api "github.com/meltred/meltcd/server/api"
 	appApi "github.com/meltred/meltcd/server/api/app"
 	repoApi "github.com/meltred/meltcd/server/api/repo"
+	"github.com/meltred/meltcd/server/middleware"
 	"github.com/meltred/meltcd/version"
 
 	"github.com/charmbracelet/log"
@@ -94,7 +95,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	api.Get("/", CheckAPIStatus)
 	api.Post("/login", Api.Login)
 
-	apps := api.Group("apps")
+	apps := api.Group("apps", middleware.VerifyUser)
 	apps.Get("/", appApi.AllApplications)
 	apps.Post("/", appApi.Register)
 	apps.Get("/:app_name", appApi.Details)
@@ -103,7 +104,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	apps.Post("/:app_name/refresh", appApi.Refresh)
 	apps.Post("/:app_name/recreate", appApi.Recreate)
 
-	repo := api.Group("repo")
+	repo := api.Group("repo", middleware.VerifyUser)
 	repo.Get("/", repoApi.List)
 	repo.Post("/", repoApi.Add) // url, username and password will be send in body
 	repo.Delete("/", repoApi.Remove)

@@ -34,3 +34,19 @@ func RemoveSession(token string) {
 
 	sessions = result
 }
+
+func VerifySession(token string) (string, bool) {
+	for _, ses := range sessions {
+		if ses.Token == token {
+			if time.Now().After(ses.ExpireTime) {
+				defer RemoveSession(token)
+
+				return "", false
+			}
+
+			return ses.Username, true
+		}
+	}
+
+	return "", false
+}
