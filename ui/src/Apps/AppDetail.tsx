@@ -325,10 +325,6 @@ function RecreateModal({
         <p className="text-xl font-bold">Recreate Application?</p>
         <div>
           <p>Are you sure you want to recreate application!</p>
-          <p className="text-sm opacity-70">
-            This will delete this very application and create a new application
-            from ground up.
-          </p>
         </div>
         <div className="flex justify-end gap-4 items-center">
           <button

@@ -154,7 +154,7 @@ function CreateApplication({
     <form className="flex flex-col gap-8" onSubmit={handleSubmit}>
       <InputOption
         name="Name"
-        placeholder="auth-backend-server"
+        placeholder="auth_backend_server"
         value={bodyData.name}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           setBodyData({
