@@ -1,9 +1,12 @@
 package api
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/meltred/meltcd/internal/core/auth"
 )
 
 // Login godoc
@@ -23,10 +26,33 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// check if username and password exits
-	// if not
-	// return http.StatusUnauthorized
-	// if exist create a token and store it in cookie
-	// redirect to /
+	userExists, err := auth.FindUser(username, password)
+	if err != nil {
+		return err
+	}
 
-	return nil
+	if !userExists {
+		return c.SendStatus(http.StatusUnauthorized)
+	}
+
+	token, err := GenerateToken(64)
+	if err != nil {
+		return c.SendStatus(http.StatusInternalServerError)
+	}
+	c.Cookie(&fiber.Cookie{
+		Name:  "authToken",
+		Value: token,
+	})
+
+	return c.Redirect("/")
+}
+
+func GenerateToken(n uint64) (string, error) {
+	b := make([]byte, n)
+	_, err := rand.Read(b)
+	if err != nil {
+		return "", err
+	}
+
+	return base64.RawStdEncoding.EncodeToString(b), nil
 }

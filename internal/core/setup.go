@@ -61,7 +61,22 @@ func meltcdState() error {
 	authFile := getAuthFile()
 	sessionFile := getSessionFile()
 
-	for _, f := range []string{applicationsFile, repositoryFile, authFile, sessionFile} {
+	// When creating a fresh auth file (db) insert admin:admin username and password
+	_, err = os.Stat(authFile)
+	if err != nil {
+		log.Infof("Creating file: %s", authFile)
+		_, err = os.Create(authFile)
+		if err != nil {
+			return err
+		}
+		log.Info("Creating default user", "username", "admin", "password", "admin")
+		if err := auth.InsertUser("admin", "admin"); err != nil {
+			log.Error("Failed to create default user")
+			return err
+		}
+	}
+
+	for _, f := range []string{applicationsFile, repositoryFile, sessionFile} {
 		_, err = os.Stat(f)
 		if err != nil {
 			log.Infof("Creating file: %s", f)

@@ -3,7 +3,7 @@ package auth
 import (
 	"encoding/json"
 
-	auth "github.com/meltred/meltcd/internal/core/auth/password"
+	authPass "github.com/meltred/meltcd/internal/core/auth/password"
 )
 
 type User struct {
@@ -13,7 +13,7 @@ type User struct {
 
 var users []*User
 
-var argon2Param = auth.Params{
+var argon2Param = authPass.Params{
 	Memory:      64 * 1024,
 	Iterations:  3,
 	Parallelism: 2,
@@ -24,7 +24,7 @@ var argon2Param = auth.Params{
 func FindUser(username, password string) (bool, error) {
 	for _, user := range users {
 		if user.Username == username {
-			match, err := auth.ComparePasswordAndHash(password, user.PasswordHash)
+			match, err := authPass.ComparePasswordAndHash(password, user.PasswordHash)
 			if err != nil {
 				return false, err
 			}
@@ -37,7 +37,7 @@ func FindUser(username, password string) (bool, error) {
 }
 
 func InsertUser(username, password string) error {
-	hash, err := auth.GenerateFromPassword(password, &argon2Param)
+	hash, err := authPass.GenerateFromPassword(password, &argon2Param)
 	if err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func LoadUsers(data *[]byte) error {
 }
 
 func GetUsers() (*[]byte, error) {
-	data, err := json.Marshal(&users)
+	data, err := json.Marshal(users)
 	if err != nil {
 		return nil, err
 	}
