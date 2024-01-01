@@ -272,7 +272,11 @@ function InputOption({
   );
 }
 
-function normalizeInput(givenText: string, allowed: string[]): string {
+export function normalizeInput(
+  givenText: string,
+  allowed: string[],
+  toastBottom?: boolean
+): string {
   const len = givenText.length;
   let result = "";
 
@@ -287,7 +291,9 @@ function normalizeInput(givenText: string, allowed: string[]): string {
     ) {
       result += givenText[i];
     } else {
-      toast.error(`${givenText[i]} is not allowed in input here!`);
+      toast.error(`${givenText[i]} is not allowed in input here!`, {
+        position: toastBottom ? "bottom-right" : "top-center",
+      });
     }
   }
 

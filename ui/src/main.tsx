@@ -20,7 +20,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Apps from "./Apps/Apps.tsx";
-import Login from "./components/signup/Login.tsx";
 import Layout from "./components/Layout.tsx";
 import Repos from "./Repos.tsx";
 import Secrets from "./Secrets.tsx";
@@ -28,11 +27,17 @@ import User from "./User.tsx";
 import Settings from "./Settings.tsx";
 import AppsDetail from "./Apps/AppDetail.tsx";
 import Logs from "./Logs.tsx";
+import LoginPage from "./components/auth/Login.tsx";
+import SignUp from "./components/auth/Signup.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/login",
-    element: <Login />,
+    element: <LoginPage />,
+  },
+  {
+    path: "/signup",
+    element: <SignUp />,
   },
   {
     path: "/",

@@ -28,7 +28,14 @@ export default function Layout() {
   // check login here
   // and if not authorized then redirect to /login
   useEffect(() => {
-    navigate("/apps/testing");
+    // get number of users
+    // if 0 then navigate to /signup
+    const numberOfUsers = getNumberOfUsers();
+    if (numberOfUsers === 0) {
+      navigate("/signup");
+    }
+
+    // navigate("/apps");
   }, [navigate]);
 
   return (
@@ -74,4 +81,8 @@ function Linker({ name, url }: { name: string; url: string }) {
       <LinkIcon />
     </a>
   );
+}
+
+function getNumberOfUsers(): number {
+  return 0;
 }
