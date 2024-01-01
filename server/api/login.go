@@ -42,10 +42,13 @@ func Login(c *fiber.Ctx) error {
 		return c.SendStatus(http.StatusInternalServerError)
 	}
 
+	expireTime := time.Now().Add(1 * time.Hour)
+	auth.AddSession(token, username, expireTime)
+
 	c.Cookie(&fiber.Cookie{
 		Name:     "authToken",
 		Value:    token,
-		Expires:  time.Now().Add(1 * time.Hour),
+		Expires:  expireTime,
 		Secure:   true,
 		SameSite: "Strict",
 		HTTPOnly: true,
