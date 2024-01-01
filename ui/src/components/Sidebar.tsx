@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AppsIcon,
   HelpIcon,
@@ -35,6 +35,11 @@ export default function Sidebar({
   setOpenHelpPanel: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [panelOpen, setPanelOpen] = useState(true);
+  const [user, setUser] = useState("Admin");
+
+  useEffect(() => {
+    setUser(localStorage.getItem("username") as string);
+  }, [user]);
 
   window.onresize = () => {
     const width = window.outerWidth;
@@ -95,8 +100,8 @@ export default function Sidebar({
       </div>
       <div className="mb-2 flex flex-col gap-4">
         <Item
-          name="Admin"
-          to="/user"
+          name={user}
+          to={`/user/${user}`}
           icon={<UserIcon />}
           panelOpen={panelOpen}
         />

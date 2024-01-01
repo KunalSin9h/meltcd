@@ -28,7 +28,19 @@ export default function Layout() {
   // check login here
   // and if not authorized then redirect to /login
   useEffect(() => {
-    navigate("/apps");
+    const getUser = async () => {
+      const res = await fetch("/api/user");
+
+      if (res.status === 401) {
+        navigate("/login");
+      } else if (res.status === 200) {
+        const username = await res.text();
+        localStorage.setItem("username", username);
+        navigate("/apps");
+      }
+    };
+
+    getUser();
   }, [navigate]);
 
   return (

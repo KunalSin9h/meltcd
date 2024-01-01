@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -19,8 +18,6 @@ func AddSession(token, username string, expireTime time.Time) {
 		Username:   username,
 		ExpireTime: expireTime,
 	})
-
-	fmt.Println(sessions)
 }
 
 func RemoveSession(token string) {
