@@ -34,6 +34,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -64,6 +65,15 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	app.Use(cors.New(config))
 	app.Use(recover.New())
+
+	encryptionKey, err := Api.GenerateToken(64)
+	if err != nil {
+		return err
+	}
+
+	app.Use(encryptcookie.New(encryptcookie.Config{
+		Key: encryptionKey[:32],
+	}))
 
 	if verboseOutput {
 		app.Use(logger.New())
@@ -99,7 +109,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	repo.Delete("/", repoApi.Remove)
 	repo.Put("/", repoApi.Update)
 
-	err := core.Setup()
+	err = core.Setup()
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)

@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"net/http"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/meltred/meltcd/internal/core/auth"
@@ -36,12 +37,18 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	token, err := GenerateToken(64)
+
 	if err != nil {
 		return c.SendStatus(http.StatusInternalServerError)
 	}
+
 	c.Cookie(&fiber.Cookie{
-		Name:  "authToken",
-		Value: token,
+		Name:     "authToken",
+		Value:    token,
+		Expires:  time.Now().Add(1 * time.Hour),
+		Secure:   true,
+		SameSite: "Strict",
+		HTTPOnly: true,
 	})
 
 	return c.Redirect("/")
@@ -54,5 +61,5 @@ func GenerateToken(n uint64) (string, error) {
 		return "", err
 	}
 
-	return base64.RawStdEncoding.EncodeToString(b), nil
+	return base64.StdEncoding.EncodeToString(b), nil
 }
