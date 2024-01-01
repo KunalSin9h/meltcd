@@ -101,7 +101,7 @@ export default function Sidebar({
       <div className="mb-2 flex flex-col gap-4">
         <Item
           name={user}
-          to={`/user/${user}`}
+          to={`/user`}
           icon={<UserIcon />}
           panelOpen={panelOpen}
         />
