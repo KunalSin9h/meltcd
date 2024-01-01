@@ -28,16 +28,11 @@ import Settings from "./Settings.tsx";
 import AppsDetail from "./Apps/AppDetail.tsx";
 import Logs from "./Logs.tsx";
 import LoginPage from "./components/auth/Login.tsx";
-import SignUp from "./components/auth/Signup.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
-  },
-  {
-    path: "/signup",
-    element: <SignUp />,
   },
   {
     path: "/",
