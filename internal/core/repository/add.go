@@ -79,12 +79,5 @@ func GetData() ([]byte, error) {
 }
 
 func LoadData(d *[]byte) error {
-	var repos []*Repository
-
-	if err := json.Unmarshal(*d, &repos); err != nil {
-		return err
-	}
-
-	repositories = repos
-	return nil
+	return json.Unmarshal(*d, &repositories)
 }

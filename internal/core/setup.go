@@ -21,14 +21,15 @@ import (
 	"path"
 
 	"github.com/charmbracelet/log"
+	"github.com/meltred/meltcd/internal/core/auth"
 	"github.com/meltred/meltcd/internal/core/repository"
 )
 
 const MELTCD_DIR = ".meltcd"                         //nolint
 const MELTCD_APPLICATIONS_FILE = "applications.json" //nolint
 const MELTCD_REPOSITORY_FILE = "repositories.json"   //nolint
-const LOG_DIR = "logs"                               //nolint
-const GENERAL_LOG_FILE = "general.log"               //nolint
+const MELTCD_AUTH_FILE = "auth.json"                 //nolint
+const MELTCD_SESSION_FILE = "session.json"           //nolint
 
 // Setup will setup require
 // settings to make use of MeltCD
@@ -53,26 +54,14 @@ func meltcdState() error {
 		if err != nil {
 			return err
 		}
-
-		logDir := path.Join(meltcdDir, LOG_DIR)
-		log.Info("Creating log directory", "logDir", logDir)
-		err := os.Mkdir(logDir, os.ModePerm)
-		if err != nil {
-			return err
-		}
-
-		generalLogFile := path.Join(logDir, GENERAL_LOG_FILE)
-		log.Info("Creating general log file", "log file", generalLogFile)
-		_, err = os.Create(generalLogFile)
-		if err != nil {
-			return err
-		}
 	}
 
-	applicationsFile := path.Join(meltcdDir, MELTCD_APPLICATIONS_FILE)
-	repositoryFile := path.Join(meltcdDir, MELTCD_REPOSITORY_FILE)
+	applicationsFile := getAppFile()
+	repositoryFile := getRepositoryFile()
+	authFile := getAuthFile()
+	sessionFile := getSessionFile()
 
-	for _, f := range []string{applicationsFile, repositoryFile} {
+	for _, f := range []string{applicationsFile, repositoryFile, authFile, sessionFile} {
 		_, err = os.Stat(f)
 		if err != nil {
 			log.Infof("Creating file: %s", f)
@@ -89,7 +78,7 @@ func meltcdState() error {
 	}
 
 	if err := loadRegistryData(&appData); err != nil {
-		log.Warn("Application state file is empty")
+		log.Warn("Application state file is empty", "error", err.Error())
 	}
 
 	repoData, err := os.ReadFile(repositoryFile)
@@ -98,7 +87,16 @@ func meltcdState() error {
 	}
 
 	if err := repository.LoadData(&repoData); err != nil {
-		log.Warn("Repository state file is empty")
+		log.Warn("Repository state file is empty", "error", err.Error())
+	}
+
+	authData, err := os.ReadFile(authFile)
+	if err != nil {
+		return err
+	}
+
+	if err := auth.LoadUsers(&authData); err != nil {
+		log.Warn("Auth file is empty", "error", err.Error())
 	}
 
 	return nil
@@ -106,7 +104,6 @@ func meltcdState() error {
 
 func ShutDown() error {
 	appFile := getAppFile()
-	repoFile := getRepositoryFile()
 
 	appData, err := getRegistryData()
 	if err != nil {
@@ -117,12 +114,25 @@ func ShutDown() error {
 		return err
 	}
 
+	repoFile := getRepositoryFile()
+
 	repoData, err := repository.GetData()
 	if err != nil {
 		return err
 	}
 
-	return os.WriteFile(repoFile, repoData, os.ModePerm)
+	if err := os.WriteFile(repoFile, repoData, os.ModePerm); err != nil {
+		return err
+	}
+
+	authFile := getAuthFile()
+
+	authData, err := auth.GetUsers()
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(authFile, *authData, os.ModePerm)
 }
 
 func getMeltcdDir() string {
@@ -145,4 +155,14 @@ func getAppFile() string {
 func getRepositoryFile() string {
 	meltcdDir := getMeltcdDir()
 	return path.Join(meltcdDir, MELTCD_REPOSITORY_FILE)
+}
+
+func getAuthFile() string {
+	meltcdDir := getMeltcdDir()
+	return path.Join(meltcdDir, MELTCD_AUTH_FILE)
+}
+
+func getSessionFile() string {
+	meltcdDir := getMeltcdDir()
+	return path.Join(meltcdDir, MELTCD_SESSION_FILE)
 }
