@@ -18,6 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ErrorIcon, Spinner, WarningIcon } from "../lib/icon";
 import { useEffect, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 type respData = {
   data: appData[];
@@ -34,10 +35,13 @@ type appData = {
 
 const fetchApps = (navigate: NavigateFunction): Promise<respData> =>
   fetch("/api/apps").then(async (resp) => {
-    console.log(resp.status);
     if (resp.status === 401) {
       navigate("/login");
+    } else if (resp.status !== 200) {
+      toast.error("Something wend wrong, server didn't respond with 200");
+      return;
     }
+
     return await resp.json();
   });
 

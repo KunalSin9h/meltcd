@@ -95,6 +95,9 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	api.Get("/", CheckAPIStatus)
 	api.Post("/login", Api.Login)
 
+	user := api.Group("user", middleware.VerifyUser)
+	user.Get("/", Api.GetUser)
+
 	apps := api.Group("apps", middleware.VerifyUser)
 	apps.Get("/", appApi.AllApplications)
 	apps.Post("/", appApi.Register)

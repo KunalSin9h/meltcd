@@ -102,7 +102,7 @@ info:
     name: Apache 2.0
     url: https://github.com/meltred/meltcd/blob/main/LICENSE
   title: Meltcd API
-  version: "0.5"
+  version: "0.6"
 paths:
   /:
     get:
@@ -363,6 +363,18 @@ paths:
       summary: Update a repository
       tags:
       - Repo
+  /user:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+      summary: Get username of current logged-in user
+      tags:
+      - User
 schemes:
 - http
 swagger: "2.0"

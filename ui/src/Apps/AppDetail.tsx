@@ -86,7 +86,13 @@ export default function AppsDetail() {
 
               toast.promise(request, {
                 loading: "Synchronizing application",
-                success: "Application synched successfully",
+                success: (resp) => {
+                  if (resp.status === 401) {
+                    navigate("/login");
+                  }
+
+                  return "Application synched successfully";
+                },
                 error: "Failed to sync application",
               });
             }}
@@ -145,6 +151,10 @@ function ShowAppDetails({ name }: { name: string | undefined }) {
   const fetchAppDetail = (): Promise<response> =>
     fetch(`/api/apps/${name}`).then(async (resp) => {
       const code = resp.status;
+      if (code === 401) {
+        navigate("/login");
+      }
+
       const data = await resp.json();
 
       return {
@@ -217,7 +227,12 @@ function ShowAppDetails({ name }: { name: string | undefined }) {
 
             toast.promise(request, {
               loading: `Creating application "${name}" again`,
-              success: `Created application "${name}"`,
+              success: (resp) => {
+                if (resp.status === 401) {
+                  navigate("/login");
+                }
+                return `Created application "${name}"`;
+              },
               error: "Failed to create application",
             });
           }}
@@ -249,6 +264,8 @@ function DeleteModal({
   deleteModal: boolean;
   setDeleteModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const navigate = useNavigate();
+
   if (name === undefined) {
     return null;
   }
@@ -284,7 +301,12 @@ function DeleteModal({
 
               toast.promise(request, {
                 loading: "Deleting application",
-                success: "Application deleted successfully",
+                success: (resp) => {
+                  if (resp.status === 401) {
+                    navigate("/login");
+                  }
+                  return "Application deleted successfully";
+                },
                 error: "Failed to delete application",
               });
 
@@ -311,6 +333,7 @@ function RecreateModal({
   recreateModal: boolean;
   setRecreateModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const navigate = useNavigate();
   if (name === undefined) {
     return null;
   }
@@ -346,7 +369,12 @@ function RecreateModal({
 
               toast.promise(request, {
                 loading: "Recreating application",
-                success: "Application recreated successfully",
+                success: (resp) => {
+                  if (resp.status === 401) {
+                    navigate("/login");
+                  }
+                  return "Application recreated successfully";
+                },
                 error: "Failed to recreate application",
               });
 

@@ -17,6 +17,7 @@ limitations under the License.
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { CloseIcon } from "../lib/icon";
+import { useNavigate } from "react-router-dom";
 
 type globalResponseData = {
   message: string;
@@ -91,6 +92,8 @@ function CreateApplication({
   setRefresh: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenWindow: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const navigate = useNavigate();
+
   const initialData = {
     name: "",
     refresh_timer: "3m0s",
@@ -118,6 +121,9 @@ function CreateApplication({
       loading: "Creating new application",
       success: (res) => {
         let good = true;
+        if (res.status === 401) {
+          navigate("/login");
+        }
         if (res.status !== 200) {
           good = false;
         }
