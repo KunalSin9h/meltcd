@@ -17,7 +17,7 @@ limitations under the License.
 import { useQuery } from "@tanstack/react-query";
 import { ErrorIcon, Spinner, WarningIcon } from "../lib/icon";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 type respData = {
   data: appData[];
@@ -32,17 +32,23 @@ type appData = {
   updated_at: string;
 };
 
-const fetchApps = (): Promise<respData> =>
-  fetch("/api/apps").then(async (resp) => await resp.json());
-
-export default function AllApplications({ refresh }: { refresh: boolean }) {
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["GET /api/apps", "GET_ALL_APPLICATIONS"],
-    queryFn: fetchApps,
+const fetchApps = (navigate: NavigateFunction): Promise<respData> =>
+  fetch("/api/apps").then(async (resp) => {
+    console.log(resp.status);
+    if (resp.status === 401) {
+      navigate("/login");
+    }
+    return await resp.json();
   });
 
+export default function AllApplications({ refresh }: { refresh: boolean }) {
   const navigate = useNavigate(); // react router dom navigator for programmatically
   // navigate, used here to go to specific application
+
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["GET /api/apps", "GET_ALL_APPLICATIONS"],
+    queryFn: () => fetchApps(navigate),
+  });
 
   // fetching the current status of application on regular interval
   useEffect(() => {

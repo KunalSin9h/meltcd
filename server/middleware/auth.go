@@ -10,12 +10,12 @@ import (
 func VerifyUser(c *fiber.Ctx) error {
 	authToken := c.Cookies("authToken", "")
 	if authToken == "" {
-		c.Status(http.StatusUnauthorized).SendString("missing authentication token, login first")
+		return c.Status(http.StatusUnauthorized).SendString("missing authentication token, login first")
 	}
 
 	username, tokenExists := auth.VerifySession(authToken)
 	if !tokenExists {
-		c.Status(http.StatusUnauthorized).SendString("missing authentication token, login first")
+		return c.Status(http.StatusUnauthorized).SendString("missing authentication token, login first")
 	}
 
 	c.Locals("username", username)

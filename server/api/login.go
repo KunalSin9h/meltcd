@@ -37,7 +37,6 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	token, err := GenerateToken(64)
-
 	if err != nil {
 		return c.SendStatus(http.StatusInternalServerError)
 	}
