@@ -8,7 +8,7 @@ import (
 type Session struct {
 	Token      string    `json:"authToken"`
 	Username   string    `json:"username"`
-	ExpireTime time.Time `json:"expire_time"`
+	ExpireTime time.Time `json:"expireTime"`
 }
 
 var sessions []*Session
