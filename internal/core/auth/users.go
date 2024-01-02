@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/gofiber/fiber/v2/log"
 	authPass "github.com/meltred/meltcd/internal/core/auth/password"
 )
 
@@ -87,6 +88,33 @@ func InsertUser(username, password string, role UserRole) error {
 
 	users = append(users, &user)
 	return nil
+}
+
+func ChangePassword(username, currentPassword, newPassword string) bool {
+	log.Info("Changing password for user", "username", username)
+	for _, user := range users {
+		if user.Username == username {
+			log.Info("user found", "username", username)
+			match, err := authPass.ComparePasswordAndHash(currentPassword, user.PasswordHash)
+			if err != nil {
+				return false
+			}
+			if !match {
+				return false
+			}
+
+			newHash, err := authPass.GenerateFromPassword(newPassword, &argon2Param)
+			if err != nil {
+				return false
+			}
+
+			user.PasswordHash = newHash
+			log.Info("Changed password", "username", username)
+			return true
+		}
+	}
+
+	return false
 }
 
 func UserLoginUpdateTime(username string) {

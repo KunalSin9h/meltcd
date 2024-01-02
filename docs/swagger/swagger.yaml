@@ -1,5 +1,12 @@
 basePath: /api
 definitions:
+  api.ChangePasswordBody:
+    properties:
+      currentPassword:
+        type: string
+      newPassword:
+        type: string
+    type: object
   app.GlobalResponse:
     properties:
       message:
@@ -402,6 +409,25 @@ paths:
           schema:
             $ref: '#/definitions/auth.AllUsers'
       summary: Get all the users
+      tags:
+      - Users
+  /users/{username}:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Change password body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.ChangePasswordBody'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Change password of user
       tags:
       - Users
   /users/current:
