@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import getTitle from "../../lib/getTitle";
+import MeltcdBranding from "../Branding";
 
 export default function LoginPage() {
   useEffect(() => {
@@ -9,14 +10,7 @@ export default function LoginPage() {
   return (
     <div className="h-screen bg-rootBg flex items-center justify-center">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0">
-        <div className="flex items-center mb-6 text-2xl font-semibold text-white">
-          <img
-            className="w-8 h-8 mr-2 select-none"
-            src="/logo.png"
-            alt="Meltcd logo"
-          />
-          Meltcd
-        </div>
+        <MeltcdBranding />
         <div className="rounded-lg shadow border border-gray-700 bg-sidebar">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl text-white md:px-8">
