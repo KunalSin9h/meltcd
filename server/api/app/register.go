@@ -42,9 +42,6 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	// clearing the current state, so it can be fetch again
-	app.LiveState = ""
-
 	if err := core.Register(&app); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(GlobalResponse{
 			Message: err.Error(),

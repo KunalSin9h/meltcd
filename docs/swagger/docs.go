@@ -419,10 +419,26 @@ const docTemplate = `{
                 }
             }
         },
-        "/user": {
+        "/users": {
             "get": {
                 "tags": [
-                    "User"
+                    "Users"
+                ],
+                "summary": "Get all the users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/auth.AllUsers"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/current": {
+            "get": {
+                "tags": [
+                    "Users"
                 ],
                 "summary": "Get username of current logged-in user",
                 "responses": {
@@ -437,9 +453,50 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/{username}": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Change password of user",
+                "parameters": [
+                    {
+                        "description": "Change password body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.ChangePasswordBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "api.ChangePasswordBody": {
+            "type": "object",
+            "properties": {
+                "currentPassword": {
+                    "type": "string"
+                },
+                "newPassword": {
+                    "type": "string"
+                }
+            }
+        },
         "app.GlobalResponse": {
             "type": "object",
             "properties": {
@@ -509,6 +566,52 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "auth.AllUsers": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/auth.User"
+                    }
+                }
+            }
+        },
+        "auth.User": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "lastLoggedIn": {
+                    "type": "string"
+                },
+                "passwordHash": {
+                    "description": "hash passwords",
+                    "type": "string"
+                },
+                "rol": {
+                    "$ref": "#/definitions/auth.UserRole"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.UserRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "general"
+            ],
+            "x-enum-varnames": [
+                "Admin",
+                "General"
+            ]
         },
         "core.AppList": {
             "type": "object",

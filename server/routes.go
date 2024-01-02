@@ -67,7 +67,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	app.Use(cors.New(config))
 	app.Use(recover.New())
 
-	encryptionKey, err := Api.GenerateToken(64)
+	encryptionKey, err := Api.GenerateToken(32)
 	if err != nil {
 		return err
 	}
@@ -95,8 +95,10 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	api.Get("/", CheckAPIStatus)
 	api.Post("/login", Api.Login)
 
-	user := api.Group("user", middleware.VerifyUser)
-	user.Get("/", Api.GetUser)
+	users := api.Group("users", middleware.VerifyUser)
+	users.Get("/", Api.GetUsers)
+	users.Get("/current", Api.GetUsername)
+	users.Patch("/:username", Api.ChangePassword)
 
 	apps := api.Group("apps", middleware.VerifyUser)
 	apps.Get("/", appApi.AllApplications)

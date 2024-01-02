@@ -36,13 +36,15 @@ func Login(c *fiber.Ctx) error {
 		return c.SendStatus(http.StatusUnauthorized)
 	}
 
-	token, err := GenerateToken(64)
+	token, err := GenerateToken(32)
 	if err != nil {
 		return c.SendStatus(http.StatusInternalServerError)
 	}
 
 	expireTime := time.Now().Add(1 * time.Hour)
-	auth.AddSession(token, username, expireTime)
+	go auth.AddSession(token, username, expireTime)
+
+	go auth.UserLoginUpdateTime(username)
 
 	c.Cookie(&fiber.Cookie{
 		Name:     "authToken",

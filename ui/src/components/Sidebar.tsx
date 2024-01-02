@@ -35,10 +35,10 @@ export default function Sidebar({
   setOpenHelpPanel: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [panelOpen, setPanelOpen] = useState(true);
-  const [user, setUser] = useState("Admin");
+  const [user, setUser] = useState<string | null>();
 
   useEffect(() => {
-    setUser(localStorage.getItem("username") as string);
+    setUser(localStorage.getItem("username"));
   }, [user]);
 
   window.onresize = () => {
@@ -99,12 +99,14 @@ export default function Sidebar({
         <Item name="Logs" to="/logs" icon={<LogIcon />} panelOpen={panelOpen} />
       </div>
       <div className="mb-2 flex flex-col gap-4">
-        <Item
-          name={user}
-          to={`/user`}
-          icon={<UserIcon />}
-          panelOpen={panelOpen}
-        />
+        {user ? (
+          <Item
+            name={user}
+            to="/users"
+            icon={<UserIcon />}
+            panelOpen={panelOpen}
+          />
+        ) : null}
         <Item
           name="Settings"
           to="/settings"
