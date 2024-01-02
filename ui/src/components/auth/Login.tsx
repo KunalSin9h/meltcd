@@ -1,8 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import getTitle from "../../lib/getTitle";
 import MeltcdBranding from "../Branding";
+import { Spinner } from "../../lib/icon";
+// import { Spinner } from "../../lib/icon";
 
 export default function LoginPage() {
+  const [showSpinner, setShowSpinner] = useState(false);
+
   useEffect(() => {
     document.title = getTitle("Login");
   });
@@ -56,8 +60,17 @@ export default function LoginPage() {
               <button
                 type="submit"
                 className="w-full bg-sidebarLite hover:bg-sidebarLite/70 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                onClick={() => {
+                  setShowSpinner(true);
+                }}
               >
-                Sign in
+                {showSpinner ? (
+                  <div className="flex justify-center items-center">
+                    <Spinner />
+                  </div>
+                ) : (
+                  "Sing in"
+                )}
               </button>
             </form>
           </div>
