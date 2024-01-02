@@ -23,7 +23,7 @@ import Apps from "./Apps/Apps.tsx";
 import Layout from "./components/Layout.tsx";
 import Repos from "./Repos.tsx";
 import Secrets from "./Secrets.tsx";
-import User from "./User/User.tsx";
+import Users from "./User/User.tsx";
 import Settings from "./Settings.tsx";
 import AppsDetail from "./Apps/AppDetail.tsx";
 import Logs from "./Logs.tsx";
@@ -48,7 +48,7 @@ const router = createBrowserRouter([
       },
       { path: "/repos", element: <Repos /> },
       { path: "/secrets", element: <Secrets /> },
-      { path: "/users", element: <User /> },
+      { path: "/users", element: <Users /> },
       { path: "/settings", element: <Settings /> },
       { path: "/logs", element: <Logs /> },
     ],

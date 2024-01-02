@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/gofiber/fiber/v2/log"
+	"github.com/charmbracelet/log"
 	authPass "github.com/meltred/meltcd/internal/core/auth/password"
 )
 

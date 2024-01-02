@@ -24,7 +24,7 @@ import MeltcdBranding from "./Branding";
 
 export default function Layout() {
   const [openHelpPanel, setOpenHelpPanel] = useState(false);
-  const [login, setLogin] = useState(true);
+  const [login, setLogin] = useState(false);
   const navigate = useNavigate();
 
   // check login here
@@ -41,7 +41,7 @@ export default function Layout() {
 
           // username will be the 404 page of react-router-don in local vite dev environment
           // so check if the username is valid and return from the function
-          if (username.length != 1) {
+          if (username.split(" ").length != 1) {
             return;
           }
 

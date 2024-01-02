@@ -26,6 +26,7 @@ import {
   WarningIcon,
 } from "../lib/icon";
 import { GetSinceTime, MessageWithIcon } from "../Apps/AllApplications";
+import { toast } from "react-hot-toast";
 
 type RespData = {
   data: User[];
@@ -49,7 +50,7 @@ const fetchApps = (navigate: NavigateFunction): Promise<RespData> =>
     return await resp.json();
   });
 
-export default function User() {
+export default function Users() {
   useEffect(() => {
     document.title = getTitle("Users");
   }, []);
@@ -77,60 +78,6 @@ export default function User() {
 }
 
 function AllUsers() {
-  /*
-  const data: RespData = {
-    data: [
-      {
-        username: "kunalsin9h",
-        rol: "admin",
-        createdAt: "2023-12-16T13:51:18.322639334Z",
-        updatedAt: "2023-12-16T13:51:18.322639334Z",
-        passwordHash: "2023-12-16T13:51:18.322639334Z",
-        lastLoggedIn: "2023-12-16T13:51:18.322639334Z",
-      },
-      {
-        username: "admin",
-        rol: "general",
-        createdAt: "2023-12-16T13:51:18.322639334Z",
-        updatedAt: "2023-12-16T13:51:18.322639334Z",
-        passwordHash: "2023-12-16T13:51:18.322639334Z",
-        lastLoggedIn: "2023-12-16T13:51:18.322639334Z",
-      },
-      {
-        username: "anmol",
-        rol: "general",
-        createdAt: "2023-12-16T13:51:18.322639334Z",
-        updatedAt: "2023-12-16T13:51:18.322639334Z",
-        passwordHash: "2023-12-16T13:51:18.322639334Z",
-        lastLoggedIn: "2023-12-16T13:51:18.322639334Z",
-      },
-      {
-        username: "ritesh_sukla",
-        rol: "general",
-        createdAt: "2023-12-16T13:51:18.322639334Z",
-        updatedAt: "2023-12-16T13:51:18.322639334Z",
-        passwordHash: "2023-12-16T13:51:18.322639334Z",
-        lastLoggedIn: "2023-12-16T13:51:18.322639334Z",
-      },
-      {
-        username: "ritesh_sukla",
-        rol: "general",
-        createdAt: "2023-12-16T13:51:18.322639334Z",
-        updatedAt: "2023-12-16T13:51:18.322639334Z",
-        passwordHash: "2023-12-16T13:51:18.322639334Z",
-        lastLoggedIn: "2023-12-16T13:51:18.322639334Z",
-      },
-      {
-        username: "ritesh_sukla",
-        rol: "general",
-        createdAt: "2023-12-16T13:51:18.322639334Z",
-        updatedAt: "2023-12-16T13:51:18.322639334Z",
-        passwordHash: "2023-12-16T13:51:18.322639334Z",
-        lastLoggedIn: "2023-12-16T13:51:18.322639334Z",
-      },
-    ],
-  };
-  */
   const navigate = useNavigate();
 
   const { data, isLoading, isError } = useQuery({
@@ -155,7 +102,7 @@ function AllUsers() {
     return <MessageWithIcon icon={<WarningIcon />} message="No Users" />;
   }
   return (
-    <ul className="xl:w-[70%] mx-auto">
+    <ul className="xl:w-[70%] mx-auto h-screen">
       <li>
         {data.data.map((user, index) => (
           <div
@@ -178,7 +125,7 @@ function AllUsers() {
                   </span>
                 ) : null}
               </div>
-              <EditUser user={user} />
+              <EditUser username={user.username} />
             </div>
             <div className="md:flex md:items-center md:justify-start mt-4 text-sm md:gap-8">
               <div>
@@ -201,8 +148,7 @@ function AllUsers() {
   );
 }
 
-function EditUser({ user }: { user: User }) {
-  console.log(user.username);
+function EditUser({ username }: { username: string }) {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [currentPass, setCurrentPass] = useState("");
   const [newPass, setNewPass] = useState("");
@@ -283,8 +229,35 @@ function EditUser({ user }: { user: User }) {
               `}
               onClick={(e) => {
                 e.preventDefault();
-
                 if (newPass !== newPassConfirm) return;
+
+                const passApi = `/api/users/${username}`;
+
+                const req = fetch(passApi, {
+                  method: "PATCH",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    currentPassword: currentPass,
+                    newPassword: newPass,
+                  }),
+                });
+
+                toast.promise(req, {
+                  loading: "Changing password",
+                  success: (res) => {
+                    if (res.status === 200) {
+                      setOpenEditModal(false);
+                      return "Password changed successfully";
+                    } else {
+                      toast.error("Bad request, try again!");
+                    }
+
+                    return "Executing task";
+                  },
+                  error: "Failed to change password, try again!",
+                });
               }}
             >
               Change Password

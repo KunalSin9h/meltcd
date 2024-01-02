@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -53,7 +52,6 @@ type ChangePasswordBody struct {
 //	@router		/users/{username} [patch]
 func ChangePassword(c *fiber.Ctx) error {
 	username := c.Params("username")
-	fmt.Println(username)
 
 	var reqPay ChangePasswordBody
 
