@@ -67,7 +67,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	app.Use(cors.New(config))
 	app.Use(recover.New())
 
-	encryptionKey, err := Api.GenerateToken(64)
+	encryptionKey, err := Api.GenerateToken(32)
 	if err != nil {
 		return err
 	}
