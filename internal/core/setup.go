@@ -29,7 +29,6 @@ const MELTCD_DIR = ".meltcd"                         //nolint
 const MELTCD_APPLICATIONS_FILE = "applications.json" //nolint
 const MELTCD_REPOSITORY_FILE = "repositories.json"   //nolint
 const MELTCD_AUTH_FILE = "auth.json"                 //nolint
-const MELTCD_SESSION_FILE = "session.json"           //nolint
 
 // Setup will setup require
 // settings to make use of MeltCD
@@ -59,8 +58,6 @@ func meltcdState() error {
 	applicationsFile := getAppFile()
 	repositoryFile := getRepositoryFile()
 	authFile := getAuthFile()
-	sessionFile := getSessionFile()
-
 	// When creating a fresh auth file (db) insert admin:admin username and password
 	_, err = os.Stat(authFile)
 	if err != nil {
@@ -76,7 +73,7 @@ func meltcdState() error {
 		}
 	}
 
-	for _, f := range []string{applicationsFile, repositoryFile, sessionFile} {
+	for _, f := range []string{applicationsFile, repositoryFile} {
 		_, err = os.Stat(f)
 		if err != nil {
 			log.Infof("Creating file: %s", f)
@@ -175,9 +172,4 @@ func getRepositoryFile() string {
 func getAuthFile() string {
 	meltcdDir := getMeltcdDir()
 	return path.Join(meltcdDir, MELTCD_AUTH_FILE)
-}
-
-func getSessionFile() string {
-	meltcdDir := getMeltcdDir()
-	return path.Join(meltcdDir, MELTCD_SESSION_FILE)
 }

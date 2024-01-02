@@ -16,32 +16,50 @@ limitations under the License.
 
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { LinkIcon } from "../lib/icon";
 import version from "../version";
+import MeltcdBranding from "./Branding";
 
 export default function Layout() {
   const [openHelpPanel, setOpenHelpPanel] = useState(false);
+  const [login, setLogin] = useState(false);
   const navigate = useNavigate();
 
   // check login here
   // and if not authorized then redirect to /login
   useEffect(() => {
     const getUser = async () => {
-      const res = await fetch("/api/user");
+      try {
+        const res = await fetch("/api/user");
 
-      if (res.status === 401) {
-        navigate("/login");
-      } else if (res.status === 200) {
-        const username = await res.text();
-        localStorage.setItem("username", username);
-        navigate("/apps");
+        if (res.status === 401) {
+          navigate("/login");
+        } else if (res.status === 200) {
+          const username = await res.text();
+          localStorage.setItem("username", username);
+          setLogin(true);
+          navigate("/apps");
+        } else {
+          toast.error("Something wend wrong, server does not respond with 200");
+        }
+      } catch (err) {
+        console.log(err);
+        toast.error("Something wend wrong, is server running?");
       }
     };
 
     getUser();
   }, [navigate]);
+
+  if (!login) {
+    return (
+      <div className="h-screen w-screen fixed top-0 left-0 bg-inherit flex justify-center items-center">
+        <MeltcdBranding />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-row h-screen w-screen overflow-hidden">

@@ -163,6 +163,8 @@ func loadRegistryData(d *[]byte) error {
 }
 
 func RemoveApplication(appName string) error {
+	go removeSvcFromApps(appName)
+
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		return err
@@ -197,8 +199,6 @@ func RemoveApplication(appName string) error {
 		}
 	}
 
-	removeSvcFromApps(appName)
-
 	return nil
 }
 
@@ -225,6 +225,9 @@ func Recreate(appName string) error {
 		return err
 	}
 	log.Info("Removed application", "app_name", appName)
+
+	// clearing the current state, so it can be recreated
+	data.LiveState = ""
 
 	return Register(&data)
 }
