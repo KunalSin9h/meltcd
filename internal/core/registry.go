@@ -221,13 +221,13 @@ func Recreate(appName string) error {
 	}
 	log.Info("Got details of application", "app_name", appName)
 
-	// clearing the current state, so it can be recreated
-	data.LiveState = ""
-
 	if err := RemoveApplication(appName); err != nil {
 		return err
 	}
 	log.Info("Removed application", "app_name", appName)
+
+	// clearing the current state, so it can be recreated
+	data.LiveState = ""
 
 	return Register(&data)
 }
