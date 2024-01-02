@@ -46,6 +46,9 @@ func Register(app *application.Application) error {
 	app.UpdatedAt = timeOfCreation
 	app.LastSyncedAt = timeOfCreation
 
+	// clearing the current state, so it can be fetch again
+	app.LiveState = ""
+
 	go app.Run()
 	Applications = append(Applications, app)
 
@@ -225,9 +228,6 @@ func Recreate(appName string) error {
 		return err
 	}
 	log.Info("Removed application", "app_name", appName)
-
-	// clearing the current state, so it can be recreated
-	data.LiveState = ""
 
 	return Register(&data)
 }
