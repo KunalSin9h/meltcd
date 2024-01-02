@@ -156,7 +156,7 @@ function getBgColorForHealth(health: string): string {
   }
 }
 
-function GetSinceTime({ time }: { time: string }) {
+export function GetSinceTime({ time }: { time: string }) {
   const [currentTime, setCurrentTime] = useState(Date.now());
 
   useEffect(() => {
@@ -168,6 +168,12 @@ function GetSinceTime({ time }: { time: string }) {
       clearInterval(refreshTimer);
     };
   }, []);
+
+  // Time means time is not set by backend, or empty time
+  // we we must not show time
+  if (time === "0001-01-01T00:00:00Z") {
+    return <span className="opacity-90">N/A</span>;
+  }
 
   const t = new Date(time);
   const elapsed = currentTime - t.getTime();

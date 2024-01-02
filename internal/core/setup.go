@@ -67,7 +67,7 @@ func meltcdState() error {
 			return err
 		}
 		log.Info("Creating default user", "username", "admin", "password", "admin")
-		if err := auth.InsertUser("admin", "admin"); err != nil {
+		if err := auth.InsertUser("admin", "admin", auth.Admin); err != nil {
 			log.Error("Failed to create default user")
 			return err
 		}

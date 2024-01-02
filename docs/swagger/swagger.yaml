@@ -48,6 +48,37 @@ definitions:
       targetRevision:
         type: string
     type: object
+  auth.AllUsers:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/auth.User'
+        type: array
+    type: object
+  auth.User:
+    properties:
+      createdAt:
+        type: string
+      lastLoggedIn:
+        type: string
+      passwordHash:
+        description: hash passwords
+        type: string
+      rol:
+        $ref: '#/definitions/auth.UserRole'
+      updatedAt:
+        type: string
+      username:
+        type: string
+    type: object
+  auth.UserRole:
+    enum:
+    - admin
+    - general
+    type: string
+    x-enum-varnames:
+    - Admin
+    - General
   core.AppList:
     properties:
       data:
@@ -363,7 +394,17 @@ paths:
       summary: Update a repository
       tags:
       - Repo
-  /user:
+  /users:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.AllUsers'
+      summary: Get all the users
+      tags:
+      - Users
+  /users/current:
     get:
       responses:
         "200":
@@ -374,7 +415,7 @@ paths:
           description: Unauthorized
       summary: Get username of current logged-in user
       tags:
-      - User
+      - Users
 schemes:
 - http
 swagger: "2.0"

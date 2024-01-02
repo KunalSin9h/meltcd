@@ -24,7 +24,7 @@ import MeltcdBranding from "./Branding";
 
 export default function Layout() {
   const [openHelpPanel, setOpenHelpPanel] = useState(false);
-  const [login, setLogin] = useState(false);
+  const [login, setLogin] = useState(true);
   const navigate = useNavigate();
 
   // check login here
@@ -32,12 +32,19 @@ export default function Layout() {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const res = await fetch("/api/user");
+        const res = await fetch("/api/users/current");
 
         if (res.status === 401) {
           navigate("/login");
         } else if (res.status === 200) {
           const username = await res.text();
+
+          // username will be the 404 page of react-router-don in local vite dev environment
+          // so check if the username is valid and return from the function
+          if (username.length != 1) {
+            return;
+          }
+
           localStorage.setItem("username", username);
           setLogin(true);
           navigate("/apps");
@@ -45,7 +52,6 @@ export default function Layout() {
           toast.error("Something wend wrong, server does not respond with 200");
         }
       } catch (err) {
-        console.log(err);
         toast.error("Something wend wrong, is server running?");
       }
     };

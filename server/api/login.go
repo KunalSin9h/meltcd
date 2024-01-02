@@ -44,6 +44,8 @@ func Login(c *fiber.Ctx) error {
 	expireTime := time.Now().Add(1 * time.Hour)
 	go auth.AddSession(token, username, expireTime)
 
+	go auth.UserLoginUpdateTime(username)
+
 	c.Cookie(&fiber.Cookie{
 		Name:     "authToken",
 		Value:    token,

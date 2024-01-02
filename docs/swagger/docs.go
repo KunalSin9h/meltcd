@@ -419,10 +419,26 @@ const docTemplate = `{
                 }
             }
         },
-        "/user": {
+        "/users": {
             "get": {
                 "tags": [
-                    "User"
+                    "Users"
+                ],
+                "summary": "Get all the users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/auth.AllUsers"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/current": {
+            "get": {
+                "tags": [
+                    "Users"
                 ],
                 "summary": "Get username of current logged-in user",
                 "responses": {
@@ -509,6 +525,52 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "auth.AllUsers": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/auth.User"
+                    }
+                }
+            }
+        },
+        "auth.User": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "lastLoggedIn": {
+                    "type": "string"
+                },
+                "passwordHash": {
+                    "description": "hash passwords",
+                    "type": "string"
+                },
+                "rol": {
+                    "$ref": "#/definitions/auth.UserRole"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.UserRole": {
+            "type": "string",
+            "enum": [
+                "admin",
+                "general"
+            ],
+            "x-enum-varnames": [
+                "Admin",
+                "General"
+            ]
         },
         "core.AppList": {
             "type": "object",
