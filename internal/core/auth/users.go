@@ -39,7 +39,7 @@ type AllUsers struct {
 }
 
 func GetAllUsers() AllUsers {
-	var all []User
+	all := make([]User, 0)
 
 	for _, user := range users {
 		all = append(all, user.getPublicData())
