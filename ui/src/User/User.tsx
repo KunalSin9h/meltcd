@@ -105,47 +105,45 @@ function AllUsers() {
 
   return (
     <ul className="xl:w-[70%] mx-auto">
-      <li>
-        {data.data.map((user, index) => (
-          <div
-            key={index}
-            className="p-2 md:p-4 my-2 md:my-4 rounded bg-[#373d49]/30"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex  items-center justify-center">
-                <span className="md:font-bold md:text-xl mr-1 md:mr-4">
-                  {user.username}
+      {data.data.map((user, index) => (
+        <li
+          key={index}
+          className="p-2 md:p-4 my-2 md:my-4 rounded bg-[#373d49]/30"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex  items-center justify-center">
+              <span className="md:font-bold md:text-xl mr-1 md:mr-4">
+                {user.username}
+              </span>
+              {user.role === "admin" ? (
+                <span className="text-xs text-green-400 font-semibold rounded-lg py-1 px-2  bg-green-400/20 mr-1 md:mr-4">
+                  admin
                 </span>
-                {user.role === "admin" ? (
-                  <span className="text-xs text-green-400 font-semibold rounded-lg py-1 px-2  bg-green-400/20 mr-1 md:mr-4">
-                    admin
-                  </span>
-                ) : null}
-                {localStorage.getItem("username") === user.username ? (
-                  <span className="text-xs text-yellow-400 font-semibold rounded-lg py-1 px-2 bg-yellow-400/20">
-                    you
-                  </span>
-                ) : null}
-              </div>
-              <EditUser username={user.username} refetch={refetch} />
+              ) : null}
+              {localStorage.getItem("username") === user.username ? (
+                <span className="text-xs text-yellow-400 font-semibold rounded-lg py-1 px-2 bg-yellow-400/20">
+                  you
+                </span>
+              ) : null}
             </div>
-            <div className="md:flex md:items-center md:justify-start mt-4 text-sm md:gap-8">
-              <div>
-                <span className="opacity-50">Last Logged-In: </span>
-                <GetSinceTime time={user.lastLoggedIn} />
-              </div>
-              <div>
-                <span className="opacity-50">Updated: </span>
-                <GetSinceTime time={user.updatedAt} />
-              </div>{" "}
-              <div>
-                <span className="opacity-50">Created: </span>
-                <GetSinceTime time={user.createdAt} />
-              </div>
+            <EditUser username={user.username} refetch={refetch} />
+          </div>
+          <div className="md:flex md:items-center md:justify-start mt-4 text-sm md:gap-8">
+            <div>
+              <span className="opacity-50">Last Logged-In: </span>
+              <GetSinceTime time={user.lastLoggedIn} />
+            </div>
+            <div>
+              <span className="opacity-50">Updated: </span>
+              <GetSinceTime time={user.updatedAt} />
+            </div>{" "}
+            <div>
+              <span className="opacity-50">Created: </span>
+              <GetSinceTime time={user.createdAt} />
             </div>
           </div>
-        ))}
-      </li>
+        </li>
+      ))}
     </ul>
   );
 }
