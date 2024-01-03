@@ -177,6 +177,16 @@ func StoreAccessToken(token string) error {
 	return nil
 }
 
+func GetAccessToken() string {
+	file := getAccessTokenFile()
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return ""
+	}
+
+	return string(data)
+}
+
 func getAppFile() string {
 	meltcdDir := getMeltcdDir()
 	return path.Join(meltcdDir, MELTCD_APPLICATIONS_FILE)

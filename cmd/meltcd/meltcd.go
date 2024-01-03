@@ -20,10 +20,17 @@ import (
 	"log"
 
 	"github.com/meltred/meltcd/cmd/meltcd/app"
+	"github.com/meltred/meltcd/internal/core"
 	"github.com/meltred/meltcd/version"
 
 	"github.com/spf13/cobra"
 )
+
+var ACCESS_TOKEN string
+
+func init() {
+	ACCESS_TOKEN = core.GetAccessToken()
+}
 
 // NewApplication creates a new cli app
 // This cli app can be used to start the api server
