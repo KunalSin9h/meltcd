@@ -117,6 +117,20 @@ func ChangePassword(username, currentPassword, newPassword string) bool {
 	return false
 }
 
+func ChangeUsername(username, newUsername string) bool {
+	log.Info("Changing username", "user", username, "new username", newUsername)
+
+	for _, user := range users {
+		if user.Username == username {
+			user.Username = newUsername
+			log.Info("Username changed", "user", newUsername)
+			return true
+		}
+	}
+
+	return false
+}
+
 func UserLoginUpdateTime(username string) {
 	for _, user := range users {
 		if user.Username == username {

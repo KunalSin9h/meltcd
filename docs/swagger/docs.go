@@ -454,7 +454,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{username}": {
+        "/users/{username}/password": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -483,6 +483,36 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/{username}/username": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Change username of user",
+                "parameters": [
+                    {
+                        "description": "Change username body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.ChangeUsernameBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -493,6 +523,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "newPassword": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.ChangeUsernameBody": {
+            "type": "object",
+            "properties": {
+                "newUsername": {
                     "type": "string"
                 }
             }

@@ -98,7 +98,8 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	users := api.Group("users", middleware.VerifyUser)
 	users.Get("/", Api.GetUsers)
 	users.Get("/current", Api.GetUsername)
-	users.Patch("/:username", Api.ChangePassword)
+	users.Patch("/:username/password", Api.ChangePassword)
+	users.Patch("/:username/username", Api.ChangeUsername)
 
 	apps := api.Group("apps", middleware.VerifyUser)
 	apps.Get("/", appApi.AllApplications)

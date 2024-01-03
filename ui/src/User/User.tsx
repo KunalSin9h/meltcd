@@ -231,7 +231,7 @@ function EditUser({ username }: { username: string }) {
                 e.preventDefault();
                 if (newPass !== newPassConfirm) return;
 
-                const passApi = `/api/users/${username}`;
+                const passApi = `/api/users/${username}/password`;
 
                 const req = fetch(passApi, {
                   method: "PATCH",

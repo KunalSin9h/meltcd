@@ -7,6 +7,11 @@ definitions:
       newPassword:
         type: string
     type: object
+  api.ChangeUsernameBody:
+    properties:
+      newUsername:
+        type: string
+    type: object
   app.GlobalResponse:
     properties:
       message:
@@ -411,7 +416,7 @@ paths:
       summary: Get all the users
       tags:
       - Users
-  /users/{username}:
+  /users/{username}/password:
     patch:
       consumes:
       - application/json
@@ -428,6 +433,25 @@ paths:
         "400":
           description: Bad Request
       summary: Change password of user
+      tags:
+      - Users
+  /users/{username}/username:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Change username body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.ChangeUsernameBody'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Change username of user
       tags:
       - Users
   /users/current:
