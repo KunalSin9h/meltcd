@@ -1,5 +1,14 @@
 # CLI Commands
 
+0. Login [DONE]
+
+```bash
+meltcd login
+
+# Get access token using --show-token flag
+meltcd login --show-token
+```
+
 1. Create a new `Application` [DONE]
 
 ```bash
@@ -51,7 +60,7 @@ meltcd app refresh <app-name>
 meltcd app sync <app-name>
 ```
 
-7. Recreate application [TODO]
+7. Recreate application [DONE]
 
 ```bash
 meltcd app recreate <app-name>

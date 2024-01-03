@@ -25,6 +25,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/meltred/meltcd/server"
 	"github.com/meltred/meltcd/server/api/app"
 	"github.com/meltred/meltcd/server/api/repo"
 	"github.com/meltred/meltcd/util"
@@ -50,11 +51,20 @@ func addPrivateGitRepository(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	res, err := http.Post(fmt.Sprintf("%s/api/repo", util.GetServer()), "application/json", buf)
+	req, client, err := server.HTTPRequestWithBearerToken(http.MethodPost, fmt.Sprintf("%s/api/repo", util.GetServer()), buf, true)
+	if err != nil {
+		return err
+	}
+
+	res, err := client.Do(req)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode == http.StatusUnauthorized {
+		return server.ReadAuthError(res.Body)
+	}
 
 	var resBody app.GlobalResponse
 	if err := json.NewDecoder(res.Body).Decode(&resBody); err != nil {
@@ -70,11 +80,19 @@ func addPrivateGitRepository(cmd *cobra.Command, args []string) error {
 }
 
 func getAllRepoAdded(_ *cobra.Command, _ []string) error {
-	res, err := http.Get(fmt.Sprintf("%s/api/repo", util.GetServer()))
+	req, client, err := server.HTTPRequestWithBearerToken(http.MethodGet, fmt.Sprintf("%s/api/repo", util.GetServer()), nil, false)
+	if err != nil {
+		return err
+	}
+	res, err := client.Do(req)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode == http.StatusUnauthorized {
+		return server.ReadAuthError(res.Body)
+	}
 
 	var resData repo.ListData
 	if err := json.NewDecoder(res.Body).Decode(&resData); err != nil {
@@ -105,13 +123,9 @@ func removePrivateRepo(_ *cobra.Command, args []string) error {
 		return err
 	}
 
-	client := &http.Client{}
-
-	request, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("%s/api/repo", util.GetServer()), buf)
-	request.Header.Add("Content-Type", "application/json")
-
+	request, client, err := server.HTTPRequestWithBearerToken(http.MethodDelete, fmt.Sprintf("%s/api/repo", util.GetServer()), buf, true)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	res, err := client.Do(request)
@@ -119,6 +133,10 @@ func removePrivateRepo(_ *cobra.Command, args []string) error {
 		return err
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode == http.StatusUnauthorized {
+		return server.ReadAuthError(res.Body)
+	}
 
 	var data app.GlobalResponse
 
@@ -148,11 +166,7 @@ func updatePrivateRepo(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	client := &http.Client{}
-
-	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/api/repo", util.GetServer()), buf)
-	req.Header.Add("Content-Type", "application/json")
-
+	req, client, err := server.HTTPRequestWithBearerToken(http.MethodPut, fmt.Sprintf("%s/api/repo", util.GetServer()), buf, true)
 	if err != nil {
 		return err
 	}
@@ -160,6 +174,10 @@ func updatePrivateRepo(cmd *cobra.Command, args []string) error {
 	res, err := client.Do(req)
 	if err != nil {
 		return err
+	}
+
+	if res.StatusCode == http.StatusUnauthorized {
+		return server.ReadAuthError(res.Body)
 	}
 
 	defer res.Body.Close()

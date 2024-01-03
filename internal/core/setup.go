@@ -29,6 +29,7 @@ const MELTCD_DIR = ".meltcd"                         //nolint
 const MELTCD_APPLICATIONS_FILE = "applications.json" //nolint
 const MELTCD_REPOSITORY_FILE = "repositories.json"   //nolint
 const MELTCD_AUTH_FILE = "auth.json"                 //nolint
+const MELTCD_ACCESS_TOKEN = "access_token.txt"       //nolint
 
 // Setup will setup require
 // settings to make use of MeltCD
@@ -58,6 +59,8 @@ func meltcdState() error {
 	applicationsFile := getAppFile()
 	repositoryFile := getRepositoryFile()
 	authFile := getAuthFile()
+	accessTokenFile := getAccessTokenFile()
+
 	// When creating a fresh auth file (db) insert admin:admin username and password
 	_, err = os.Stat(authFile)
 	if err != nil {
@@ -73,7 +76,7 @@ func meltcdState() error {
 		}
 	}
 
-	for _, f := range []string{applicationsFile, repositoryFile} {
+	for _, f := range []string{applicationsFile, repositoryFile, accessTokenFile} {
 		_, err = os.Stat(f)
 		if err != nil {
 			log.Infof("Creating file: %s", f)
@@ -159,6 +162,31 @@ func getMeltcdDir() string {
 	return meltcdDir
 }
 
+func StoreAccessToken(token string) error {
+	file := getAccessTokenFile()
+	f, err := os.OpenFile(file, os.O_RDWR, os.ModePerm)
+	if err != nil {
+		return err
+	}
+
+	_, err = f.WriteString(token)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetAccessToken() string {
+	file := getAccessTokenFile()
+	data, err := os.ReadFile(file)
+	if err != nil {
+		return ""
+	}
+
+	return string(data)
+}
+
 func getAppFile() string {
 	meltcdDir := getMeltcdDir()
 	return path.Join(meltcdDir, MELTCD_APPLICATIONS_FILE)
@@ -172,4 +200,9 @@ func getRepositoryFile() string {
 func getAuthFile() string {
 	meltcdDir := getMeltcdDir()
 	return path.Join(meltcdDir, MELTCD_AUTH_FILE)
+}
+
+func getAccessTokenFile() string {
+	meltcdDir := getMeltcdDir()
+	return path.Join(meltcdDir, MELTCD_ACCESS_TOKEN)
 }

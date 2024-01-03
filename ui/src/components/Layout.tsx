@@ -52,7 +52,7 @@ export default function Layout() {
           toast.error("Something wend wrong, server does not respond with 200");
         }
       } catch (err) {
-        toast.error("Something wend wrong, is server running?");
+        toast.error("Something wend wrong, try again!");
       }
     };
 

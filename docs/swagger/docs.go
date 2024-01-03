@@ -254,19 +254,39 @@ const docTemplate = `{
         },
         "/login": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
                 "tags": [
                     "General"
                 ],
                 "summary": "Login user",
+                "parameters": [
+                    {
+                        "description": "Login request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.LoginBody"
+                        }
+                    }
+                ],
                 "responses": {
-                    "302": {
-                        "description": "Found"
+                    "200": {
+                        "description": "Access Token",
+                        "schema": {
+                            "type": "string"
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
                     },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 }
             }
@@ -531,6 +551,17 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "newUsername": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.LoginBody": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }

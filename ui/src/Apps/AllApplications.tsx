@@ -67,7 +67,7 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
 
   // when adding a new application
   // this refresh will be updated by other component NewApplication.tsx
-  // so this will also fe updated
+  // so this will also be updated
   if (refresh === true) {
     refetch();
   }
@@ -90,37 +90,39 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
   }
 
   return (
-    <table className="w-full">
-      <thead>
-        <tr>
-          <th>S.NO</th>
-          <th>Name</th>
-          <th>Last Synched At</th>
-          <th>Updated At</th>
-          <th>Created At</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.data.map((app, index) => (
-          <tr
-            className="group/app hover:bg-[#373d49] cursor-pointer"
-            key={index}
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(`/apps/${app.name}`);
-            }}
-          >
-            <td className={`font-bold ${getBgColorForHealth(app.health)}`}>
-              {app.id}
-            </td>
-            <td>{app.name}</td>
-            <td>{<GetSinceTime time={app.last_synced_at} />}</td>
-            <td>{<GetSinceTime time={app.updated_at} />}</td>
-            <td>{<GetSinceTime time={app.created_at} />}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <ul className="w-full xl:w-[80%] mx-auto">
+      {data.data.map((app, index) => (
+        <li
+          key={index}
+          className="p-2 md:p-4 my-2 md:my-4 rounded bg-[#373d49]/30 hover:bg-[#373d49]/80 cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            navigate(`/apps/${app.name}`);
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex  items-center justify-center">
+              <span className="md:font-bold mr-1 md:mr-4">{app.name}</span>
+              <GetHealthBadge health={app.health} />
+            </div>
+          </div>
+          <div className="md:flex md:items-center md:justify-start mt-4 text-sm md:gap-8">
+            <div>
+              <span className="opacity-50">Last synched: </span>
+              <GetSinceTime time={app.last_synced_at} />
+            </div>
+            <div>
+              <span className="opacity-50">Updated: </span>
+              <GetSinceTime time={app.updated_at} />
+            </div>{" "}
+            <div>
+              <span className="opacity-50">Created: </span>
+              <GetSinceTime time={app.created_at} />
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -141,18 +143,38 @@ export function MessageWithIcon({
   );
 }
 
-function getBgColorForHealth(health: string): string {
+function GetHealthBadge({ health }: { health: string }) {
   switch (health) {
     case "healthy":
-      return "border-l-4 bg-green-400/20 border-l-green-400 group-hover/app:border-l-green-300";
+      return (
+        <span className="text-xs text-green-400 font-semibold rounded-lg py-1 px-2  bg-green-400/20">
+          healthy
+        </span>
+      );
     case "progressing":
-      return "border-l-4 bg-blue-400/20 border-l-blue-400 group-hover/app:border-l-blue-300";
+      return (
+        <span className="text-xs text-blue-400 font-semibold rounded-lg py-1 px-2  bg-blue-400/20">
+          progressing
+        </span>
+      );
     case "degraded":
-      return "border-l-4 bg-yellow-400/20 border-l-yellow-400 group-hover/app:border-l-yellow-300";
+      return (
+        <span className="text-xs text-yellow-400 font-semibold rounded-lg py-1 px-2  bg-yellow-400/20">
+          degraded
+        </span>
+      );
     case "suspended":
-      return "border-l-4 bg-red-400/20 border-l-red-400 group-hover/app:border-l-red-300";
+      return (
+        <span className="text-xs text-red-400 font-semibold rounded-lg py-1 px-2  bg-red-400/20">
+          suspended
+        </span>
+      );
     default:
-      return "bg-inherit";
+      return (
+        <span className="text-xs text-gray-400 font-semibold rounded-lg py-1 px-2  bg-gray-400/20">
+          Status: N/A
+        </span>
+      );
   }
 }
 

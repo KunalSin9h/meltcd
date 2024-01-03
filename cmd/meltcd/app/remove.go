@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/meltred/meltcd/server"
 	api "github.com/meltred/meltcd/server/api/app"
 	"github.com/meltred/meltcd/util"
 	"github.com/spf13/cobra"
@@ -30,8 +31,7 @@ import (
 func RemoveApplication(_ *cobra.Command, args []string) error {
 	appName := args[0]
 
-	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodDelete, fmt.Sprintf("%s/api/apps/%s", util.GetServer(), appName), nil)
+	req, client, err := server.HTTPRequestWithBearerToken(http.MethodDelete, fmt.Sprintf("%s/api/apps/%s", util.GetServer(), appName), nil, false)
 	if err != nil {
 		return err
 	}
@@ -41,6 +41,10 @@ func RemoveApplication(_ *cobra.Command, args []string) error {
 		return err
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode == http.StatusUnauthorized {
+		return server.ReadAuthError(res.Body)
+	}
 
 	if res.StatusCode != http.StatusOK {
 		var resPayload api.GlobalResponse

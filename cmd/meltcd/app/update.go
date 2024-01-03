@@ -24,6 +24,7 @@ import (
 	"net/http"
 
 	"github.com/meltred/meltcd/internal/core/application"
+	"github.com/meltred/meltcd/server"
 	api "github.com/meltred/meltcd/server/api/app"
 	"github.com/meltred/meltcd/util"
 	"github.com/spf13/cobra"
@@ -42,10 +43,7 @@ func UpdateExistingApplication(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	client := &http.Client{}
-
-	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s/api/apps", util.GetServer()), buf)
-	req.Header.Add("Content-Type", "application/json")
+	req, client, err := server.HTTPRequestWithBearerToken(http.MethodPut, fmt.Sprintf("%s/api/apps", util.GetServer()), buf, true)
 
 	if err != nil {
 		return err
@@ -56,6 +54,10 @@ func UpdateExistingApplication(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	defer res.Body.Close()
+
+	if res.StatusCode == http.StatusUnauthorized {
+		return server.ReadAuthError(res.Body)
+	}
 
 	if res.StatusCode != http.StatusAccepted {
 		var resPayload api.GlobalResponse

@@ -12,6 +12,13 @@ definitions:
       newUsername:
         type: string
     type: object
+  api.LoginBody:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   app.GlobalResponse:
     properties:
       message:
@@ -300,13 +307,26 @@ paths:
       - Apps
   /login:
     post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.LoginBody'
       responses:
-        "302":
-          description: Found
+        "200":
+          description: Access Token
+          schema:
+            type: string
         "400":
           description: Bad Request
         "401":
           description: Unauthorized
+        "500":
+          description: Internal Server Error
       summary: Login user
       tags:
       - General

@@ -109,6 +109,8 @@ func ChangePassword(username, currentPassword, newPassword string) bool {
 			}
 
 			user.PasswordHash = newHash
+			user.UpdatedAt = time.Now()
+
 			log.Info("Changed password", "username", username)
 			return true
 		}
@@ -123,6 +125,7 @@ func ChangeUsername(username, newUsername string) bool {
 	for _, user := range users {
 		if user.Username == username {
 			user.Username = newUsername
+			user.UpdatedAt = time.Now()
 
 			go SessionUpdateUsername(username, newUsername)
 

@@ -30,7 +30,7 @@ export default function Apps() {
   }, []);
 
   return (
-    <div className="h-screen p-8">
+    <div className="h-screen p-8 overflow-auto">
       <div className="flex justify-between items-center">
         <p className="text-2xl">Applications</p>
         <button
@@ -52,7 +52,7 @@ export default function Apps() {
       />
 
       {/* Showing All Applications */}
-      <div className="h-full m-8 mt-32 overflow-auto">
+      <div className="m-4 md:m-8 mt-8 md:mt-16 overflow-auto h-[84%]">
         <AllApplications refresh={refresh} />
       </div>
     </div>
