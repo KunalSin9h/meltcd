@@ -451,7 +451,7 @@
                 }
             }
         },
-        "/users/{username}": {
+        "/users/{username}/password": {
             "patch": {
                 "consumes": [
                     "application/json"
@@ -480,6 +480,36 @@
                     }
                 }
             }
+        },
+        "/users/{username}/username": {
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Change username of user",
+                "parameters": [
+                    {
+                        "description": "Change username body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.ChangeUsernameBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -490,6 +520,14 @@
                     "type": "string"
                 },
                 "newPassword": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.ChangeUsernameBody": {
+            "type": "object",
+            "properties": {
+                "newUsername": {
                     "type": "string"
                 }
             }
@@ -588,7 +626,7 @@
                     "description": "hash passwords",
                     "type": "string"
                 },
-                "rol": {
+                "role": {
                     "$ref": "#/definitions/auth.UserRole"
                 },
                 "updatedAt": {

@@ -49,7 +49,7 @@ type ChangePasswordBody struct {
 //	@param		request	body	ChangePasswordBody	true	"Change password body"
 //	@success	200
 //	@failure	400
-//	@router		/users/{username} [patch]
+//	@router		/users/{username}/password [patch]
 func ChangePassword(c *fiber.Ctx) error {
 	username := c.Params("username")
 
@@ -64,6 +64,39 @@ func ChangePassword(c *fiber.Ctx) error {
 	}
 
 	if done := auth.ChangePassword(username, reqPay.CurrentPassword, reqPay.NewPassword); !done {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	return c.SendStatus(http.StatusOK)
+}
+
+type ChangeUsernameBody struct {
+	NewUsername string `json:"newUsername"`
+}
+
+// ChangeUsername godoc
+//
+//	@summary	Change username of user
+//	@tags		Users
+//	@accept		json
+//	@param		request	body	ChangeUsernameBody	true	"Change username body"
+//	@success	200
+//	@failure	400
+//	@router		/users/{username}/username [patch]
+func ChangeUsername(c *fiber.Ctx) error {
+	username := c.Params("username")
+
+	var reqPay ChangeUsernameBody
+
+	if err := c.BodyParser(&reqPay); err != nil {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	if reqPay.NewUsername == "" {
+		return c.SendStatus(http.StatusBadRequest)
+	}
+
+	if done := auth.ChangeUsername(username, reqPay.NewUsername); !done {
 		return c.SendStatus(http.StatusBadRequest)
 	}
 

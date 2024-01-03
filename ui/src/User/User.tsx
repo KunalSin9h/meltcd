@@ -27,6 +27,7 @@ import {
 } from "../lib/icon";
 import { GetSinceTime, MessageWithIcon } from "../Apps/AllApplications";
 import { toast } from "react-hot-toast";
+import normalizeInput from "../utils/normalizeInput";
 
 type RespData = {
   data: User[];
@@ -36,7 +37,7 @@ type User = {
   createdAt: string;
   lastLoggedIn: string;
   passwordHash: string;
-  rol: "admin" | "general";
+  role: "admin" | "general";
   updatedAt: string;
   username: string;
 };
@@ -70,7 +71,7 @@ export default function Users() {
           New User
         </button>
       </div>
-      <div className="m-4 md:m-8 mt-8 md:mt-16 overflow-auto">
+      <div className="m-4 md:m-8 mt-8 md:mt-16 overflow-auto h-[84%]">
         <AllUsers />
       </div>
     </div>
@@ -80,7 +81,7 @@ export default function Users() {
 function AllUsers() {
   const navigate = useNavigate();
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["GET /api/users", "GET_ALL_USERS"],
     queryFn: () => fetchApps(navigate),
   });
@@ -101,8 +102,9 @@ function AllUsers() {
   if (data.data.length === 0) {
     return <MessageWithIcon icon={<WarningIcon />} message="No Users" />;
   }
+
   return (
-    <ul className="xl:w-[70%] mx-auto h-screen">
+    <ul className="xl:w-[70%] mx-auto">
       <li>
         {data.data.map((user, index) => (
           <div
@@ -114,18 +116,18 @@ function AllUsers() {
                 <span className="md:font-bold md:text-xl mr-1 md:mr-4">
                   {user.username}
                 </span>
-                {user.rol === "admin" ? (
-                  <span className="text-xs text-green-400 font-semibold rounded-lg p-1  bg-green-400/20 mr-1 md:mr-4">
+                {user.role === "admin" ? (
+                  <span className="text-xs text-green-400 font-semibold rounded-lg py-1 px-2  bg-green-400/20 mr-1 md:mr-4">
                     admin
                   </span>
                 ) : null}
                 {localStorage.getItem("username") === user.username ? (
-                  <span className="text-xs text-yellow-400 font-semibold rounded-lg p-1 bg-yellow-400/20">
+                  <span className="text-xs text-yellow-400 font-semibold rounded-lg py-1 px-2 bg-yellow-400/20">
                     you
                   </span>
                 ) : null}
               </div>
-              <EditUser username={user.username} />
+              <EditUser username={user.username} refetch={refetch} />
             </div>
             <div className="md:flex md:items-center md:justify-start mt-4 text-sm md:gap-8">
               <div>
@@ -148,11 +150,20 @@ function AllUsers() {
   );
 }
 
-function EditUser({ username }: { username: string }) {
+function EditUser({
+  username,
+  refetch,
+}: {
+  username: string;
+  refetch: () => void;
+}) {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [currentPass, setCurrentPass] = useState("");
   const [newPass, setNewPass] = useState("");
   const [newPassConfirm, setNewPassConfirm] = useState("");
+
+  const [newUsername, setNewUsername] = useState("");
+  const [mode, setMode] = useState("username");
 
   return (
     <div className="flex items-center gap-4 relative">
@@ -174,13 +185,93 @@ function EditUser({ username }: { username: string }) {
             ${openEditModal ? "" : "hidden"}
             `}
         >
-          <form className="flex flex-col gap-4">
+          <div className="flex items-center justify-around mb-4 py-1">
+            <p
+              className={`px-4 py-1 ${
+                mode === "username" ? "bg-slate-500/60  rounded" : "opacity-80"
+              }`}
+              onClick={() => setMode("username")}
+            >
+              Username
+            </p>
+            <p
+              className={`px-4 py-1 ${
+                mode === "password" ? "bg-slate-500/60 rounded" : "opacity-80"
+              }`}
+              onClick={() => setMode("password")}
+            >
+              Password
+            </p>
+          </div>
+          <form
+            className={`flex flex-col gap-4 ${
+              mode !== "username" ? "hidden" : ""
+            }`}
+          >
+            <label>
+              <span className="text-sm">New Username:</span>
+              <input
+                type="text"
+                className="rounded bg-gray-100/20 px-2 py-1"
+                placeholder="beff_jozos"
+                required
+                onChange={(e) => {
+                  setNewUsername(normalizeInput(e.target.value, ["_"], true));
+                }}
+                value={newUsername}
+              />
+            </label>
+            <button
+              type="submit"
+              className={`bg-green-400/80  hover:bg-green-400/60 font-medium rounded-lg text-sm px-5 py-2.5
+              `}
+              onClick={(e) => {
+                e.preventDefault();
+                const userApi = `/api/users/${username}/username`;
+
+                const req = fetch(userApi, {
+                  method: "PATCH",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    newUsername: newUsername,
+                  }),
+                });
+
+                toast.promise(req, {
+                  loading: "Changing username",
+                  success: (res) => {
+                    if (res.status === 200) {
+                      localStorage.setItem("username", newUsername);
+                      setOpenEditModal(false);
+                      refetch();
+                      return "Username changed successfully";
+                    } else {
+                      toast.error("Bad request, try again!");
+                    }
+
+                    return "Executing task";
+                  },
+                  error: "Failed to change username, try again!",
+                });
+              }}
+            >
+              Change username
+            </button>
+          </form>
+          <form
+            className={`flex flex-col gap-4 ${
+              mode !== "password" ? "hidden" : ""
+            }`}
+          >
             <label>
               <span className="text-sm">Current Password:</span>
               <input
                 type="password"
                 className="rounded bg-gray-100/20 px-2 py-1"
                 placeholder="••••••"
+                required
                 onChange={(e) => {
                   setCurrentPass(e.target.value);
                 }}
@@ -192,6 +283,7 @@ function EditUser({ username }: { username: string }) {
               <input
                 type="password"
                 className="rounded bg-gray-100/20 px-2 py-1"
+                required
                 placeholder="••••••"
                 onChange={(e) => {
                   setNewPass(e.target.value);
@@ -204,6 +296,7 @@ function EditUser({ username }: { username: string }) {
               <input
                 type="password"
                 className="rounded bg-gray-100/20 px-2 py-1"
+                required
                 placeholder="••••••"
                 onChange={(e) => {
                   setNewPassConfirm(e.target.value);
@@ -231,7 +324,7 @@ function EditUser({ username }: { username: string }) {
                 e.preventDefault();
                 if (newPass !== newPassConfirm) return;
 
-                const passApi = `/api/users/${username}`;
+                const passApi = `/api/users/${username}/password`;
 
                 const req = fetch(passApi, {
                   method: "PATCH",

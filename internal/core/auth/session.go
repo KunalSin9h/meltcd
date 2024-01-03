@@ -32,6 +32,14 @@ func RemoveSession(token string) {
 	sessions = result
 }
 
+func SessionUpdateUsername(oldUsername, newUsername string) {
+	for _, ses := range sessions {
+		if ses.Username == oldUsername {
+			ses.Username = newUsername
+		}
+	}
+}
+
 func VerifySession(token string) (string, bool) {
 	for _, ses := range sessions {
 		if ses.Token == token {

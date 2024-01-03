@@ -11,7 +11,7 @@ import (
 type User struct {
 	Username     string    `json:"username"`
 	PasswordHash string    `json:"passwordHash"` // hash passwords
-	Role         UserRole  `json:"rol"`
+	Role         UserRole  `json:"role"`
 	LastLoggedIn time.Time `json:"lastLoggedIn"`
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`
@@ -110,6 +110,23 @@ func ChangePassword(username, currentPassword, newPassword string) bool {
 
 			user.PasswordHash = newHash
 			log.Info("Changed password", "username", username)
+			return true
+		}
+	}
+
+	return false
+}
+
+func ChangeUsername(username, newUsername string) bool {
+	log.Info("Changing username", "user", username, "new username", newUsername)
+
+	for _, user := range users {
+		if user.Username == username {
+			user.Username = newUsername
+
+			go SessionUpdateUsername(username, newUsername)
+
+			log.Info("Username changed", "user", newUsername)
 			return true
 		}
 	}
