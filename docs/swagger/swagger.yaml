@@ -318,13 +318,15 @@ paths:
           $ref: '#/definitions/api.LoginBody'
       responses:
         "200":
-          description: token
+          description: Access Token
           schema:
             type: string
         "400":
           description: Bad Request
         "401":
           description: Unauthorized
+        "500":
+          description: Internal Server Error
       summary: Login user
       tags:
       - General

@@ -25,6 +25,7 @@ type LoginBody struct {
 //	@param		request	body	LoginBody true "Login request body"
 //	@success	200 string  string "Access Token"
 //	@failure	400
+//	@failure	401
 //	@failure	500
 //	@router		/login [post]
 func Login(c *fiber.Ctx) error {
