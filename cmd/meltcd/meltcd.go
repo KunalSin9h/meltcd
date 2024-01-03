@@ -56,6 +56,18 @@ func NewCLI() *cobra.Command {
 
 	serveCmd.Flags().Bool("verbose", false, "verbose is used to get extra logs/info about process")
 
+	rootCmd.AddCommand(serveCmd)
+
+	// auth commands
+	loginCmd := &cobra.Command{
+		Use:   "login",
+		Short: "Login user",
+		Args:  cobra.ExactArgs(0),
+		RunE:  LoginUser,
+	}
+
+	rootCmd.AddCommand(loginCmd)
+
 	// Application
 	appCmd := &cobra.Command{
 		Use:   "app",
@@ -136,6 +148,8 @@ func NewCLI() *cobra.Command {
 	appCmd.AddCommand(appRemoveCmd)
 	appCmd.AddCommand(appRecreateCmd)
 
+	rootCmd.AddCommand(appCmd)
+
 	// meltcd repo
 	repoCmd := &cobra.Command{
 		Use:     "repo",
@@ -188,8 +202,6 @@ func NewCLI() *cobra.Command {
 	repoCmd.AddCommand(repoRemoveCmd)
 	repoCmd.AddCommand(repoUpdateCmd)
 
-	rootCmd.AddCommand(serveCmd)
-	rootCmd.AddCommand(appCmd)
 	rootCmd.AddCommand(repoCmd)
 
 	return rootCmd
