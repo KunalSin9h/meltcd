@@ -131,15 +131,15 @@ function AllUsers() {
             </div>
             <div className="md:flex md:items-center md:justify-start mt-4 text-sm md:gap-8">
               <div>
-                <span className="opacity-50">Last Logged in at: </span>
+                <span className="opacity-50">Last Logged-In: </span>
                 <GetSinceTime time={user.lastLoggedIn} />
               </div>
               <div>
-                <span className="opacity-50">Updated at: </span>
+                <span className="opacity-50">Updated: </span>
                 <GetSinceTime time={user.updatedAt} />
               </div>{" "}
               <div>
-                <span className="opacity-50">Created at: </span>
+                <span className="opacity-50">Created: </span>
                 <GetSinceTime time={user.createdAt} />
               </div>
             </div>
