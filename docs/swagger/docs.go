@@ -629,7 +629,7 @@ const docTemplate = `{
                     "description": "hash passwords",
                     "type": "string"
                 },
-                "rol": {
+                "role": {
                     "$ref": "#/definitions/auth.UserRole"
                 },
                 "updatedAt": {

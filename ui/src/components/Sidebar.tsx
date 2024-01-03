@@ -35,11 +35,6 @@ export default function Sidebar({
   setOpenHelpPanel: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [panelOpen, setPanelOpen] = useState(true);
-  const [user, setUser] = useState<string | null>();
-
-  useEffect(() => {
-    setUser(localStorage.getItem("username"));
-  }, [user]);
 
   window.onresize = () => {
     const width = window.outerWidth;
@@ -99,14 +94,7 @@ export default function Sidebar({
         <Item name="Logs" to="/logs" icon={<LogIcon />} panelOpen={panelOpen} />
       </div>
       <div className="mb-2 flex flex-col gap-4">
-        {user ? (
-          <Item
-            name={user}
-            to="/users"
-            icon={<UserIcon />}
-            panelOpen={panelOpen}
-          />
-        ) : null}
+        <UserName panelOpen={panelOpen} />
         <Item
           name="Settings"
           to="/settings"
@@ -155,5 +143,45 @@ function Item({
       {icon}
       <span className={`text-lg ${panelOpen ? "" : "hidden"}`}>{name}</span>
     </NavLink>
+  );
+}
+
+function UserName({ panelOpen }: { panelOpen: boolean }) {
+  const [username, setUsername] = useState<string | null>();
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setUsername(localStorage.getItem("username"));
+    }, 2000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [username]);
+
+  if (!username) {
+    return (
+      <div
+        className={`hover:bg-sidebarLite hover:border-l hover:border-l-[5px] hover:border-white/40 rounded-r px-2 flex gap-2 items-center ${
+          panelOpen ? "py-1" : "justify-center py-2"
+        }`}
+      >
+        <UserIcon />
+        <div
+          className={`animate-pulse w-24 h-6 rounded ${
+            panelOpen ? "" : "hidden"
+          } bg-sidebarLite/40`}
+        ></div>
+      </div>
+    );
+  }
+
+  return (
+    <Item
+      name={username}
+      to="/users"
+      icon={<UserIcon />}
+      panelOpen={panelOpen}
+    />
   );
 }
