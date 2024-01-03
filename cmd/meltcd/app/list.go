@@ -18,25 +18,30 @@ package app
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/meltred/meltcd/internal/core"
+	"github.com/meltred/meltcd/server"
 	"github.com/meltred/meltcd/util"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 )
 
 func GetAllApplications(_ *cobra.Command, _ []string) error {
-	res, err := http.Get(fmt.Sprintf("%s/api/apps", util.GetServer()))
+	req, client, err := server.HTTPRequestWithBearerToken(http.MethodGet, fmt.Sprintf("%s/api/apps", util.GetServer()), nil, false)
+	if err != nil {
+		return err
+	}
+
+	res, err := client.Do(req)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return errors.New("server does not respond with 200")
+		return server.ReadAuthError(res.Body)
 	}
 
 	var resPayload core.AppList

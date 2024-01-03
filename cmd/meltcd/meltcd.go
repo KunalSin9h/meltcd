@@ -20,17 +20,10 @@ import (
 	"log"
 
 	"github.com/meltred/meltcd/cmd/meltcd/app"
-	"github.com/meltred/meltcd/internal/core"
 	"github.com/meltred/meltcd/version"
 
 	"github.com/spf13/cobra"
 )
-
-var ACCESS_TOKEN string
-
-func init() {
-	ACCESS_TOKEN = core.GetAccessToken()
-}
 
 // NewApplication creates a new cli app
 // This cli app can be used to start the api server
@@ -72,6 +65,8 @@ func NewCLI() *cobra.Command {
 		Args:  cobra.ExactArgs(0),
 		RunE:  LoginUser,
 	}
+
+	loginCmd.Flags().Bool("show-token", false, "Get the Access token when logged in successfully")
 
 	rootCmd.AddCommand(loginCmd)
 

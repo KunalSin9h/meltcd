@@ -47,7 +47,7 @@ func GetUsersPassword(msg string, masked bool, r FieldReader, w io.Writer) ([]by
 	if term.IsTerminal(int(r.Fd())) {
 		if oldState, err := term.MakeRaw(int(r.Fd())); err != nil {
 			return p, err
-		} else {
+		} else { // nolint
 			defer func() {
 				err := term.Restore(int(r.Fd()), oldState)
 				if err != nil {
@@ -73,11 +73,10 @@ func GetUsersPassword(msg string, masked bool, r FieldReader, w io.Writer) ([]by
 	// capped.
 	var count int
 	for count = 0; count <= maxLength; count++ {
-
 		if v, e := chunk(r); e != nil {
 			err = e
 			break
-		} else if v == 127 || v == 8 {
+		} else if v == 127 || v == 8 { // nolint
 			if l := len(p); l > 0 {
 				p = p[:l-1]
 				_, err := fmt.Fprint(w, string(bs))

@@ -4,6 +4,9 @@
 
 ```bash
 meltcd login
+
+# Get access token using --show-token flag
+meltcd login --show-token
 ```
 
 1. Create a new `Application` [DONE]

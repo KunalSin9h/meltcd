@@ -23,6 +23,7 @@ import (
 	"net/http"
 
 	"github.com/meltred/meltcd/internal/core/application"
+	"github.com/meltred/meltcd/server"
 	api "github.com/meltred/meltcd/server/api/app"
 	"github.com/meltred/meltcd/util"
 	"github.com/spf13/cobra"
@@ -31,13 +32,22 @@ import (
 func GetDetailsAboutApplication(_ *cobra.Command, args []string) error {
 	appName := args[0]
 
-	res, err := http.Get(fmt.Sprintf("%s/api/apps/%s", util.GetServer(), appName))
+	req, client, err := server.HTTPRequestWithBearerToken(http.MethodGet, fmt.Sprintf("%s/api/apps/%s", util.GetServer(), appName), nil, false)
+	if err != nil {
+		return err
+	}
+
+	res, err := client.Do(req)
 	if err != nil {
 		return err
 	}
 	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
+	if res.StatusCode == http.StatusUnauthorized {
+		return server.ReadAuthError(res.Body)
+	}
+
+	if res.StatusCode != http.StatusOK {
 		var resPayload api.GlobalResponse
 		if err := json.NewDecoder(res.Body).Decode(&resPayload); err != nil {
 			return err

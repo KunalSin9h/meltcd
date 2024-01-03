@@ -32,7 +32,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func LoginUser(cmd *cobra.Command, args []string) error {
+func LoginUser(cmd *cobra.Command, _ []string) error {
+	showToken, _ := cmd.Flags().GetBool("show-token")
+	if showToken {
+		fmt.Println(core.GetAccessToken())
+		return nil
+	}
+
 	username, err := stringPrompt("Username")
 	if err != nil {
 		return err
