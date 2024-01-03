@@ -26,6 +26,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/fatih/color"
+	"github.com/meltred/meltcd/internal/core"
 	"github.com/meltred/meltcd/util"
 	"github.com/spf13/cobra"
 )
@@ -74,7 +76,11 @@ func LoginUser(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Println(resData)
+	if err := core.StoreAccessToken(resData); err != nil {
+		return err
+	}
+
+	color.HiGreen("Login Success")
 	return nil
 }
 
