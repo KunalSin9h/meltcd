@@ -25,8 +25,8 @@ import (
 	"time"
 
 	"github.com/charmbracelet/log"
+	"github.com/meltred/meltcd/internal/core/base58"
 	"github.com/meltred/meltcd/internal/core/repository"
-	"github.com/meltred/meltcd/internal/core/uuid"
 	"github.com/meltred/meltcd/spec"
 
 	"github.com/docker/docker/api/types"
@@ -339,7 +339,7 @@ func createNetwork(cli *client.Client, appName string) (string, error) {
 		if network.Name == networkName {
 			log.Info("Network already exists")
 
-			randString, err := uuid.New(5)
+			randString, err := base58.New(5)
 			if err != nil {
 				log.Error(err.Error())
 				return "", err
