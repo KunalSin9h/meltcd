@@ -33,6 +33,12 @@ const docTemplate = `{
         },
         "/apps": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Apps"
                 ],
@@ -47,6 +53,12 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -87,6 +99,12 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -132,6 +150,12 @@ const docTemplate = `{
         },
         "/apps/{app_name}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -170,6 +194,12 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Apps"
                 ],
@@ -198,6 +228,12 @@ const docTemplate = `{
         },
         "/apps/{app_name}/recreate": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Apps"
                 ],
@@ -226,6 +262,12 @@ const docTemplate = `{
         },
         "/apps/{app_name}/refresh": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Apps"
                 ],
@@ -254,27 +296,18 @@ const docTemplate = `{
         },
         "/login": {
             "post": {
-                "consumes": [
-                    "application/json"
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
                 ],
                 "tags": [
                     "General"
                 ],
                 "summary": "Login user",
-                "parameters": [
-                    {
-                        "description": "Login request body",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.LoginBody"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
-                        "description": "Access Token",
+                        "description": "OK",
                         "schema": {
                             "type": "string"
                         }
@@ -293,6 +326,12 @@ const docTemplate = `{
         },
         "/repo": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -310,6 +349,12 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -353,6 +398,12 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -396,6 +447,12 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -441,6 +498,12 @@ const docTemplate = `{
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Users"
                 ],
@@ -457,6 +520,12 @@ const docTemplate = `{
         },
         "/users/current": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Users"
                 ],
@@ -476,6 +545,12 @@ const docTemplate = `{
         },
         "/users/{username}/password": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -506,6 +581,12 @@ const docTemplate = `{
         },
         "/users/{username}/username": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -551,17 +632,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "newUsername": {
-                    "type": "string"
-                }
-            }
-        },
-        "api.LoginBody": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 }
             }
@@ -748,6 +818,16 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "X-API-Key",
+            "in": "header"
+        },
+        "BasicAuth": {
+            "type": "basic"
         }
     },
     "externalDocs": {

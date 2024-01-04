@@ -18,8 +18,7 @@ package meltcd
 
 import (
 	"bufio"
-	"bytes"
-	"encoding/json"
+	"encoding/base64"
 	"fmt"
 	"io"
 	"net/http"
@@ -54,17 +53,15 @@ func LoginUser(cmd *cobra.Command, _ []string) error {
 		return err
 	}
 
-	reqBody := map[string]string{
-		"username": username,
-		"password": password,
-	}
-
-	buf := new(bytes.Buffer)
-	if err := json.NewEncoder(buf).Encode(reqBody); err != nil {
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s/api/login", util.GetServer()), nil)
+	if err != nil {
 		return err
 	}
+	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", encodeToBasicAuth(username, password)))
 
-	res, err := http.Post(fmt.Sprintf("%s/api/login", util.GetServer()), "application/json", buf)
+	client := &http.Client{}
+
+	res, err := client.Do(req)
 	if err != nil {
 		return err
 	}
@@ -115,4 +112,11 @@ func checkEmpty(s string) error {
 		return err
 	}
 	return nil
+}
+
+// A function used to convert username, password to basic auth token
+func encodeToBasicAuth(username, password string) string {
+	userPass := fmt.Sprintf("%s:%s", username, password)
+
+	return base64.StdEncoding.EncodeToString([]byte(userPass))
 }

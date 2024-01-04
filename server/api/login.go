@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,35 +13,25 @@ import (
 	"github.com/meltred/meltcd/internal/core/base58"
 )
 
-type LoginBody struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 // Login godoc
 //
 //	@summary	Login user
 //	@tags		General
-//	@accept		json
-//	@param		request	body	LoginBody true "Login request body"
-//	@success	200 string  string "Access Token"
+//	@security	BasicAuth
+//	@success	200	string	string
 //	@failure	400
 //	@failure	401
 //	@failure	500
 //	@router		/login [post]
 func Login(c *fiber.Ctx) error {
-	var reqBody LoginBody
+	username, password := extractFromBasic(c)
 
-	if err := c.BodyParser(&reqBody); err != nil {
-		return c.SendStatus(http.StatusBadRequest)
-	}
-
-	if reqBody.Username == "" || reqBody.Password == "" {
+	if username == "" || password == "" {
 		return c.SendStatus(http.StatusBadRequest)
 	}
 
 	// check if username and password exits
-	userExists, err := auth.FindUser(reqBody.Username, reqBody.Password)
+	userExists, err := auth.FindUser(username, password)
 	if err != nil {
 		return err
 	}
@@ -57,9 +48,9 @@ func Login(c *fiber.Ctx) error {
 	token = fmt.Sprintf("api_%s", token)
 
 	expireTime := time.Now().Add(1 * time.Hour)
-	go auth.AddSession(token, reqBody.Username, expireTime)
+	go auth.AddSession(token, username, expireTime)
 
-	go auth.UserLoginUpdateTime(reqBody.Username)
+	go auth.UserLoginUpdateTime(username)
 
 	c.Cookie(&fiber.Cookie{
 		Name:     "authToken",
@@ -81,4 +72,24 @@ func GenerateToken(n uint64) (string, error) {
 	}
 
 	return base64.StdEncoding.EncodeToString(b), nil
+}
+
+func extractFromBasic(c *fiber.Ctx) (string, string) {
+	value := string(c.Request().Header.Peek("Authorization"))
+
+	token, _ := strings.CutPrefix(value, "Basic ")
+
+	creds, err := base64.StdEncoding.DecodeString(token)
+	if err != nil {
+		return "", ""
+	}
+
+	credentials := string(creds)
+
+	userPass := strings.SplitN(credentials, ":", 2)
+	if len(userPass) != 2 {
+		return "", ""
+	}
+
+	return userPass[0], userPass[1]
 }

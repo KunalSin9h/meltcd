@@ -34,6 +34,7 @@ type PrivateRepoDetails struct {
 //
 //	@summary	Add a new repository
 //	@tags		Repo
+//	@Security	ApiKeyAuth || cookies
 //	@accept		json
 //	@produce	json
 //	@param		request	body		PrivateRepoDetails	true	"Repository details"
@@ -76,6 +77,7 @@ type ListData struct {
 // List godoc
 //
 //	@summary	Get a list all repositories
+//	@Security	ApiKeyAuth || cookies
 //	@tags		Repo
 //	@produce	json
 //	@success	200	{object}	ListData
@@ -95,6 +97,7 @@ type RemovePayload struct {
 // Remove godoc
 //
 //	@summary	Remove a repository
+//	@Security	ApiKeyAuth || cookies
 //	@tags		Repo
 //	@accept		json
 //	@produce	json
@@ -133,6 +136,7 @@ func Remove(c *fiber.Ctx) error {
 //
 //	@summary	Update a repository
 //	@tags		Repo
+//	@Security	ApiKeyAuth || cookies
 //	@accept		json
 //	@produce	json
 //	@param		request	body		PrivateRepoDetails	true	"Repository details"

@@ -8,7 +8,7 @@ COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
 COPY . .
-RUN go build -o meltcd-bin main.go
+RUN CGO_CFLAGS="-D_LARGEFILE64_SOURCE" go build -o meltcd-bin main.go
 
 # Runtime
 FROM alpine:latest

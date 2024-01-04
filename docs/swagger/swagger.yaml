@@ -12,13 +12,6 @@ definitions:
       newUsername:
         type: string
     type: object
-  api.LoginBody:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    type: object
   app.GlobalResponse:
     properties:
       message:
@@ -169,6 +162,9 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/core.AppList'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Get a list all applications created
       tags:
       - Apps
@@ -197,6 +193,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.GlobalResponse'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Create a new application
       tags:
       - Apps
@@ -223,6 +222,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.GlobalResponse'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Update an application
       tags:
       - Apps
@@ -241,6 +243,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.GlobalResponse'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Remove an application
       tags:
       - Apps
@@ -266,6 +271,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.GlobalResponse'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Get details of an application
       tags:
       - Apps
@@ -284,6 +292,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.GlobalResponse'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Recreate application
       tags:
       - Apps
@@ -302,23 +313,17 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.GlobalResponse'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Refresh/Synchronize an application
       tags:
       - Apps
   /login:
     post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Login request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/api.LoginBody'
       responses:
         "200":
-          description: Access Token
+          description: OK
           schema:
             type: string
         "400":
@@ -327,6 +332,8 @@ paths:
           description: Unauthorized
         "500":
           description: Internal Server Error
+      security:
+      - BasicAuth: []
       summary: Login user
       tags:
       - General
@@ -356,6 +363,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.GlobalResponse'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Remove a repository
       tags:
       - Repo
@@ -367,6 +377,9 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/repo.ListData'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Get a list all repositories
       tags:
       - Repo
@@ -395,6 +408,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.GlobalResponse'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Add a new repository
       tags:
       - Repo
@@ -423,6 +439,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/app.GlobalResponse'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Update a repository
       tags:
       - Repo
@@ -433,6 +452,9 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/auth.AllUsers'
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Get all the users
       tags:
       - Users
@@ -452,6 +474,9 @@ paths:
           description: OK
         "400":
           description: Bad Request
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Change password of user
       tags:
       - Users
@@ -471,6 +496,9 @@ paths:
           description: OK
         "400":
           description: Bad Request
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Change username of user
       tags:
       - Users
@@ -483,9 +511,19 @@ paths:
             type: string
         "401":
           description: Unauthorized
+      security:
+      - ApiKeyAuth: []
+        cookies: []
       summary: Get username of current logged-in user
       tags:
       - Users
 schemes:
 - http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: X-API-Key
+    type: apiKey
+  BasicAuth:
+    type: basic
 swagger: "2.0"

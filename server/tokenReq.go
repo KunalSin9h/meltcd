@@ -14,7 +14,7 @@ func HTTPRequestWithBearerToken(method, url string, body io.Reader, json bool) (
 	if err != nil {
 		return nil, nil, err
 	}
-	req.Header.Set("Authorization", "Bearer "+core.GetAccessToken())
+	req.Header.Set("X-API-Key", core.GetAccessToken())
 
 	if json {
 		req.Header.Add("Content-Type", "application/json")

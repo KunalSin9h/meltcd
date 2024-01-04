@@ -29,6 +29,7 @@ type GlobalResponse struct {
 //
 //	@summary	Get a list all applications created
 //	@tags		Apps
+//	@Security	ApiKeyAuth || cookies
 //	@success	200	{object}	core.AppList
 //	@router		/apps [get]
 func AllApplications(c *fiber.Ctx) error {
