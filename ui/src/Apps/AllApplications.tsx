@@ -90,7 +90,7 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
   }
 
   return (
-    <ul className="w-full xl:w-[80%] mx-auto">
+    <ul className="xl:w-[70%] mx-auto">
       {data.data.map((app, index) => (
         <li
           key={index}
