@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/charmbracelet/log"
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/storage/sqlite3"
 	"github.com/meltred/meltcd/internal/core"
@@ -26,9 +27,9 @@ func rateLimiterConfig() *limiter.Config {
 	})
 
 	config := limiter.Config{
-		// Next: func(c *fiber.Ctx) bool {
-		// 	return c.IP() == "127.0.0.1"
-		// },
+		Next: func(c *fiber.Ctx) bool {
+			return c.IP() == "127.0.0.1"
+		},
 		Max:        D_MAX, // {Max} request in per {Expiration} interval
 		Expiration: D_EXPIRATION,
 		Storage:    storage,

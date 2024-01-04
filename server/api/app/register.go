@@ -28,6 +28,7 @@ import (
 //	@tags		Apps
 //	@accept		json
 //	@produce	json
+//	@Security	ApiKeyAuth || cookies
 //	@param		request	body		application.Application	true	"Application body"
 //	@success	200		{object}	GlobalResponse
 //	@failure	400		{object}	GlobalResponse

@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/meltred/meltcd/internal/core/auth"
@@ -12,21 +11,21 @@ func VerifyUser(c *fiber.Ctx) error {
 	// See if authToken (Access Token) is in Cookies
 	authToken := c.Cookies("authToken", "")
 
-	// see if token is in Authorization: Bearer <token> Header
-	authHeader := c.Request().Header.Peek("Authorization")
+	// see if token is in X-API-Key: {} header
+	authHeader := c.Request().Header.Peek("X-API-Key")
 
-	bearerToken, _ := strings.CutPrefix(string(authHeader), "Bearer ")
+	apiToken := string(authHeader)
 
-	// BearerToken is same as authToken but extracted from different place,
+	// Api token is same as authToken but extracted from different place,
 	// authToken extracted from cookies are most probably coming from browser ui
-	// bearerToken is coming from CLI
+	// Api token is coming from CLI
 
 	var token string
 	if authToken != "" {
 		token = authToken
 	}
-	if bearerToken != "" {
-		token = bearerToken
+	if apiToken != "" {
+		token = apiToken
 	}
 
 	username, sessionExists := auth.VerifySession(token)

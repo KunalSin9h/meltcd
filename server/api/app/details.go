@@ -24,6 +24,7 @@ import (
 // Details godoc
 // @summary	Get details of an application
 // @tags		Apps
+// @Security	ApiKeyAuth || cookies
 // @param		app_name	path	string	true	"Application name"
 // @produce	json
 // @success	200	{object}	application.Application

@@ -10,6 +10,7 @@ import (
 // GetUsername godoc
 //
 //	@summary	Get username of current logged-in user
+//	@Security	ApiKeyAuth || cookies
 //	@tags		Users
 //	@success	200	{string}	username
 //	@failure	401
@@ -27,6 +28,7 @@ func GetUsername(c *fiber.Ctx) error {
 // GetUsers godoc
 //
 //	@summary	Get all the users
+//	@Security	ApiKeyAuth || cookies
 //	@tags		Users
 //	@success	200	{object}	auth.AllUsers
 //	@router		/users [get]
@@ -44,6 +46,7 @@ type ChangePasswordBody struct {
 // ChangePassword godoc
 //
 //	@summary	Change password of user
+//	@Security	ApiKeyAuth || cookies
 //	@tags		Users
 //	@accept		json
 //	@param		request	body	ChangePasswordBody	true	"Change password body"
@@ -77,6 +80,7 @@ type ChangeUsernameBody struct {
 // ChangeUsername godoc
 //
 //	@summary	Change username of user
+//	@Security	ApiKeyAuth || cookies
 //	@tags		Users
 //	@accept		json
 //	@param		request	body	ChangeUsernameBody	true	"Change username body"

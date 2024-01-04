@@ -30,6 +30,12 @@
         },
         "/apps": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Apps"
                 ],
@@ -44,6 +50,12 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -84,6 +96,12 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -129,6 +147,12 @@
         },
         "/apps/{app_name}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -167,6 +191,12 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Apps"
                 ],
@@ -195,6 +225,12 @@
         },
         "/apps/{app_name}/recreate": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Apps"
                 ],
@@ -223,6 +259,12 @@
         },
         "/apps/{app_name}/refresh": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Apps"
                 ],
@@ -281,6 +323,12 @@
         },
         "/repo": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -298,6 +346,12 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -341,6 +395,12 @@
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -384,6 +444,12 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -429,6 +495,12 @@
         },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Users"
                 ],
@@ -445,6 +517,12 @@
         },
         "/users/current": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "tags": [
                     "Users"
                 ],
@@ -464,6 +542,12 @@
         },
         "/users/{username}/password": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -494,6 +578,12 @@
         },
         "/users/{username}/username": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": [],
+                        "cookies": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -728,6 +818,11 @@
         }
     },
     "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "X-API-Key",
+            "in": "header"
+        },
         "BasicAuth": {
             "type": "basic"
         }

@@ -79,12 +79,11 @@ export default function LoginPage() {
                   fetch(loginAPI, {
                     method: "POST",
                     headers: {
-                      "Content-Type": "application/json",
+                      Authorization: `Basic ${getBasicAuthToken(
+                        username,
+                        password
+                      )}`,
                     },
-                    body: JSON.stringify({
-                      username,
-                      password,
-                    }),
                   })
                     .then((resp) => {
                       setShowSpinner(false);
@@ -122,4 +121,10 @@ export default function LoginPage() {
       </div>
     </div>
   );
+}
+
+function getBasicAuthToken(username: string, password: string): string {
+  const userPass = `${username}:${password}`;
+
+  return btoa(userPass);
 }

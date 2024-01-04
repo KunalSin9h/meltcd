@@ -28,6 +28,7 @@ import (
 //
 //	@summary	Update an application
 //	@tags		Apps
+//	@Security	ApiKeyAuth || cookies
 //	@accept		json
 //	@produce	json
 //	@param		request	body	application.Application	true	"Application body"

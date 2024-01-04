@@ -9,6 +9,7 @@ import (
 //
 //	@summary	Recreate application
 //	@tags		Apps
+//	@Security	ApiKeyAuth || cookies
 //	@param		app_name	path	string	true	"Application name"
 //	@success	200
 //	@failure	500	{object}	GlobalResponse
