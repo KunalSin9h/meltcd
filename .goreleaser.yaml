@@ -8,7 +8,7 @@ before:
 
 builds:
   - env:
-      - CGO_ENABLED=1
+      - CGO_ENABLED=0
       - MELTCD_HOST=0.0.0.0
     ldflags:
       - -s -w -X github.com/meltred/meltcd/version.Version={{ .Version }}
@@ -19,6 +19,10 @@ builds:
 
     goarch:
       - amd64
+      - arm64
+
+    goarm:
+      - "7"
 release:
   draft: true
   github:

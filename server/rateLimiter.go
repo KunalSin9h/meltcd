@@ -8,8 +8,6 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"github.com/gofiber/storage/sqlite3"
-	"github.com/meltred/meltcd/internal/core"
 )
 
 var (
@@ -20,11 +18,13 @@ var (
 func rateLimiterConfig() *limiter.Config {
 	updateDefaultValues()
 
-	storage := sqlite3.New(sqlite3.Config{
-		Database: core.GetRateLimiterStorage(),
-		Table:    "meltcd_rate_limiter",
-		Reset:    true,
-	})
+	// TODO: Using libsql storage, currently it is on memory
+
+	// storage := sqlite3.New(sqlite3.Config{
+	// 	Database: core.GetRateLimiterStorage(),
+	// 	Table:    "meltcd_rate_limiter",
+	// 	Reset:    true,
+	// })
 
 	config := limiter.Config{
 		Next: func(c *fiber.Ctx) bool {
@@ -32,7 +32,7 @@ func rateLimiterConfig() *limiter.Config {
 		},
 		Max:        D_MAX, // {Max} request in per {Expiration} interval
 		Expiration: D_EXPIRATION,
-		Storage:    storage,
+		// Storage:    storage,
 	}
 
 	return &config
