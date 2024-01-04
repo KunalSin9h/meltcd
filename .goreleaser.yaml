@@ -9,7 +9,6 @@ before:
 builds:
   - env:
       - CGO_ENABLED=1
-      - CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
       - MELTCD_HOST=0.0.0.0
     ldflags:
       - -s -w -X github.com/meltred/meltcd/version.Version={{ .Version }}
@@ -20,7 +19,6 @@ builds:
 
     goarch:
       - amd64
-      - arm64
 
     goarm:
       - "7"
