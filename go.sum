@@ -89,6 +89,8 @@ github.com/gofiber/storage/sqlite3 v1.3.8 h1:ywicq0MvlO4H+IbxwvSq3GvTv25fmhEZ1Lp
 github.com/gofiber/storage/sqlite3 v1.3.8/go.mod h1:G4A9R3Ac2G9Wpb76F62oEqXUTb0ywjTIr5P7obiZmYc=
 github.com/gofiber/swagger v0.1.14 h1:o524wh4QaS4eKhUCpj7M0Qhn8hvtzcyxDsfZLXuQcRI=
 github.com/gofiber/swagger v0.1.14/go.mod h1:DCk1fUPsj+P07CKaZttBbV1WzTZSQcSxfub8y9/BFr8=
+github.com/gofiber/utils v1.1.0 h1:vdEBpn7AzIUJRhe+CiTOJdUcTg4Q9RK+pEa0KPbLdrM=
+github.com/gofiber/utils v1.1.0/go.mod h1:poZpsnhBykfnY1Mc0KeEa6mSHrS3dV0+oBWyeQmb2e0=
 github.com/gogo/protobuf v1.3.2 h1:Ov1cvc58UF3b5XjBnZv7+opcTcQFZebYjWzi34vdm4Q=
 github.com/gogo/protobuf v1.3.2/go.mod h1:P1XiOD3dCwIKUDQYPy72D8LYyHL2YPYrpS2s69NZV8Q=
 github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da h1:oI5xCqsCo564l8iNU+DwB5epxmsaqB+rhGL0m5jtYqE=

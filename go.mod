@@ -6,6 +6,7 @@ require (
 	github.com/docker/docker v24.0.7+incompatible
 	github.com/go-git/go-billy/v5 v5.5.0
 	github.com/go-git/go-git/v5 v5.11.0
+	github.com/gofiber/storage/sqlite3 v1.3.8
 	github.com/gofiber/swagger v0.1.14
 	github.com/spf13/cobra v1.8.0
 	github.com/swaggo/swag v1.16.2
@@ -13,7 +14,6 @@ require (
 )
 
 require (
-	github.com/gofiber/storage/sqlite3 v1.3.8 // indirect
 	github.com/mattn/go-sqlite3 v1.14.17 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect
