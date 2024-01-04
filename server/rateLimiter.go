@@ -26,6 +26,9 @@ func rateLimiterConfig() *limiter.Config {
 	})
 
 	config := limiter.Config{
+		// Next: func(c *fiber.Ctx) bool {
+		// 	return c.IP() == "127.0.0.1"
+		// },
 		Max:        D_MAX, // {Max} request in per {Expiration} interval
 		Expiration: D_EXPIRATION,
 		Storage:    storage,

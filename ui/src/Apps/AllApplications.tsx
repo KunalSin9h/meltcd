@@ -102,7 +102,9 @@ export default function AllApplications({ refresh }: { refresh: boolean }) {
         >
           <div className="flex items-center justify-between">
             <div className="flex  items-center justify-center">
-              <span className="md:font-bold mr-1 md:mr-4">{app.name}</span>
+              <span className="md:font-bold md:text-xl mr-1 md:mr-4">
+                {app.name}
+              </span>
               <GetHealthBadge health={app.health} />
             </div>
           </div>
