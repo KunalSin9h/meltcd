@@ -19,9 +19,6 @@ builds:
 
     goarch:
       - amd64
-
-    goarm:
-      - "7"
 release:
   draft: true
   github:
