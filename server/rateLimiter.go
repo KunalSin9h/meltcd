@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	D_MAX        = 15
-	D_EXPIRATION = 30 * time.Second
+	D_MAX        = 15               // nolint
+	D_EXPIRATION = 30 * time.Second // nolint
 )
 
 func rateLimiterConfig() *limiter.Config {
