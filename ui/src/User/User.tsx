@@ -185,7 +185,7 @@ function EditUser({
         >
           <div className="flex items-center justify-around mb-4 py-1">
             <p
-              className={`px-4 py-1 ${
+              className={`px-4 cursor-pointer py-1 ${
                 mode === "username" ? "bg-slate-500/60  rounded" : "opacity-80"
               }`}
               onClick={() => setMode("username")}
@@ -193,7 +193,7 @@ function EditUser({
               Username
             </p>
             <p
-              className={`px-4 py-1 ${
+              className={`px-4 cursor-pointer py-1 ${
                 mode === "password" ? "bg-slate-500/60 rounded" : "opacity-80"
               }`}
               onClick={() => setMode("password")}
