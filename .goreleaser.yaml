@@ -8,7 +8,7 @@ before:
 
 builds:
   - env:
-      - CGO_ENABLED=0
+      - CGO_ENABLED=1
       - MELTCD_HOST=0.0.0.0
     ldflags:
       - -s -w -X github.com/meltred/meltcd/version.Version={{ .Version }}
