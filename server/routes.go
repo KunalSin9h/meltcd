@@ -99,13 +99,8 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 		api.Use(limiter.New(*rateLimiterConfig()))
 	}
 
-	encryptionKey, err := Api.GenerateToken(32)
-	if err != nil {
-		return err
-	}
-
 	api.Use(encryptcookie.New(encryptcookie.Config{
-		Key: encryptionKey[:32],
+		Key: encryptcookie.GenerateKey(),
 	}))
 
 	api.Get("/", CheckAPIStatus)
