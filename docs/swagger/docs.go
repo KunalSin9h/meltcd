@@ -254,27 +254,18 @@ const docTemplate = `{
         },
         "/login": {
             "post": {
-                "consumes": [
-                    "application/json"
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
                 ],
                 "tags": [
                     "General"
                 ],
                 "summary": "Login user",
-                "parameters": [
-                    {
-                        "description": "Login request body",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.LoginBody"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
-                        "description": "Access Token",
+                        "description": "OK",
                         "schema": {
                             "type": "string"
                         }
@@ -555,17 +546,6 @@ const docTemplate = `{
                 }
             }
         },
-        "api.LoginBody": {
-            "type": "object",
-            "properties": {
-                "password": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "app.GlobalResponse": {
             "type": "object",
             "properties": {
@@ -748,6 +728,11 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
         }
     },
     "externalDocs": {
