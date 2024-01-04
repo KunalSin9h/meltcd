@@ -23,6 +23,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/meltred/meltcd/internal/core"
@@ -37,6 +38,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/swagger"
@@ -52,6 +54,12 @@ var defaultAllowOrigins = []string{
 }
 
 func Serve(ln net.Listener, origins string, verboseOutput bool) error {
+	err := core.Setup()
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
+
 	config := cors.ConfigDefault
 
 	for _, o := range defaultAllowOrigins {
@@ -67,15 +75,6 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	app.Use(cors.New(config))
 	app.Use(recover.New())
 
-	encryptionKey, err := Api.GenerateToken(32)
-	if err != nil {
-		return err
-	}
-
-	app.Use(encryptcookie.New(encryptcookie.Config{
-		Key: encryptionKey[:32],
-	}))
-
 	if verboseOutput {
 		app.Use(logger.New())
 	}
@@ -90,7 +89,24 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 		PathPrefix: "static", // the name of the folder because the files will be as static/index.html
 	}))
 
+	// API
+	// PROTECTED BY Rate Limiting
+	// And Encrypted Cookies
 	api := app.Group("api")
+
+	if strings.TrimSpace(os.Getenv("RL_DISABLE")) != "true" {
+		log.Warn("Rate Limiting is enabled by default, to disable set RL_DISABLE=true")
+		api.Use(limiter.New(*rateLimiterConfig()))
+	}
+
+	encryptionKey, err := Api.GenerateToken(32)
+	if err != nil {
+		return err
+	}
+
+	api.Use(encryptcookie.New(encryptcookie.Config{
+		Key: encryptionKey[:32],
+	}))
 
 	api.Get("/", CheckAPIStatus)
 	api.Post("/login", Api.Login)
@@ -115,12 +131,6 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	repo.Post("/", repoApi.Add) // url, username and password will be send in body
 	repo.Delete("/", repoApi.Remove)
 	repo.Put("/", repoApi.Update)
-
-	err = core.Setup()
-	if err != nil {
-		log.Error(err)
-		os.Exit(1)
-	}
 
 	log.Infof("Listening on %s (version: %s)", ln.Addr(), version.Version)
 

@@ -13,6 +13,13 @@ require (
 )
 
 require (
+	github.com/gofiber/storage/sqlite3 v1.3.8 // indirect
+	github.com/mattn/go-sqlite3 v1.14.17 // indirect
+	github.com/philhofer/fwd v1.1.2 // indirect
+	github.com/tinylib/msgp v1.1.8 // indirect
+)
+
+require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/go-openapi/jsonpointer v0.20.0 // indirect
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
