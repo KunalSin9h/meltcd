@@ -13,6 +13,10 @@
 
 Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
+<div align="center">
+    <img alt="MeltCD Demo Page" src="https://i.imgur.com/LxaD7qM.png">
+</div>
+
 ## Install
 
 #### Linux, MacOS and WSL.
