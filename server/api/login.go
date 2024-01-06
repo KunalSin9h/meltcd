@@ -1,7 +1,6 @@
 package api
 
 import (
-	"crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"net/http"
@@ -62,16 +61,6 @@ func Login(c *fiber.Ctx) error {
 	})
 
 	return c.Status(http.StatusOK).SendString(token)
-}
-
-func GenerateToken(n uint64) (string, error) {
-	b := make([]byte, n)
-	_, err := rand.Read(b)
-	if err != nil {
-		return "", err
-	}
-
-	return base64.StdEncoding.EncodeToString(b), nil
 }
 
 func extractFromBasic(c *fiber.Ctx) (string, string) {

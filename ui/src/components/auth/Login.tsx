@@ -112,7 +112,7 @@ export default function LoginPage() {
                     <Spinner />
                   </div>
                 ) : (
-                  "Sing in"
+                  "Sign in"
                 )}
               </button>
             </form>
