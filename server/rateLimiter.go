@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/charmbracelet/log"
-	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 )
 
@@ -18,21 +17,9 @@ var (
 func rateLimiterConfig() *limiter.Config {
 	updateDefaultValues()
 
-	// TODO: Using libsql storage, currently it is on memory
-
-	// storage := sqlite3.New(sqlite3.Config{
-	// 	Database: core.GetRateLimiterStorage(),
-	// 	Table:    "meltcd_rate_limiter",
-	// 	Reset:    true,
-	// })
-
 	config := limiter.Config{
-		Next: func(c *fiber.Ctx) bool {
-			return c.IP() == "127.0.0.1"
-		},
 		Max:        D_MAX, // {Max} request in per {Expiration} interval
 		Expiration: D_EXPIRATION,
-		// Storage:    storage,
 	}
 
 	return &config
