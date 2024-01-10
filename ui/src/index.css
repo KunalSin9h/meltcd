@@ -21,6 +21,7 @@ limitations under the License.
 :root {
   background-color: #14171c;
   color: aliceblue;
+  color-scheme: dark;
 }
 
 .active {
