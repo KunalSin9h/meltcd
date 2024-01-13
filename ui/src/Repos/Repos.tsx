@@ -17,7 +17,7 @@ limitations under the License.
 import { useEffect, useState } from "react";
 import setTitle from "../lib/setTitle";
 import normalizeInput from "../utils/normalizeInput";
-import { CloseIcon } from "../lib/icon";
+import { CloseIcon, Spinner } from "../lib/icon";
 import toast from "react-hot-toast";
 
 export default function Repos() {
@@ -25,6 +25,7 @@ export default function Repos() {
   const [repoURL, setRepoURL] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     document.title = setTitle("Repositories");
@@ -91,8 +92,9 @@ export default function Repos() {
               />
             </label>
             <button
-              className="text-black py-2 px-4 rounded font-bold bg-green-400 hover:bg-green-500 cursor-pointer"
+              className="text-black py-2 px-4 rounded font-bold bg-green-400 hover:bg-green-500 cursor-pointer flex justify-center items-center"
               onClick={() => {
+                setProcessing(true);
                 const api = "/api/repo";
 
                 const req = fetch(api, {
@@ -110,26 +112,32 @@ export default function Repos() {
                 toast.promise(req, {
                   loading: "Adding new Repository",
                   success: (res) => {
-                    let msg = "Successfully created new repository";
-
-                    if (res.status === 401) {
-                      msg = "Unauthorized";
-                      // we can navigate to /login, but coming here is theoretically
-                      // impossible
-                    } else if (res.status == 400) {
-                      msg = "Bad request";
-                    } else if (res.status === 500) {
-                      msg = "Internal Server Error";
+                    if (res.status === 202) {
+                      toast.success("Successfully added repository");
+                      setProcessing(false);
+                      setNewRepoOpen(false);
+                    } else {
+                      try {
+                        res.json().then((d) => {
+                          setProcessing(false);
+                          setNewRepoOpen(false);
+                          toast.error(d.message);
+                        });
+                      } catch (error) {
+                        toast.error(
+                          "Failed to sent api request, something went wrong"
+                        );
+                        console.log(error);
+                      }
                     }
 
-                    toast.success(msg);
                     return "Executing task";
                   },
                   error: "Failed to add new Repository",
                 });
               }}
             >
-              Add
+              {processing ? <Spinner black /> : "Add"}
             </button>
           </div>
         </div>

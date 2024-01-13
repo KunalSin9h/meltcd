@@ -43,7 +43,6 @@ export default function Layout() {
       try {
         const res = await fetch("/api/users/current");
 
-        console.log(res.status);
         if (res.status === 401) {
           navigate("/login");
         } else if (res.status === 200) {
