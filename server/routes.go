@@ -81,27 +81,27 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
-    allFrontendRoutes := []string{
-        "/",
-        "/login",
-        "/apps",
-        "/apps/:name",
-        "/repos",
-        "/secrets",
-        "/users",
-        "/settings",
-        "/logs",
-    }
+	allFrontendRoutes := []string{
+		"/",
+		"/login",
+		"/apps",
+		"/apps/:name",
+		"/repos",
+		"/secrets",
+		"/users",
+		"/settings",
+		"/logs",
+	}
 
-    for  _, route  := range allFrontendRoutes {
-        // Server frontend 
-        app.Use(route, filesystem.New(filesystem.Config{
-            Root:       http.FS(frontendSource),
-            Browse:     true,
-            Index:      "index.html",
-            PathPrefix: "static", // the name of the folder because the files will be as static/index.html
-        }))
-    }
+	for _, route := range allFrontendRoutes {
+		// Server frontend
+		app.Use(route, filesystem.New(filesystem.Config{
+			Root:       http.FS(frontendSource),
+			Browse:     true,
+			Index:      "index.html",
+			PathPrefix: "static", // the name of the folder because the files will be as static/index.html
+		}))
+	}
 
 	// API
 	// PROTECTED BY Rate Limiting
