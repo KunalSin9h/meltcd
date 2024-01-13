@@ -81,11 +81,11 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
+	// FRONTEND INSTRUMENTATIONS
 	allFrontendRoutes := []string{
 		"/",
 		"/login",
 		"/apps",
-		"/apps/:name",
 		"/repos",
 		"/secrets",
 		"/users",
@@ -102,6 +102,17 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 			PathPrefix: "static", // the name of the folder because the files will be as static/index.html
 		}))
 	}
+
+	// This does some crepy work
+	// it captures the request which is dynamic and app.Use (the above) cant capture
+	// then it redirects to /apps telling to future navigate to /apps/x
+	// it looks bad but only choice
+	app.Get("/apps/:app_name", func(c *fiber.Ctx) error {
+		appName := c.Params("app_name")
+		return c.Redirect(fmt.Sprintf("/apps?redirect=%s", appName), http.StatusTemporaryRedirect)
+	})
+
+	// ---------------------------------------------------------------------
 
 	// API
 	// PROTECTED BY Rate Limiting

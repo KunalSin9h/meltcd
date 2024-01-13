@@ -53,7 +53,9 @@ export default function Repos() {
       </div>
 
       {/** Show All repositories */}
-      <AllRepos refresh={refreshSignal} />
+      <div className="m-4 md:m-8 mt-8 md:mt-16 overflow-auto h-[84%]">
+        <AllRepos refresh={refreshSignal} />
+      </div>
     </div>
   );
 }
