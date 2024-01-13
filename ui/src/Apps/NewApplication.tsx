@@ -250,30 +250,27 @@ function CreateApplication({
   );
 }
 
-function InputOption({
-  name,
-  placeholder,
-  value,
-  onChange,
-}: {
+interface InputOptionProps {
   name: string;
   placeholder: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
-  const id = name.replace(" ", "_");
+}
+
+function InputOption(props: InputOptionProps) {
+  const id = props.name.replace(" ", "_");
 
   return (
     <label htmlFor={id} className="flex flex-col">
-      <span className="font-semibold my-1">{name}</span>
+      <span className="font-semibold my-1">{props.name}</span>
       <input
         id={id}
         required={true}
         className="border p-1 rounded px-2 bg-white"
         type="text"
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
+        placeholder={props.placeholder}
+        value={props.value}
+        onChange={props.onChange}
       />
     </label>
   );

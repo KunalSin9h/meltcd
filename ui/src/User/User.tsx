@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 import { useContext, useEffect, useState } from "react";
-import getTitle from "../lib/getTitle";
+import setTitle from "../lib/setTitle";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -54,7 +54,7 @@ const fetchApps = (navigate: NavigateFunction): Promise<RespData> =>
 
 export default function Users() {
   useEffect(() => {
-    document.title = getTitle("Users");
+    document.title = setTitle("Users");
   }, []);
 
   return (

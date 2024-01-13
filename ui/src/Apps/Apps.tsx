@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import getTitle from "../lib/getTitle";
+import setTitle from "../lib/setTitle";
 import { useEffect, useState } from "react";
 import NewApplication from "./NewApplication";
 import AllApplications from "./AllApplications";
@@ -26,7 +26,7 @@ export default function Apps() {
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
-    document.title = getTitle("Applications");
+    document.title = setTitle("Applications");
   }, []);
 
   return (

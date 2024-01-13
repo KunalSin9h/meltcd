@@ -33,7 +33,7 @@ export const Ctx = createContext<authContext | null>(null);
 
 export default function Layout() {
   const [openHelpPanel, setOpenHelpPanel] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>("New");
   const navigate = useNavigate();
 
   // check login here
