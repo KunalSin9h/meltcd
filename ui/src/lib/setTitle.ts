@@ -14,6 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export default function getTitle(prefix: string): string {
+export default function setTitle(prefix: string): string {
   return prefix + " • Meltcd";
 }

@@ -17,14 +17,23 @@ limitations under the License.
 import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import toast, { Toaster } from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { LinkIcon } from "../lib/icon";
 import version from "../version";
 import MeltcdBranding from "./Branding";
 
+type ReactSetState<T> = React.Dispatch<React.SetStateAction<T>>;
+
+type authContext = {
+  username: string;
+  setUsername: ReactSetState<string | null>;
+};
+
+export const Ctx = createContext<authContext | null>(null);
+
 export default function Layout() {
   const [openHelpPanel, setOpenHelpPanel] = useState(false);
-  const [login, setLogin] = useState(false);
+  const [username, setUsername] = useState<string | null>("New");
   const navigate = useNavigate();
 
   // check login here
@@ -45,9 +54,7 @@ export default function Layout() {
             return;
           }
 
-          localStorage.setItem("username", username);
-          setLogin(true);
-          navigate("/apps");
+          setUsername(username);
         } else {
           toast.error("Something wend wrong, server does not respond with 200");
         }
@@ -59,7 +66,7 @@ export default function Layout() {
     getUser();
   }, [navigate]);
 
-  if (!login) {
+  if (!username) {
     return (
       <div className="h-screen w-screen fixed top-0 left-0 bg-inherit flex justify-center items-center">
         <MeltcdBranding />
@@ -69,12 +76,27 @@ export default function Layout() {
 
   return (
     <div className="flex flex-row h-screen w-screen overflow-hidden">
-      <Sidebar
-        openHelpPanel={openHelpPanel}
-        setOpenHelpPanel={setOpenHelpPanel}
-      />
+      <Ctx.Provider
+        value={{
+          username,
+          setUsername,
+        }}
+      >
+        <Sidebar
+          openHelpPanel={openHelpPanel}
+          setOpenHelpPanel={setOpenHelpPanel}
+        />
+      </Ctx.Provider>
       <div className="flex-1 relative">
-        <Outlet />
+        <Ctx.Provider
+          value={{
+            username,
+            setUsername,
+          }}
+        >
+          <Outlet />
+        </Ctx.Provider>
+
         {/** Help And Support Panel relative to main window */}
         <div
           className={`absolute h-auto rounded bg-sidebar w-48 left-4 bottom-4 p-4 flex flex-col gap-2

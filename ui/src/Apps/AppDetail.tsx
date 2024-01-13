@@ -16,7 +16,7 @@ limitations under the License.
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import getTitle from "../lib/getTitle";
+import setTitle from "../lib/setTitle";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
 import { MessageWithIcon } from "./AllApplications";
@@ -56,7 +56,7 @@ export default function AppsDetail() {
     if (title === undefined) {
       title = "Applications";
     }
-    document.title = getTitle(title);
+    document.title = setTitle(title);
   }, [name]);
 
   return (

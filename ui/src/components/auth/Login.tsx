@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import getTitle from "../../lib/getTitle";
+import setTitle from "../../lib/setTitle";
 import MeltcdBranding from "../Branding";
 import { Spinner } from "../../lib/icon";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = getTitle("Login");
+    document.title = setTitle("Login");
   });
 
   return (

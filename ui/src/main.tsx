@@ -21,13 +21,13 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Apps from "./Apps/Apps.tsx";
 import Layout from "./components/Layout.tsx";
-import Repos from "./Repos.tsx";
 import Secrets from "./Secrets.tsx";
 import Users from "./User/User.tsx";
 import Settings from "./Settings.tsx";
 import AppsDetail from "./Apps/AppDetail.tsx";
 import Logs from "./Logs.tsx";
 import LoginPage from "./components/auth/Login.tsx";
+import Repos from "./Repos/Repos.tsx";
 
 const router = createBrowserRouter([
   {

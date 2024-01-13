@@ -15,11 +15,11 @@ limitations under the License.
 */
 
 import { useEffect } from "react";
-import getTitle from "./lib/getTitle";
+import setTitle from "./lib/setTitle";
 
 export default function Settings() {
   useEffect(() => {
-    document.title = getTitle("Settings");
+    document.title = setTitle("Settings");
   }, []);
 
   return (
