@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import getTitle from "../lib/getTitle";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -28,6 +28,7 @@ import {
 import { GetSinceTime, MessageWithIcon } from "../Apps/AllApplications";
 import { toast } from "react-hot-toast";
 import normalizeInput from "../utils/normalizeInput";
+import { Ctx } from "../components/Layout";
 
 type RespData = {
   data: User[];
@@ -163,6 +164,14 @@ function EditUser({
   const [newUsername, setNewUsername] = useState("");
   const [mode, setMode] = useState("username");
 
+  const authCtx = useContext(Ctx);
+
+  if (authCtx === null) {
+    // we should not come here
+    // as if not logged in then this page must not be shown
+    return null;
+  }
+
   return (
     <div className="flex items-center gap-4 relative">
       <div
@@ -241,7 +250,7 @@ function EditUser({
                   loading: "Changing username",
                   success: (res) => {
                     if (res.status === 200) {
-                      localStorage.setItem("username", newUsername);
+                      authCtx.setUsername(newUsername);
                       setOpenEditModal(false);
                       refetch();
                       return "Username changed successfully";

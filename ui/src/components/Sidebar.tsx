@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import {
   AppsIcon,
   HelpIcon,
@@ -26,6 +26,7 @@ import {
   UserIcon,
 } from "../lib/icon";
 import { NavLink } from "react-router-dom";
+import { Ctx } from "./Layout";
 
 export default function Sidebar({
   openHelpPanel,
@@ -147,38 +148,15 @@ function Item({
 }
 
 function UserName({ panelOpen }: { panelOpen: boolean }) {
-  const [username, setUsername] = useState<string | null>();
+  const authContext = useContext(Ctx);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setUsername(localStorage.getItem("username"));
-    }, 2000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, [username]);
-
-  if (!username) {
-    return (
-      <div
-        className={`hover:bg-sidebarLite hover:border-l hover:border-l-[5px] hover:border-white/40 rounded-r px-2 flex gap-2 items-center ${
-          panelOpen ? "py-1" : "justify-center py-2"
-        }`}
-      >
-        <UserIcon />
-        <div
-          className={`animate-pulse w-24 h-6 rounded ${
-            panelOpen ? "" : "hidden"
-          } bg-sidebarLite/40`}
-        ></div>
-      </div>
-    );
+  if (authContext === null) {
+    return null;
   }
 
   return (
     <Item
-      name={username}
+      name={authContext.username}
       to="/users"
       icon={<UserIcon />}
       panelOpen={panelOpen}

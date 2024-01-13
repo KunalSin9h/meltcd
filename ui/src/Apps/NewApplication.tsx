@@ -269,7 +269,7 @@ function InputOption({
       <input
         id={id}
         required={true}
-        className="border p-1 rounded px-2"
+        className="border p-1 rounded px-2 bg-white"
         type="text"
         placeholder={placeholder}
         value={value}
