@@ -18,9 +18,11 @@ import { useEffect, useState } from "react";
 import setTitle from "../lib/setTitle";
 import { CloseIcon } from "../lib/icon";
 import NewRepository from "./NewRepo";
+import AllRepos from "./AllRepos";
 
 export default function Repos() {
   const [newRepoOpen, setNewRepoOpen] = useState(false);
+  const [refreshSignal, setRefreshSignal] = useState(false);
 
   useEffect(() => {
     document.title = setTitle("Repositories");
@@ -45,12 +47,13 @@ export default function Repos() {
           <NewRepository
             newRepoOpen={newRepoOpen}
             closeNewRepoOpen={setNewRepoOpen}
+            setRefreshSignal={setRefreshSignal}
           />
         </div>
       </div>
 
       {/** Show All repositories */}
-      <div></div>
+      <AllRepos refresh={refreshSignal} />
     </div>
   );
 }

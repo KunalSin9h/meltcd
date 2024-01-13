@@ -6,6 +6,7 @@ import { Spinner } from "../lib/icon";
 interface NewRepositoryProps {
   newRepoOpen: boolean;
   closeNewRepoOpen: (b: boolean) => void;
+  setRefreshSignal: (b: boolean) => void;
 }
 
 export default function NewRepository(props: NewRepositoryProps) {
@@ -61,6 +62,11 @@ export default function NewRepository(props: NewRepositoryProps) {
       <button
         className="text-black py-2 px-4 rounded font-bold bg-green-400 hover:bg-green-500 cursor-pointer flex justify-center items-center"
         onClick={() => {
+          if (username === "" || password === "") {
+            toast.error("Input must not be empty!");
+            return;
+          }
+
           setProcessing(true);
           const api = "/api/repo";
 
@@ -83,6 +89,7 @@ export default function NewRepository(props: NewRepositoryProps) {
                 toast.success("Successfully added repository");
                 setProcessing(false);
                 props.closeNewRepoOpen(false);
+                props.setRefreshSignal(true);
               } else {
                 try {
                   res.json().then((d) => {
