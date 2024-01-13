@@ -62,7 +62,7 @@ export default function AllRepos(props: AllReposProps) {
   }
 
   if (data.data === null || data.data.length === 0) {
-    return <MessageWithIcon icon={<WarningIcon />} message="No Application" />;
+    return <MessageWithIcon icon={<WarningIcon />} message="No Repositories" />;
   }
 
   return (
