@@ -47,7 +47,6 @@ export default function Layout() {
 
           localStorage.setItem("username", username);
           setLogin(true);
-          navigate("/apps");
         } else {
           toast.error("Something wend wrong, server does not respond with 200");
         }
