@@ -4,7 +4,6 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 import { MessageWithIcon } from "../Apps/AllApplications";
 import {
   CloseIcon,
-  EditIcon,
   ErrorIcon,
   Spinner,
   TickIcon,
@@ -126,9 +125,6 @@ function EditRepo(props: { repoURL: string; refetch: () => void }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   return (
     <div className="flex items-center gap-4">
-      <span>
-        <EditIcon />
-      </span>
       <div className="relative">
         <span
           onClick={() => {
