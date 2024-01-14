@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   AppsIcon,
   HelpIcon,
@@ -28,6 +28,15 @@ import {
 import { NavLink } from "react-router-dom";
 import { Ctx } from "./Layout";
 
+type closeFn = (b: boolean) => void;
+
+const closeSidebar = (closeFn: closeFn) => {
+  const width = window.outerWidth;
+  if (width <= 1000) {
+    closeFn(false);
+  }
+};
+
 export default function Sidebar({
   openHelpPanel,
   setOpenHelpPanel,
@@ -37,11 +46,12 @@ export default function Sidebar({
 }) {
   const [panelOpen, setPanelOpen] = useState(true);
 
+  useEffect(() => {
+    closeSidebar(setPanelOpen);
+  }, []);
+
   window.onresize = () => {
-    const width = window.outerWidth;
-    if (width <= 1000) {
-      setPanelOpen(false);
-    }
+    closeSidebar(setPanelOpen);
   };
 
   return (

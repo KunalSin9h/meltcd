@@ -23,11 +23,18 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/log"
+	"github.com/go-git/go-billy/v5/memfs"
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
+	"github.com/go-git/go-git/v5/storage/memory"
 )
 
 type Repository struct {
 	URL, Secret string
+	Reachable   bool
 }
+
+var repositories []*Repository
 
 func (r *Repository) saveCredential(username, password string) {
 	r.Secret = base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
@@ -52,7 +59,24 @@ func (r *Repository) getCredential() (username, password string) {
 	return username, password
 }
 
-var repositories []*Repository
+func (r *Repository) checkReachability(username, password string) {
+	fs := memfs.New()
+	storage := memory.NewStorage()
+
+	_, err := git.Clone(storage, fs, &git.CloneOptions{
+		URL:          r.URL,
+		SingleBranch: true,
+		Depth:        1,
+		Auth: &http.BasicAuth{
+			Username: username,
+			Password: password,
+		},
+	})
+
+	if err != nil {
+		r.Reachable = false
+	}
+}
 
 func Add(url, username, password string) error {
 	repo, found := findRepo(url)
@@ -60,12 +84,13 @@ func Add(url, username, password string) error {
 		return errors.New("repository with same url already exists")
 	}
 
+	repo.URL = url
 	repo.saveCredential(username, password)
+	repo.Reachable = true
 
-	repositories = append(repositories, &Repository{
-		URL:    url,
-		Secret: repo.Secret,
-	})
+	go repo.checkReachability(username, password)
+
+	repositories = append(repositories, repo)
 	return nil
 }
 

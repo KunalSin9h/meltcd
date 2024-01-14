@@ -71,7 +71,7 @@ func Add(c *fiber.Ctx) error { // nolint:all
 }
 
 type ListData struct {
-	Data []string `json:"data"`
+	Data []repository.RepoData `json:"data"`
 }
 
 // List godoc

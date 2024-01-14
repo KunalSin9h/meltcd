@@ -117,7 +117,7 @@ definitions:
     properties:
       data:
         items:
-          type: string
+          $ref: '#/definitions/repository.RepoData'
         type: array
     type: object
   repo.PrivateRepoDetails:
@@ -132,6 +132,13 @@ definitions:
   repo.RemovePayload:
     properties:
       repo:
+        type: string
+    type: object
+  repository.RepoData:
+    properties:
+      reachable:
+        type: boolean
+      url:
         type: string
     type: object
 externalDocs:

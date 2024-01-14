@@ -17,7 +17,7 @@ export default function NewRepository(props: NewRepositoryProps) {
 
   return (
     <div
-      className={`absolute top-16 bg-white right-0 p-4 flex flex-col gap-4 text-black w-96 rounded
+      className={`absolute top-16 bg-white right-0 p-4 flex flex-col gap-4 text-black w-96 rounded z-10
             ${!props.newRepoOpen ? "hidden" : ""}
           `}
     >

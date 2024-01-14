@@ -18,8 +18,14 @@ import setTitle from "../lib/setTitle";
 import { useEffect, useState } from "react";
 import NewApplication from "./NewApplication";
 import AllApplications from "./AllApplications";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function Apps() {
+  const navigate = useNavigate();
+
+  const [searchParam] = useSearchParams();
+  const doesRedirect = searchParam.get("redirect");
+
   const [openWindow, setOpenWindow] = useState(false);
   // this is used to refetch the app list when new app is
   // created
@@ -27,10 +33,14 @@ export default function Apps() {
 
   useEffect(() => {
     document.title = setTitle("Applications");
-  }, []);
+
+    if (doesRedirect) {
+      navigate(doesRedirect as string);
+    }
+  }, [doesRedirect, navigate]);
 
   return (
-    <div className="h-screen p-8 overflow-auto">
+    <div className="h-screen p-8">
       <div className="flex justify-between items-center">
         <p className="text-2xl">Applications</p>
         <button
