@@ -81,6 +81,7 @@ export default function Users() {
 
 function AllUsers() {
   const navigate = useNavigate();
+  const authCtx = useContext(Ctx);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["GET /api/users", "GET_ALL_USERS"],
@@ -96,7 +97,7 @@ function AllUsers() {
     );
   }
 
-  if (isLoading || data === undefined) {
+  if (isLoading || data === undefined || authCtx === null) {
     return <MessageWithIcon icon={<Spinner />} message="Loading" />;
   }
 
@@ -121,7 +122,7 @@ function AllUsers() {
                   admin
                 </span>
               ) : null}
-              {localStorage.getItem("username") === user.username ? (
+              {authCtx.username === user.username ? (
                 <span className="text-xs text-yellow-400 font-semibold rounded-lg py-1 px-2 bg-yellow-400/20">
                   you
                 </span>

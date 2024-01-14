@@ -32,7 +32,6 @@ type closeFn = (b: boolean) => void;
 
 const closeSidebar = (closeFn: closeFn) => {
   const width = window.outerWidth;
-  console.log(width);
   if (width <= 1000) {
     closeFn(false);
   }
