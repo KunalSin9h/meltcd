@@ -100,7 +100,7 @@ export default function AppsDetail() {
           >
             Synchronize
           </button>
-          <Tooltip content="Recreate application">
+          <Tooltip content="Recreate application" className="bg-sidebarLite">
             <button
               className="hover:bg-white/30 p-2 rounded"
               onClick={() => {
@@ -110,7 +110,7 @@ export default function AppsDetail() {
               <RecreateIcon />
             </button>
           </Tooltip>
-          <Tooltip content="Delete this application">
+          <Tooltip content="Delete this application" className="bg-sidebarLite">
             <button
               className="hover:bg-white/30 p-2 rounded"
               onClick={() => {

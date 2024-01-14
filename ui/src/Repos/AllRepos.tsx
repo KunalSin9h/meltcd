@@ -92,22 +92,20 @@ export default function AllRepos(props: AllReposProps) {
                   <Tooltip
                     className="text-green-400 bg-green-300/10"
                     content="Repository is reachable"
-                    children={
-                      <span>
-                        <TickIcon className="text-green-400 inline" />
-                      </span>
-                    }
-                  />
+                  >
+                    <span>
+                      <TickIcon className="text-green-400 inline" />
+                    </span>
+                  </Tooltip>
                 ) : (
                   <Tooltip
                     className="text-red-400 bg-red-300/10"
                     content="Repository is not reachable"
-                    children={
-                      <span>
-                        <CloseIcon className="text-red-400 inline" />
-                      </span>
-                    }
-                  />
+                  >
+                    <span>
+                      <CloseIcon className="text-red-400 inline" />
+                    </span>
+                  </Tooltip>
                 )}
               </span>
             </div>
