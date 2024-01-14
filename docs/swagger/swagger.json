@@ -789,7 +789,7 @@
                 "data": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/repository.RepoData"
                     }
                 }
             }
@@ -812,6 +812,17 @@
             "type": "object",
             "properties": {
                 "repo": {
+                    "type": "string"
+                }
+            }
+        },
+        "repository.RepoData": {
+            "type": "object",
+            "properties": {
+                "reachable": {
+                    "type": "boolean"
+                },
+                "url": {
                     "type": "string"
                 }
             }

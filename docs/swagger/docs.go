@@ -792,7 +792,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "$ref": "#/definitions/repository.RepoData"
                     }
                 }
             }
@@ -815,6 +815,17 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "repo": {
+                    "type": "string"
+                }
+            }
+        },
+        "repository.RepoData": {
+            "type": "object",
+            "properties": {
+                "reachable": {
+                    "type": "boolean"
+                },
+                "url": {
                     "type": "string"
                 }
             }

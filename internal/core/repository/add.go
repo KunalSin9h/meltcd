@@ -20,6 +20,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/charmbracelet/log"
@@ -27,7 +29,10 @@ import (
 
 type Repository struct {
 	URL, Secret string
+	Reachable   bool
 }
+
+var repositories []*Repository
 
 func (r *Repository) saveCredential(username, password string) {
 	r.Secret = base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
@@ -52,7 +57,24 @@ func (r *Repository) getCredential() (username, password string) {
 	return username, password
 }
 
-var repositories []*Repository
+func (r *Repository) checkReachability() {
+	req, err := http.NewRequest(http.MethodGet, r.URL, nil)
+	if err != nil {
+		r.Reachable = false
+		return
+	}
+	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", r.Secret))
+
+	client := &http.Client{}
+
+	res, err := client.Do(req)
+	if err != nil || res.StatusCode != 200 {
+		r.Reachable = false
+		return
+	}
+
+	r.Reachable = true
+}
 
 func Add(url, username, password string) error {
 	repo, found := findRepo(url)
@@ -60,12 +82,13 @@ func Add(url, username, password string) error {
 		return errors.New("repository with same url already exists")
 	}
 
+	repo.URL = url
 	repo.saveCredential(username, password)
+	repo.Reachable = true
 
-	repositories = append(repositories, &Repository{
-		URL:    url,
-		Secret: repo.Secret,
-	})
+	go repo.checkReachability()
+
+	repositories = append(repositories, repo)
 	return nil
 }
 

@@ -16,11 +16,19 @@ limitations under the License.
 
 package repository
 
-func List() []string {
-	res := make([]string, 0)
+type RepoData struct {
+	URL       string `json:"url"`
+	Reachable bool   `json:"reachable"`
+}
+
+func List() []RepoData {
+	res := make([]RepoData, 0)
 
 	for _, repo := range repositories {
-		res = append(res, repo.URL)
+		res = append(res, RepoData{
+			URL:       repo.URL,
+			Reachable: repo.Reachable,
+		})
 	}
 
 	return res

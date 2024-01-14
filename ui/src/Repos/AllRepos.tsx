@@ -2,10 +2,22 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { MessageWithIcon } from "../Apps/AllApplications";
-import { ErrorIcon, Spinner, WarningIcon } from "../lib/icon";
+import {
+  CloseIcon,
+  ErrorIcon,
+  Spinner,
+  TickIcon,
+  WarningIcon,
+} from "../lib/icon";
+import Tooltip from "../lib/Tooltip";
+
+type repoData = {
+  url: string;
+  reachable: boolean;
+};
 
 type respData = {
-  data: string[];
+  data: repoData[];
 };
 
 const fetchRepos = (navigate: NavigateFunction): Promise<respData> =>
@@ -67,14 +79,41 @@ export default function AllRepos(props: AllReposProps) {
 
   return (
     <ul className="xl:w-[70%] mx-auto">
-      {data.data.map((repo, index) => (
-        <li
-          key={index}
-          className="p-2 md:p-4 my-2 md:my-4 rounded bg-[#373d49]/30 hover:bg-[#373d49]/80 cursor-pointer"
-        >
-          <div>{repo}</div>
-        </li>
-      ))}
+      {data.data.map((repo, index) => {
+        return (
+          <li
+            key={index}
+            className="p-2 md:p-4 my-2 md:my-4 rounded bg-[#373d49]/30 hover:bg-[#373d49]/80 cursor-pointer"
+          >
+            <div className="flex items-center justify-start gap-2">
+              <div className="font-semibold">{repo.url}</div>
+              <span>
+                {repo.reachable ? (
+                  <Tooltip
+                    className="text-green-400 bg-green-300/10"
+                    content="Repository is reachable"
+                    children={
+                      <span>
+                        <TickIcon className="text-green-400 inline" />
+                      </span>
+                    }
+                  />
+                ) : (
+                  <Tooltip
+                    className="text-red-400 bg-red-300/10"
+                    content="Repository is not reachable"
+                    children={
+                      <span>
+                        <CloseIcon className="text-red-400 inline" />
+                      </span>
+                    }
+                  />
+                )}
+              </span>
+            </div>
+          </li>
+        );
+      })}
     </ul>
   );
 }

@@ -1,3 +1,7 @@
+interface ClassNameProps {
+  className?: string;
+}
+
 export const PanelIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +124,7 @@ export const SettingIcon = () => (
   </svg>
 );
 
-export const CloseIcon = () => (
+export const CloseIcon = (props: ClassNameProps) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -131,7 +135,7 @@ export const CloseIcon = () => (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-    className="lucide lucide-x"
+    className={props.className}
   >
     <path d="M18 6 6 18" />
     <path d="m6 6 12 12" />
@@ -337,5 +341,22 @@ export const DeleteUser = () => (
     <circle cx="9" cy="7" r="4" />
     <line x1="17" x2="22" y1="8" y2="13" />
     <line x1="22" x2="17" y1="8" y2="13" />
+  </svg>
+);
+
+export const TickIcon = (props: ClassNameProps) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={props.className}
+  >
+    <path d="M20 6 9 17l-5-5" />
   </svg>
 );
