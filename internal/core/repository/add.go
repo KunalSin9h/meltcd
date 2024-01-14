@@ -20,11 +20,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"net/http"
 	"strings"
 
 	"github.com/charmbracelet/log"
+	"github.com/go-git/go-billy/v5/memfs"
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
+	"github.com/go-git/go-git/v5/storage/memory"
 )
 
 type Repository struct {
@@ -57,23 +59,23 @@ func (r *Repository) getCredential() (username, password string) {
 	return username, password
 }
 
-func (r *Repository) checkReachability() {
-	req, err := http.NewRequest(http.MethodGet, r.URL, nil)
+func (r *Repository) checkReachability(username, password string) {
+	fs := memfs.New()
+	storage := memory.NewStorage()
+
+	_, err := git.Clone(storage, fs, &git.CloneOptions{
+		URL:          r.URL,
+		SingleBranch: true,
+		Depth:        1,
+		Auth: &http.BasicAuth{
+			Username: username,
+			Password: password,
+		},
+	})
+
 	if err != nil {
 		r.Reachable = false
-		return
 	}
-	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", r.Secret))
-
-	client := &http.Client{}
-
-	res, err := client.Do(req)
-	if err != nil || res.StatusCode != 200 {
-		r.Reachable = false
-		return
-	}
-
-	r.Reachable = true
 }
 
 func Add(url, username, password string) error {
@@ -86,7 +88,7 @@ func Add(url, username, password string) error {
 	repo.saveCredential(username, password)
 	repo.Reachable = true
 
-	go repo.checkReachability()
+	go repo.checkReachability(username, password)
 
 	repositories = append(repositories, repo)
 	return nil

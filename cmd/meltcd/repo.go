@@ -99,11 +99,11 @@ func getAllRepoAdded(_ *cobra.Command, _ []string) error {
 		return err
 	}
 
-	table := table.New("S.NO", "Repository URL")
+	table := table.New("S.NO", "Repository URL", "Reachable")
 	table.WithHeaderFormatter(util.HeaderFmt).WithFirstColumnFormatter(util.ColumnFmt)
 
-	for idx, url := range resData.Data {
-		table.AddRow(idx, url)
+	for idx, repo := range resData.Data {
+		table.AddRow(idx, repo.URL, repo.Reachable)
 	}
 
 	table.Print()
