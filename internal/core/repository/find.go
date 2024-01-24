@@ -19,7 +19,7 @@ package repository
 import (
 	"strings"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
 )
 
 func Find(repoURL string) (string, string) {
@@ -33,7 +33,7 @@ func Find(repoURL string) (string, string) {
 	username, password := repo.getCredential()
 
 	if username == "" || password == "" {
-		log.Error("username and password not found in secret")
+		slog.Error("username and password not found in secret")
 		return "", ""
 	}
 

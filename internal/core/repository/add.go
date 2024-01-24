@@ -22,7 +22,8 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
+
 	"github.com/go-git/go-billy/v5/memfs"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
@@ -43,13 +44,13 @@ func (r *Repository) saveCredential(username, password string) {
 func (r *Repository) getCredential() (username, password string) {
 	d, err := base64.StdEncoding.DecodeString(r.Secret)
 	if err != nil {
-		log.Error(err.Error())
+		slog.Error(err.Error())
 		return "", ""
 	}
 
 	cred := strings.Split(string(d), ":")
 	if len(cred) != 2 {
-		log.Error("repository credential is empty")
+		slog.Error("repository credential is empty")
 		return "", ""
 	}
 

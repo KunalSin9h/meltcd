@@ -17,10 +17,12 @@ limitations under the License.
 package core
 
 import (
+	"fmt"
 	"os"
 	"path"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
+
 	"github.com/meltred/meltcd/internal/core/auth"
 	"github.com/meltred/meltcd/internal/core/repository"
 )
@@ -48,7 +50,7 @@ func meltcdState() error {
 
 	_, err := os.Stat(meltcdDir)
 	if err != nil {
-		log.Infof("Creating directory: %s", meltcdDir)
+		slog.Info(fmt.Sprintf("Creating directory: %s\n", meltcdDir))
 
 		err = os.Mkdir(meltcdDir, os.ModePerm)
 		if err != nil {
@@ -64,14 +66,14 @@ func meltcdState() error {
 	// When creating a fresh auth file (db) insert admin:admin username and password
 	_, err = os.Stat(authFile)
 	if err != nil {
-		log.Infof("Creating file: %s", authFile)
+		slog.Info(fmt.Sprintf("Creating file: %s\n", authFile))
 		_, err = os.Create(authFile)
 		if err != nil {
 			return err
 		}
-		log.Info("Creating default user", "username", "admin", "password", "admin")
+		slog.Info("Creating default user", "username", "admin", "password", "admin")
 		if err := auth.InsertUser("admin", "admin", auth.Admin); err != nil {
-			log.Error("Failed to create default user")
+			slog.Error("Failed to create default user")
 			return err
 		}
 	}
@@ -79,7 +81,7 @@ func meltcdState() error {
 	for _, f := range []string{applicationsFile, repositoryFile, accessTokenFile} {
 		_, err = os.Stat(f)
 		if err != nil {
-			log.Infof("Creating file: %s", f)
+			slog.Info(fmt.Sprintf("Creating file: %s\n", f))
 			_, err = os.Create(f)
 			if err != nil {
 				return err
@@ -93,7 +95,7 @@ func meltcdState() error {
 	}
 
 	if err := loadRegistryData(&appData); err != nil {
-		log.Warn("Application state file is empty", "error", err.Error())
+		slog.Warn("Application state file is empty", "error", err.Error())
 	}
 
 	repoData, err := os.ReadFile(repositoryFile)
@@ -102,7 +104,7 @@ func meltcdState() error {
 	}
 
 	if err := repository.LoadData(&repoData); err != nil {
-		log.Warn("Repository state file is empty", "error", err.Error())
+		slog.Warn("Repository state file is empty", "error", err.Error())
 	}
 
 	authData, err := os.ReadFile(authFile)
@@ -111,7 +113,7 @@ func meltcdState() error {
 	}
 
 	if err := auth.LoadUsers(&authData); err != nil {
-		log.Warn("Auth file is empty", "error", err.Error())
+		slog.Warn("Auth file is empty", "error", err.Error())
 	}
 
 	return nil
@@ -153,7 +155,7 @@ func ShutDown() error {
 func getMeltcdDir() string {
 	home, err := os.UserHomeDir()
 	if err != nil {
-		log.Warn("failed to get home dir (using default \".\")")
+		slog.Warn("failed to get home dir (using default \".\")")
 		return "."
 	}
 

@@ -20,13 +20,13 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/user"
 	"path/filepath"
 	"strconv"
 	"strings"
 
-	"github.com/charmbracelet/log"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/swarm"
 )
@@ -69,13 +69,13 @@ type Volume struct {
 }
 
 func (d *DockerSwarm) GetServiceSpec(appName string, networkID string) ([]swarm.ServiceSpec, error) {
-	log.Info("Getting service spec for app", "app name", appName)
+	slog.Info("Getting service spec for app", "app name", appName)
 
 	specs := make([]swarm.ServiceSpec, 0)
 
 	for serviceName, spec := range d.Services {
 		spec := spec
-		log.Info("Making serviceSpec for service", "service_name", serviceName)
+		slog.Info("Making serviceSpec for service", "service_name", serviceName)
 
 		var targetSpec swarm.ServiceSpec
 
@@ -106,14 +106,14 @@ func (d *DockerSwarm) GetServiceSpec(appName string, networkID string) ([]swarm.
 		})
 
 		for _, envFile := range spec.EnvFile {
-			log.Info("Using environment variable from files", "file", envFile)
+			slog.Info("Using environment variable from files", "file", envFile)
 
 			envVars, err := getEnvVars(envFile)
 			if err != nil {
 				return []swarm.ServiceSpec{}, err
 			}
 
-			log.Info("Found environment from file", "count", len(envVars))
+			slog.Info("Found environment from file", "count", len(envVars))
 
 			for k, v := range envVars {
 				targetSpec.TaskTemplate.ContainerSpec.Env = append(targetSpec.TaskTemplate.ContainerSpec.Env, k+"="+v)
@@ -127,7 +127,7 @@ func (d *DockerSwarm) GetServiceSpec(appName string, networkID string) ([]swarm.
 		for _, m := range spec.Volumes {
 			tokens := strings.SplitN(m, ":", 2)
 			if len(tokens) != 2 {
-				log.Error("Volumes are not split on : in 2", "tokens", tokens)
+				slog.Error("Volumes are not split on : in 2", "tokens", tokens)
 				return []swarm.ServiceSpec{}, errors.New("invalid volumes")
 			}
 
@@ -155,7 +155,7 @@ func (d *DockerSwarm) GetServiceSpec(appName string, networkID string) ([]swarm.
 				Target: value,
 			})
 
-			log.Info("Using volume", "key", key, "value", value)
+			slog.Info("Using volume", "key", key, "value", value)
 		}
 
 		if spec.Deploy.Mode == "replicated" {
@@ -170,7 +170,7 @@ func (d *DockerSwarm) GetServiceSpec(appName string, networkID string) ([]swarm.
 		for _, port := range spec.Ports {
 			tokens := strings.Split(port, ":")
 			if len(tokens) != 2 {
-				log.Error("ports are not split on : in 2", "tokens", tokens)
+				slog.Error("ports are not split on : in 2", "tokens", tokens)
 				os.Exit(1)
 			}
 			target, _ := strconv.Atoi(tokens[1])
@@ -188,7 +188,7 @@ func (d *DockerSwarm) GetServiceSpec(appName string, networkID string) ([]swarm.
 			Ports: ports,
 		}
 
-		log.Info("Adding serviceSpec for service in allServiceArray", "service_name", serviceName)
+		slog.Info("Adding serviceSpec for service in allServiceArray", "service_name", serviceName)
 		specs = append(specs, targetSpec)
 	}
 
@@ -205,12 +205,12 @@ func getEnvVars(fileName string) (map[string]string, error) {
 
 	fileData, err := os.Open(fileName)
 	if err != nil {
-		log.Warn("file path does not exist", "file", fileName)
+		slog.Warn("file path does not exist", "file", fileName)
 		fileName, _ = strings.CutPrefix(fileName, "/home")
 
 		fileData, err = os.Open(fileName)
 		if err != nil {
-			log.Warn("file path does not exist", "file", fileName)
+			slog.Warn("file path does not exist", "file", fileName)
 			return map[string]string{}, err
 		}
 	}

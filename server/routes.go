@@ -26,6 +26,8 @@ import (
 	"strings"
 	"syscall"
 
+	"log/slog"
+
 	"github.com/meltred/meltcd/internal/core"
 	Api "github.com/meltred/meltcd/server/api"
 	appApi "github.com/meltred/meltcd/server/api/app"
@@ -33,7 +35,6 @@ import (
 	"github.com/meltred/meltcd/server/middleware"
 	"github.com/meltred/meltcd/version"
 
-	"github.com/charmbracelet/log"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
@@ -56,7 +57,7 @@ var defaultAllowOrigins = []string{
 func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	err := core.Setup()
 	if err != nil {
-		log.Error(err)
+		slog.Error(err.Error())
 		os.Exit(1)
 	}
 
@@ -70,6 +71,14 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	app := fiber.New(fiber.Config{
 		AppName: fmt.Sprintf("MeltCD Server v%s", version.Version),
+
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			if err != nil {
+				slog.Error(err.Error())
+				return err
+			}
+			return nil
+		},
 	})
 
 	app.Use(cors.New(config))
@@ -120,7 +129,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	api := app.Group("api")
 
 	if strings.TrimSpace(os.Getenv("RL_DISABLE")) != "true" {
-		log.Warn("Rate Limiting is enabled by default, to disable set RL_DISABLE=true")
+		slog.Warn("Rate Limiting is enabled by default, to disable set RL_DISABLE=true")
 		api.Use(limiter.New(*rateLimiterConfig()))
 	}
 
@@ -152,17 +161,17 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	repo.Delete("/", repoApi.Remove)
 	repo.Put("/", repoApi.Update)
 
-	log.Infof("Listening on %s (version: %s)", ln.Addr(), version.Version)
+	slog.Info(fmt.Sprintf("Listening on %s (version: %s)\n", ln.Addr(), version.Version))
 
 	signals := make(chan os.Signal, 1)
 	go signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGABRT, syscall.SIGILL)
 
 	go func() {
 		<-signals
-		log.Info("Shutting down server...")
+		slog.Info("Shutting down server...")
 
 		if err := core.ShutDown(); err != nil {
-			log.Error(err.Error())
+			slog.Error(err.Error())
 			os.Exit(1)
 		}
 
