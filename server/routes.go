@@ -71,6 +71,14 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	app := fiber.New(fiber.Config{
 		AppName: fmt.Sprintf("MeltCD Server v%s", version.Version),
+
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			if err != nil {
+				slog.Error(err.Error())
+				return err
+			}
+			return nil
+		},
 	})
 
 	app.Use(cors.New(config))
