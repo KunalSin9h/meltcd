@@ -5,7 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
+
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 )
 
@@ -30,25 +31,25 @@ func updateDefaultValues() {
 	if maxLimit != "" {
 		maxLimitGiven, err := strconv.Atoi(maxLimit)
 		if err != nil {
-			log.Error("Failed to parse RL_MAX_LIMIT value, using default", "maxLimit", D_MAX)
+			slog.Error("Failed to parse RL_MAX_LIMIT value, using default", "maxLimit", D_MAX)
 		} else {
 			D_MAX = maxLimitGiven
-			log.Info("Using max limit", "max_limit", D_MAX)
+			slog.Info("Using max limit", "max_limit", D_MAX)
 		}
 	} else {
-		log.Info("Using default max limit value", "max_limit", D_MAX)
+		slog.Info("Using default max limit value", "max_limit", D_MAX)
 	}
 
 	expTime := os.Getenv("RL_EXPIRATION")
 	if expTime != "" {
 		exp, err := time.ParseDuration(expTime)
 		if err != nil {
-			log.Error("Failed to parse RL_EXPIRATION value, using default", "expTime", D_EXPIRATION)
+			slog.Error("Failed to parse RL_EXPIRATION value, using default", "expTime", D_EXPIRATION)
 		} else {
 			D_EXPIRATION = exp
-			log.Info("Using Expiration time", "exp_time", D_EXPIRATION)
+			slog.Info("Using Expiration time", "exp_time", D_EXPIRATION)
 		}
 	} else {
-		log.Info("Using default expiration value", "exp_time", D_EXPIRATION)
+		slog.Info("Using default expiration value", "exp_time", D_EXPIRATION)
 	}
 }

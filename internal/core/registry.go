@@ -26,13 +26,13 @@ import (
 	"github.com/docker/docker/client"
 	"github.com/meltred/meltcd/internal/core/application"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
 )
 
 var Applications []*application.Application
 
 func Register(app *application.Application) error {
-	log.Info("Registering application", "name", app.Name)
+	slog.Info("Registering application", "name", app.Name)
 
 	_, exists := getApp(app.Name)
 	if exists {
@@ -52,14 +52,14 @@ func Register(app *application.Application) error {
 	go app.Run()
 	Applications = append(Applications, app)
 
-	log.Info("Registered!")
+	slog.Info("Registered!")
 	return nil
 }
 
 // TODO: update atomic parts
 // only specify things you need go update
 func Update(app *application.Application) error {
-	log.Info("Updating application", "name", app.Name)
+	slog.Info("Updating application", "name", app.Name)
 
 	runningApp, exists := getApp(app.Name)
 	if !exists {
@@ -222,12 +222,12 @@ func Recreate(appName string) error {
 	if err != nil {
 		return err
 	}
-	log.Info("Got details of application", "app_name", appName)
+	slog.Info("Got details of application", "app_name", appName)
 
 	if err := RemoveApplication(appName); err != nil {
 		return err
 	}
-	log.Info("Removed application", "app_name", appName)
+	slog.Info("Removed application", "app_name", appName)
 
 	return Register(&data)
 }

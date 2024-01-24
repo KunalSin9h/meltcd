@@ -24,7 +24,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/charmbracelet/log"
+	"log/slog"
+
 	"github.com/meltred/meltcd/internal/core/base58"
 	"github.com/meltred/meltcd/internal/core/repository"
 	"github.com/meltred/meltcd/spec"
@@ -95,52 +96,52 @@ func New(spec Spec) Application {
 }
 
 func (app *Application) Run() {
-	log.Info("Running Application", "name", app.Name)
+	slog.Info("Running Application", "name", app.Name)
 
 	ticker := time.NewTicker(time.Minute * 3)
 	defer ticker.Stop()
 
 	if err := updateTicker(app.RefreshTimer, ticker); err != nil {
-		log.Error(err)
+		slog.Error(err.Error())
 		app.Health = Suspended
 		return
 	}
 
-	log.Info("Staring sync process")
+	slog.Info("Staring sync process")
 
 	for ; true; waitSync(ticker.C, app.SyncTrigger) {
 		if err := updateTicker(app.RefreshTimer, ticker); err != nil {
-			log.Error(err)
+			slog.Error(err.Error())
 			app.Health = Degraded
 			continue
 		}
 
 		targetState, err := app.GetState()
 		if err != nil {
-			log.Warn("Not able to get service", "repo", app.Source.RepoURL)
-			log.Error(err.Error())
+			slog.Warn("Not able to get service", "repo", app.Source.RepoURL)
+			slog.Error(err.Error())
 			app.Health = Degraded
 			continue
 		}
-		log.Info("got target state")
+		slog.Info("got target state")
 		if app.SyncStatus(targetState) {
 			// TODO: Sync Status = Synched
-			log.Info("Synched")
+			slog.Info("Synched")
 			app.Health = Healthy
 			continue
 		}
-		log.Info("liveState and Target state is out of sync. syncing now...")
+		slog.Info("liveState and Target state is out of sync. syncing now...")
 
 		// // TODO: Sync Status = Out of Sync
 		app.Health = Progressing
 		if err := app.Apply(targetState); err != nil {
 			app.Health = Degraded
-			log.Warn("Not able to apply targetState", "error", err.Error())
+			slog.Warn("Not able to apply targetState", "error", err.Error())
 			continue
 		}
 
 		app.Health = Healthy
-		log.Info("Applied new changes")
+		slog.Info("Applied new changes")
 	}
 }
 
@@ -154,7 +155,7 @@ func waitSync(ticker <-chan time.Time, syncTrigger <-chan SyncType) {
 func updateTicker(duration string, t *time.Ticker) error {
 	refreshTime, err := time.ParseDuration(duration)
 	if err != nil {
-		log.Error("Failed to parse refresh_time, it must be like \"3m30s\"", "name", duration)
+		slog.Error("Failed to parse refresh_time, it must be like \"3m30s\"", "name", duration)
 		return err
 	}
 
@@ -163,7 +164,7 @@ func updateTicker(duration string, t *time.Ticker) error {
 }
 
 func (app *Application) GetState() (string, error) {
-	log.Info("Getting service state from git repo", "repo", app.Source.RepoURL, "app_name", app.Name)
+	slog.Info("Getting service state from git repo", "repo", app.Source.RepoURL, "app_name", app.Name)
 	// TODO: not using targetRevision
 
 	// TODO: IMPROVEMENT
@@ -199,8 +200,8 @@ func (app *Application) GetState() (string, error) {
 	// if errors.Is(err, git.ErrRepositoryAlreadyExists) {
 	// 	//  fetch & pull request
 	// 	// don't clone again
-	// 	log.Info("Repo already exits", "repo", app.Source.RepoURL)
-	// 	log.Error("Since the storage is not persistent, this error should not exist")
+	// 	slog.Info("Repo already exits", "repo", app.Source.RepoURL)
+	// 	slog.Error("Since the storage is not persistent, this error should not exist")
 	// } else
 	if err != nil {
 		return "", err
@@ -208,7 +209,7 @@ func (app *Application) GetState() (string, error) {
 
 	serviceFile, err := fs.Open(app.Source.Path)
 	if err != nil {
-		log.Error("Path not found", "repo", app.Source.RepoURL, "path", app.Source.Path)
+		slog.Error("Path not found", "repo", app.Source.RepoURL, "path", app.Source.Path)
 		return "", err
 	}
 	defer serviceFile.Close()
@@ -221,11 +222,11 @@ func (app *Application) GetState() (string, error) {
 }
 
 func (app *Application) Apply(targetState string) error {
-	log.Info("Applying new targetState")
+	slog.Info("Applying new targetState")
 	// TODO this client can be stored i app or new struct core
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
-		log.Error("Not able to create a new docker client")
+		slog.Error("Not able to create a new docker client")
 		return err
 	}
 
@@ -264,7 +265,7 @@ func (app *Application) Apply(targetState string) error {
 	if err != nil {
 		return err
 	}
-	log.Info("Get services from the source schema", "number of services found", len(services))
+	slog.Info("Get services from the source schema", "number of services found", len(services))
 
 	// find the service if already exists
 	allServicesRunning, err := cli.ServiceList(context.Background(), types.ServiceListOptions{})
@@ -275,31 +276,31 @@ func (app *Application) Apply(targetState string) error {
 	for _, service := range services {
 		// check if already exists then only update
 		if svc, exists := checkServiceAlreadyExist(service.Name, &allServicesRunning); exists {
-			log.Info("Service already running", "name", service.Name)
+			slog.Info("Service already running", "name", service.Name)
 			res, err := cli.ServiceUpdate(context.Background(), svc.ID, svc.Version, service, types.ServiceUpdateOptions{})
 			if err != nil {
 				app.Health = Degraded
-				log.Error("Not able to update a running service", "error", err.Error())
+				slog.Error("Not able to update a running service", "error", err.Error())
 				return err
 			}
 			if len(res.Warnings) != 0 {
-				log.Warn("New Service update give warnings", "warnings", res.Warnings)
+				slog.Warn("New Service update give warnings", "warnings", res.Warnings)
 			}
 
 			app.LastSyncedAt = time.Now()
 			continue
 		}
 
-		log.Info("Creating new service")
+		slog.Info("Creating new service")
 		res, err := cli.ServiceCreate(context.Background(), service, types.ServiceCreateOptions{})
 		if err != nil {
 			app.Health = Degraded
-			log.Error("Not able to create a new service", "error", err.Error())
+			slog.Error("Not able to create a new service", "error", err.Error())
 			return err
 		}
 
 		if len(res.Warnings) != 0 {
-			log.Warn("New Service Create give warnings", "warnings", res.Warnings)
+			slog.Warn("New Service Create give warnings", "warnings", res.Warnings)
 		}
 
 		app.LastSyncedAt = time.Now()
@@ -327,7 +328,7 @@ func checkServiceAlreadyExist(serviceName string, allServices *[]swarm.Service) 
 }
 
 func createNetwork(cli *client.Client, appName string) (string, error) {
-	log.Info("Creating network")
+	slog.Info("Creating network")
 	networkName := appName + "_default"
 
 	nets, err := cli.NetworkList(context.Background(), types.NetworkListOptions{})
@@ -337,17 +338,17 @@ func createNetwork(cli *client.Client, appName string) (string, error) {
 
 	for _, network := range nets {
 		if network.Name == networkName {
-			log.Info("Network already exists")
+			slog.Info("Network already exists")
 
 			randString, err := base58.New(5)
 			if err != nil {
-				log.Error(err.Error())
+				slog.Error(err.Error())
 				return "", err
 			}
 
 			networkName += fmt.Sprintf("_%s", randString)
 
-			log.Info("Using new network name", "name", networkName)
+			slog.Info("Using new network name", "name", networkName)
 		}
 	}
 
@@ -359,14 +360,14 @@ func createNetwork(cli *client.Client, appName string) (string, error) {
 		Driver: "overlay",
 	})
 
-	log.Info("Created network", "id", net.ID)
+	slog.Info("Created network", "id", net.ID)
 
 	if err != nil {
 		return "", err
 	}
 
 	if net.Warning != "" {
-		log.Warn(net.Warning)
+		slog.Warn(net.Warning)
 	}
 
 	return net.ID, nil

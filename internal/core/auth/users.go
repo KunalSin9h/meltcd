@@ -2,9 +2,9 @@ package auth
 
 import (
 	"encoding/json"
+	"log/slog"
 	"time"
 
-	"github.com/charmbracelet/log"
 	authPass "github.com/meltred/meltcd/internal/core/auth/password"
 )
 
@@ -91,10 +91,10 @@ func InsertUser(username, password string, role UserRole) error {
 }
 
 func ChangePassword(username, currentPassword, newPassword string) bool {
-	log.Info("Changing password for user", "username", username)
+	slog.Info("Changing password for user", "username", username)
 	for _, user := range users {
 		if user.Username == username {
-			log.Info("user found", "username", username)
+			slog.Info("user found", "username", username)
 			match, err := authPass.ComparePasswordAndHash(currentPassword, user.PasswordHash)
 			if err != nil {
 				return false
@@ -111,7 +111,7 @@ func ChangePassword(username, currentPassword, newPassword string) bool {
 			user.PasswordHash = newHash
 			user.UpdatedAt = time.Now()
 
-			log.Info("Changed password", "username", username)
+			slog.Info("Changed password", "username", username)
 			return true
 		}
 	}
@@ -120,7 +120,7 @@ func ChangePassword(username, currentPassword, newPassword string) bool {
 }
 
 func ChangeUsername(username, newUsername string) bool {
-	log.Info("Changing username", "user", username, "new username", newUsername)
+	slog.Info("Changing username", "user", username, "new username", newUsername)
 
 	for _, user := range users {
 		if user.Username == username {
@@ -129,7 +129,7 @@ func ChangeUsername(username, newUsername string) bool {
 
 			go SessionUpdateUsername(username, newUsername)
 
-			log.Info("Username changed", "user", newUsername)
+			slog.Info("Username changed", "user", newUsername)
 			return true
 		}
 	}
