@@ -50,7 +50,7 @@ func meltcdState() error {
 
 	_, err := os.Stat(meltcdDir)
 	if err != nil {
-		slog.Info(fmt.Sprintln("Creating directory: %s\n", meltcdDir))
+		slog.Info(fmt.Sprintf("Creating directory: %s\n", meltcdDir))
 
 		err = os.Mkdir(meltcdDir, os.ModePerm)
 		if err != nil {
