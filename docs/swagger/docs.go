@@ -324,6 +324,27 @@ const docTemplate = `{
                 }
             }
         },
+        "/logs/live": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get Logs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/repo": {
             "get": {
                 "security": [

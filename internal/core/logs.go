@@ -4,6 +4,10 @@ import (
 	"os"
 )
 
+// Live Logs Stream
+// shared between api and log aggregator
+var LogsStream chan []byte
+
 func StoreLog(f *os.File, d *[]byte) error {
 	_, err := f.Write(*d)
 	return err

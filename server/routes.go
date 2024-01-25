@@ -56,14 +56,22 @@ var defaultAllowOrigins = []string{
 }
 
 type LogWriter struct {
-	Stream chan []byte
+	LogFile *os.File
+	Stream  chan []byte
 }
 
 func (lw LogWriter) Write(p []byte) (n int, err error) {
-	data := make([]byte, len(p))
-	copy(data, p)
+	go func() {
+		data := make([]byte, len(p))
+		copy(data, p)
 
-	lw.Stream <- data
+		err = core.StoreLog(lw.LogFile, &data)
+
+		if err != nil {
+			fmt.Println("Failed to store logs in file")
+			fmt.Println(err.Error())
+		}
+	}()
 
 	return len(p), nil
 }
@@ -72,32 +80,20 @@ func (lw LogWriter) Write(p []byte) (n int, err error) {
 var _ io.Writer = (*LogWriter)(nil)
 
 func Serve(ln net.Listener, origins string, verboseOutput bool) error {
-	lw := LogWriter{
-		Stream: make(chan []byte),
-	}
-
-	// Setting default slog logger
-	cLogger := slog.New(slog.NewJSONHandler(lw, nil))
-	slog.SetDefault(cLogger)
-
 	logFile, err := core.CreateLogFile()
 	if err != nil {
 		return err
 	}
 	defer logFile.Close()
 
-	go func() {
-		for l := range lw.Stream {
-			err := core.StoreLog(logFile, &l)
+	lw := LogWriter{
+		LogFile: logFile,
+		Stream:  core.LogsStream,
+	}
 
-			if err != nil {
-				fmt.Println("Failed to store logs in file")
-				fmt.Println(err.Error())
-
-				os.Exit(1)
-			}
-		}
-	}()
+	// Setting default slog logger
+	cLogger := slog.New(slog.NewJSONHandler(lw, nil))
+	slog.SetDefault(cLogger)
 
 	err = core.Setup()
 
@@ -184,6 +180,11 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	api.Get("/", CheckAPIStatus)
 	api.Post("/login", Api.Login)
+
+	// Logs
+	api.Get("/logs", Api.Logs)
+	// Live Logs using SSE
+	api.Get("/logs/live", Api.LiveLogs)
 
 	users := api.Group("users", middleware.VerifyUser)
 	users.Get("/", Api.GetUsers)
