@@ -6,7 +6,7 @@ import (
 
 // Live Logs Stream
 // shared between api and log aggregator
-var LogsStream chan []byte
+var LogsStream = make(chan []byte, 100000)
 
 func StoreLog(f *os.File, d *[]byte) error {
 	_, err := f.Write(*d)

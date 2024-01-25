@@ -71,6 +71,8 @@ func (lw LogWriter) Write(p []byte) (n int, err error) {
 			fmt.Println("Failed to store logs in file")
 			fmt.Println(err.Error())
 		}
+
+		lw.Stream <- data
 	}()
 
 	return len(p), nil
