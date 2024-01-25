@@ -39,7 +39,7 @@ func LiveLogs(c *fiber.Ctx) error {
 //	@tags		General
 //	@security	ApiKeyAuth
 //	@success	200	string	string
-//	@router		/logs/live [get]
+//	@router		/logs [get]
 func Logs(c *fiber.Ctx) error {
 	return nil
 }

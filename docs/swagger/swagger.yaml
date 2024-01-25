@@ -344,7 +344,7 @@ paths:
       summary: Login user
       tags:
       - General
-  /logs/live:
+  /logs:
     get:
       responses:
         "200":
@@ -354,6 +354,18 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get Logs
+      tags:
+      - General
+  /logs/live:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Get Live Logs using SSE
       tags:
       - General
   /repo:

@@ -324,7 +324,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/logs/live": {
+        "/logs": {
             "get": {
                 "security": [
                     {
@@ -335,6 +335,27 @@ const docTemplate = `{
                     "General"
                 ],
                 "summary": "Get Logs",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/logs/live": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "General"
+                ],
+                "summary": "Get Live Logs using SSE",
                 "responses": {
                     "200": {
                         "description": "OK",
