@@ -17,13 +17,12 @@ limitations under the License.
 package meltcd
 
 import (
+	"fmt"
 	"net"
 	"os"
 	"strings"
 
 	"github.com/meltred/meltcd/server"
-
-	"log/slog"
 
 	"github.com/spf13/cobra"
 )
@@ -34,7 +33,7 @@ func RunServer(cmd *cobra.Command, _ []string) error {
 
 	host, port, err := net.SplitHostPort(baseURL)
 	if err != nil {
-		slog.Warn(err.Error())
+		fmt.Println(err.Error())
 
 		host, port = "127.0.0.1", "11771"
 		if ip := net.ParseIP(strings.Trim(baseURL, "[]")); ip != nil {

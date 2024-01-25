@@ -19,6 +19,7 @@ package server
 import (
 	"embed"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -54,8 +55,52 @@ var defaultAllowOrigins = []string{
 	"0.0.0.0",
 }
 
+type LogWriter struct {
+	Stream chan []byte
+}
+
+func (lw LogWriter) Write(p []byte) (n int, err error) {
+	data := make([]byte, len(p))
+	copy(data, p)
+
+	lw.Stream <- data
+
+	return len(p), nil
+}
+
+// Verify is LogWriter implements io.Writer Interface
+var _ io.Writer = (*LogWriter)(nil)
+
 func Serve(ln net.Listener, origins string, verboseOutput bool) error {
-	err := core.Setup()
+	lw := LogWriter{
+		Stream: make(chan []byte),
+	}
+
+	// Setting default slog logger
+	cLogger := slog.New(slog.NewJSONHandler(lw, nil))
+	slog.SetDefault(cLogger)
+
+	logFile, err := core.CreateLogFile()
+	if err != nil {
+		return err
+	}
+	defer logFile.Close()
+
+	go func() {
+		for l := range lw.Stream {
+			err := core.StoreLog(logFile, &l)
+
+			if err != nil {
+				fmt.Println("Failed to store logs in file")
+				fmt.Println(err.Error())
+
+				os.Exit(1)
+			}
+		}
+	}()
+
+	err = core.Setup()
+
 	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)
@@ -161,7 +206,10 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	repo.Delete("/", repoApi.Remove)
 	repo.Put("/", repoApi.Update)
 
-	slog.Info(fmt.Sprintf("Listening on %s (version: %s)\n", ln.Addr(), version.Version))
+	info := fmt.Sprintf("Listening on %s (version: %s)\n", ln.Addr(), version.Version)
+
+	slog.Info(info)
+	fmt.Println(info)
 
 	signals := make(chan os.Signal, 1)
 	go signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGABRT, syscall.SIGILL)
