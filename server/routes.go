@@ -57,7 +57,7 @@ var defaultAllowOrigins = []string{
 
 type LogWriter struct {
 	LogFile *os.File
-	Stream  chan []byte
+	Stream  *chan []byte
 }
 
 func (lw LogWriter) Write(p []byte) (n int, err error) {
@@ -72,7 +72,9 @@ func (lw LogWriter) Write(p []byte) (n int, err error) {
 			fmt.Println(err.Error())
 		}
 
-		lw.Stream <- data
+		if lw.Stream != nil && *lw.Stream != nil {
+			*lw.Stream <- data
+		}
 	}()
 
 	return len(p), nil
@@ -90,7 +92,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	lw := LogWriter{
 		LogFile: logFile,
-		Stream:  core.LogsStream,
+		Stream:  &core.LogsStream,
 	}
 
 	// Setting default slog logger

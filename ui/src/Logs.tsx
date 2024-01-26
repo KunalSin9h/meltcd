@@ -14,18 +14,50 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import setTitle from "./lib/setTitle";
+import { MessageWithIcon } from "./Apps/AllApplications";
+import { WarningIcon } from "./lib/icon";
 
 export default function Logs() {
+  const [logs, setLogs] = useState<string>("");
+
   useEffect(() => {
     document.title = setTitle("Logs");
-  }, []);
+
+    const liveLogsURL = "/api/logs/live";
+
+    const source = new EventSource(liveLogsURL);
+
+    source.onopen = (e) => {
+      console.log(e)
+    }
+
+    source.onerror = (e) => {
+      console.log(e)
+    }
+
+    source.onmessage = (e) => {
+      console.log(e.data)
+      setLogs(e.data)
+    }
+
+    return () => {
+      source.close()
+    }
+  });
+
+  if (logs.length === 0) {
+    return <MessageWithIcon icon={<WarningIcon />} message="No Log record found" />;
+  }
 
   return (
-    <div className="h-screen p-8">
+    <div className="h-full p-8">
       <div className="flex justify-between items-center">
         <p className="text-2xl">Logs</p>
+      </div>
+      <div className="bg-sidebar h-[96%] my-4 rounded overflow-auto">
+        { logs }
       </div>
     </div>
   );
