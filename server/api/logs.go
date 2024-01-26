@@ -26,16 +26,17 @@ func LiveLogs(c *fiber.Ctx) error {
 	c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
 		core.LogsStream = make(chan []byte)
 
-		defer func() {
-			close(core.LogsStream)
-			core.LogsStream = nil
-			fmt.Println("Defer called")
-			// TODO: make it call
-		}()
-
 		for l := range core.LogsStream {
 			fmt.Fprintf(w, "data: %s\n\n", string(l))
-			w.Flush()
+
+			err := w.Flush()
+
+			// Connection is closed now
+			if err != nil {
+				close(core.LogsStream)
+				core.LogsStream = nil
+				return
+			}
 		}
 	}))
 
