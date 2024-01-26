@@ -294,6 +294,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/connections": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "Debug"
+                ],
+                "summary": "Get Session and Open Connections",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/infos": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "tags": [
+                    "Debug"
+                ],
+                "summary": "Get System memory, allocation, Go Routines and GC Count",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "security": [
