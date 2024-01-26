@@ -3,6 +3,7 @@ package api
 import (
 	"bufio"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +24,7 @@ func LiveLogs(c *fiber.Ctx) error {
 	c.Set("Cache-Control", "no-cache")
 	c.Set("Connection", "keep-alive")
 	c.Set("Transfer-Encoding", "chunked")
+	c.Status(http.StatusOK)
 
 	c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
 		core.LogsStream = make(chan []byte)
