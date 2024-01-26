@@ -19,6 +19,7 @@ package server
 import (
 	"embed"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -54,11 +55,55 @@ var defaultAllowOrigins = []string{
 	"0.0.0.0",
 }
 
+type LogWriter struct {
+	LogFile *os.File
+	Stream  *chan []byte
+}
+
+func (lw LogWriter) Write(p []byte) (n int, err error) {
+	go func() {
+		data := make([]byte, len(p))
+		copy(data, p)
+
+		err = core.StoreLog(lw.LogFile, &data)
+
+		if err != nil {
+			fmt.Println("Failed to store logs in file")
+			fmt.Println(err.Error())
+		}
+
+		if lw.Stream != nil && *lw.Stream != nil {
+			*lw.Stream <- data
+		}
+	}()
+
+	return len(p), nil
+}
+
+// Verify is LogWriter implements io.Writer Interface
+var _ io.Writer = (*LogWriter)(nil)
+
 func Serve(ln net.Listener, origins string, verboseOutput bool) error {
-	err := core.Setup()
+	logFile, err := core.CreateLogFile()
+	if err != nil {
+		return err
+	}
+	defer logFile.Close()
+
+	lw := LogWriter{
+		LogFile: logFile,
+		Stream:  &core.LogsStream,
+	}
+
+	// Setting default slog logger
+	cLogger := slog.New(slog.NewJSONHandler(lw, nil))
+	slog.SetDefault(cLogger)
+
+	err = core.Setup()
+
 	if err != nil {
 		slog.Error(err.Error())
-		os.Exit(1)
+		return err
 	}
 
 	config := cors.ConfigDefault
@@ -140,6 +185,11 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	api.Get("/", CheckAPIStatus)
 	api.Post("/login", Api.Login)
 
+	// Logs
+	api.Get("/logs", Api.Logs)
+	// Live Logs using SSE
+	api.Get("/logs/live", Api.LiveLogs)
+
 	users := api.Group("users", middleware.VerifyUser)
 	users.Get("/", Api.GetUsers)
 	users.Get("/current", Api.GetUsername)
@@ -161,7 +211,10 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	repo.Delete("/", repoApi.Remove)
 	repo.Put("/", repoApi.Update)
 
-	slog.Info(fmt.Sprintf("Listening on %s (version: %s)\n", ln.Addr(), version.Version))
+	info := fmt.Sprintf("Listening on %s (version: %s)\n", ln.Addr(), version.Version)
+
+	slog.Info(info)
+	fmt.Println(info)
 
 	signals := make(chan os.Signal, 1)
 	go signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM, syscall.SIGABRT, syscall.SIGILL)
