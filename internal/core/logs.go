@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-// Value to be used by both API and CORE
+// CurrentSession Value to be used by both API and CORE
 var CurrentSession LogsStreamSessions
 
 // LogsStreamSessions

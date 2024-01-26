@@ -13,7 +13,7 @@ import (
 //	@summary	Get Session and Open Connections
 //	@tags		Debug
 //	@security	ApiKeyAuth
-//	@success	200	object
+//	@success	200	object any
 //	@router		/connections [get]
 func Connections(c *fiber.Ctx) error {
 	m := map[string]any{
@@ -28,7 +28,7 @@ func Connections(c *fiber.Ctx) error {
 //	@summary	Get System memory, allocation, Go Routines and GC Count
 //	@tags		Debug
 //	@security	ApiKeyAuth
-//	@success	200	object
+//	@success	200	object any
 //	@router		/infos [get]
 func SystemInfo(c *fiber.Ctx) error {
 	var m runtime.MemStats
