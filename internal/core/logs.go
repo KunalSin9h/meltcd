@@ -2,11 +2,38 @@ package core
 
 import (
 	"os"
+	"slices"
+	"sync"
 )
 
-// LogsStream Live Logs sharing
-// shared between api and log aggregator
-var LogsStream chan []byte
+// Value to be used by both API and CORE
+var CurrentSession LogsStreamSessions
+
+// LogsStreamSessions
+type LogsStreamSessions struct {
+	MU       sync.Mutex
+	Sessions []*chan []byte
+}
+
+func (l *LogsStreamSessions) AddSession(s *chan []byte) {
+	l.MU.Lock()
+	l.Sessions = append(l.Sessions, s)
+	l.MU.Unlock()
+}
+
+func (l *LogsStreamSessions) RemoveSession(s *chan []byte) {
+	idx := slices.Index(l.Sessions, s)
+	println(idx)
+
+	if idx != -1 {
+		l.MU.Lock()
+
+		l.Sessions[idx] = nil
+		l.Sessions = slices.Delete(l.Sessions, idx, idx+1)
+
+		l.MU.Unlock()
+	}
+}
 
 func StoreLog(f *os.File, d *[]byte) error {
 	_, err := f.Write(*d)

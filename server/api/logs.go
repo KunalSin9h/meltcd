@@ -27,9 +27,11 @@ func LiveLogs(c *fiber.Ctx) error {
 	c.Status(http.StatusOK)
 
 	c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
-		core.LogsStream = make(chan []byte)
+		logsStream := make(chan []byte)
 
-		for l := range core.LogsStream {
+		core.CurrentSession.AddSession(&logsStream)
+
+		for l := range logsStream {
 			d := formatSSEMessage("log", string(l))
 
 			_, err := fmt.Fprint(w, d)
@@ -41,8 +43,7 @@ func LiveLogs(c *fiber.Ctx) error {
 
 			// Connection is closed now
 			if err != nil {
-				close(core.LogsStream)
-				core.LogsStream = nil
+				core.CurrentSession.RemoveSession(&logsStream)
 				break
 			}
 		}
