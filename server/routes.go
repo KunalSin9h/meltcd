@@ -24,6 +24,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime"
 	"strings"
 	"syscall"
 
@@ -192,6 +193,30 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	// Live Logs using SSE
 	api.Get("/logs/live", Api.LiveLogs)
 
+	// Debugging and Information
+	api.Get("/connections", func(c *fiber.Ctx) error {
+		m := map[string]any{
+			"open-connections": app.Server().GetOpenConnectionsCount(),
+			"sessions":         len(lw.Stream.Sessions),
+		}
+		return c.Status(http.StatusOK).JSON(m)
+	})
+
+	api.Get("/infos", func(c *fiber.Ctx) error {
+		var m runtime.MemStats
+		runtime.ReadMemStats(&m)
+
+		res := map[string]any{
+			"Alloc":      bToMb(m.Alloc),
+			"TotalAlloc": bToMb(m.TotalAlloc),
+			"tSys":       bToMb(m.Sys),
+			"tNumGC":     m.NumGC,
+			"goroutines": runtime.NumGoroutine(),
+		}
+
+		return c.JSON(res)
+	})
+
 	users := api.Group("users", middleware.VerifyUser)
 	users.Get("/", Api.GetUsers)
 	users.Get("/current", Api.GetUsername)
@@ -242,4 +267,8 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 // @router		/ [get]
 func CheckAPIStatus(c *fiber.Ctx) error {
 	return c.Status(200).SendString(fmt.Sprintf("Meltcd API is running (version: %s)\n", version.Version))
+}
+
+func bToMb(b uint64) uint64 {
+	return b / 1024 / 1024
 }
