@@ -3,6 +3,7 @@ package api
 import (
 	"bufio"
 	"fmt"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/meltred/meltcd/internal/core"
@@ -26,15 +27,26 @@ func LiveLogs(c *fiber.Ctx) error {
 	c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
 		core.LogsStream = make(chan []byte)
 
-		for l := range core.LogsStream {
-			fmt.Fprintf(w, "data: %s\n\n", string(l))
+		defer func() {
+			close(core.LogsStream)
+			core.LogsStream = nil
+		}()
 
-			err := w.Flush()
+		for l := range core.LogsStream {
+			d, err := formatSSEMessage("log", string(l))
+			if err != nil {
+				return
+			}
+
+			_, err = fmt.Fprint(w, d)
+			if err != nil {
+				return
+			}
+
+			err = w.Flush()
 
 			// Connection is closed now
 			if err != nil {
-				close(core.LogsStream)
-				core.LogsStream = nil
 				return
 			}
 		}
@@ -52,4 +64,14 @@ func LiveLogs(c *fiber.Ctx) error {
 //	@router		/logs [get]
 func Logs(c *fiber.Ctx) error {
 	return nil
+}
+
+func formatSSEMessage(eventType, data string) (string, error) {
+	sb := strings.Builder{}
+
+	sb.WriteString(fmt.Sprintf("event: %s\n", eventType))
+	sb.WriteString(fmt.Sprintf("retry: %d\n", 15000))
+	sb.WriteString(fmt.Sprintf("data: %v\n\n", data))
+
+	return sb.String(), nil
 }
