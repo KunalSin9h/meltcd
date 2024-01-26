@@ -4,7 +4,7 @@ import (
 	"os"
 )
 
-// Live Logs Stream
+// LogsStream Live Logs sharing
 // shared between api and log aggregator
 var LogsStream chan []byte
 

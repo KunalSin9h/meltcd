@@ -103,7 +103,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	if err != nil {
 		slog.Error(err.Error())
-		os.Exit(1)
+		return err
 	}
 
 	config := cors.ConfigDefault

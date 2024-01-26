@@ -30,12 +30,9 @@ func LiveLogs(c *fiber.Ctx) error {
 		core.LogsStream = make(chan []byte)
 
 		for l := range core.LogsStream {
-			d, err := formatSSEMessage("log", string(l))
-			if err != nil {
-				continue
-			}
+			d := formatSSEMessage("log", string(l))
 
-			_, err = fmt.Fprint(w, d)
+			_, err := fmt.Fprint(w, d)
 			if err != nil {
 				continue
 			}
@@ -62,15 +59,16 @@ func LiveLogs(c *fiber.Ctx) error {
 //	@success	200	string	string
 //	@router		/logs [get]
 func Logs(c *fiber.Ctx) error {
+	c.Status(http.StatusOK)
 	return nil
 }
 
-func formatSSEMessage(eventType, data string) (string, error) {
+func formatSSEMessage(eventType, data string) string {
 	sb := strings.Builder{}
 
 	sb.WriteString(fmt.Sprintf("event: %s\n", eventType))
 	sb.WriteString(fmt.Sprintf("retry: %d\n", 15000))
 	sb.WriteString(fmt.Sprintf("data: %v\n\n", data))
 
-	return sb.String(), nil
+	return sb.String()
 }
