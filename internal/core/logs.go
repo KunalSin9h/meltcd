@@ -23,7 +23,6 @@ func (l *LogsStreamSessions) AddSession(s *chan []byte) {
 
 func (l *LogsStreamSessions) RemoveSession(s *chan []byte) {
 	idx := slices.Index(l.Sessions, s)
-	println(idx)
 
 	if idx != -1 {
 		l.MU.Lock()
