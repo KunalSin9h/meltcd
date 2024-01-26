@@ -326,6 +326,30 @@ paths:
       summary: Refresh/Synchronize an application
       tags:
       - Apps
+  /connections:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get Session and Open Connections
+      tags:
+      - Debug
+  /infos:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Get System memory, allocation, Go Routines and GC Count
+      tags:
+      - Debug
   /login:
     post:
       responses:

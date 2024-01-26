@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/meltred/meltcd/internal/core"
@@ -26,24 +27,41 @@ func LiveLogs(c *fiber.Ctx) error {
 	c.Set("Transfer-Encoding", "chunked")
 	c.Status(http.StatusOK)
 
+	logsStream := make(chan []byte)
+	core.CurrentSession.AddSession(&logsStream)
+
+	notifyConnClose := c.Context().Done()
+
 	c.Context().SetBodyStreamWriter(fasthttp.StreamWriter(func(w *bufio.Writer) {
-		core.LogsStream = make(chan []byte)
+		keepAliveTickler := time.NewTicker(15 * time.Second)
 
-		for l := range core.LogsStream {
-			d := formatSSEMessage("log", string(l))
+		go func() {
+			<-notifyConnClose
+			core.CurrentSession.RemoveSession(&logsStream)
+		}()
 
-			_, err := fmt.Fprint(w, d)
-			if err != nil {
-				continue
-			}
+		for {
+			select {
+			case l := <-logsStream:
+				_, err := fmt.Fprint(w, formatSSEMessage("log", string(l)))
+				if err != nil {
+					continue
+				}
 
-			err = w.Flush()
-
-			// Connection is closed now
-			if err != nil {
-				close(core.LogsStream)
-				core.LogsStream = nil
-				break
+				err = w.Flush()
+				// Connection is closed now
+				if err != nil {
+					core.CurrentSession.RemoveSession(&logsStream)
+					return
+				}
+			case <-keepAliveTickler.C:
+				fmt.Fprint(w, formatSSEMessage("message", "keepalive"))
+				err := w.Flush()
+				// Connection is closed now
+				if err != nil {
+					core.CurrentSession.RemoveSession(&logsStream)
+					return
+				}
 			}
 		}
 	}))

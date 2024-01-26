@@ -57,7 +57,7 @@ var defaultAllowOrigins = []string{
 
 type LogWriter struct {
 	LogFile *os.File
-	Stream  *chan []byte
+	Stream  *core.LogsStreamSessions
 }
 
 func (lw LogWriter) Write(p []byte) (n int, err error) {
@@ -72,8 +72,10 @@ func (lw LogWriter) Write(p []byte) (n int, err error) {
 			fmt.Println(err.Error())
 		}
 
-		if lw.Stream != nil && *lw.Stream != nil {
-			*lw.Stream <- data
+		for _, s := range lw.Stream.Sessions {
+			go func(c *chan []byte, d []byte) {
+				*c <- d
+			}(s, data)
 		}
 	}()
 
@@ -92,7 +94,7 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 
 	lw := LogWriter{
 		LogFile: logFile,
-		Stream:  &core.LogsStream,
+		Stream:  &core.CurrentSession,
 	}
 
 	// Setting default slog logger
@@ -186,9 +188,13 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 	api.Post("/login", Api.Login)
 
 	// Logs
-	api.Get("/logs", Api.Logs)
+	api.Get("/logs", middleware.VerifyUser, Api.Logs)
 	// Live Logs using SSE
-	api.Get("/logs/live", Api.LiveLogs)
+	api.Get("/logs/live", middleware.VerifyUser, Api.LiveLogs)
+
+	// Debugging and Information
+	api.Get("/connections", middleware.VerifyUser, Api.Connections)
+	api.Get("/infos", middleware.VerifyUser, Api.SystemInfo)
 
 	users := api.Group("users", middleware.VerifyUser)
 	users.Get("/", Api.GetUsers)
