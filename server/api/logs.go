@@ -25,6 +25,8 @@ func LiveLogs(c *fiber.Ctx) error {
 	c.Set("Cache-Control", "no-cache")
 	c.Set("Connection", "keep-alive")
 	c.Set("Transfer-Encoding", "chunked")
+	c.Set("Access-Control-Allow-Origin", "*")
+	c.Set("Access-Control-Allow-Headers", "Content-Type")
 	c.Status(http.StatusOK)
 
 	logsStream := make(chan []byte)
