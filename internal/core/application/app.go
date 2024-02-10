@@ -20,13 +20,11 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"strings"
 	"time"
 
 	"log/slog"
 
-	"github.com/meltred/meltcd/internal/core/base58"
 	"github.com/meltred/meltcd/internal/core/repository"
 	"github.com/meltred/meltcd/spec"
 
@@ -335,20 +333,16 @@ func createNetwork(cli *client.Client, appName string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	// waiting for 5 seconds, if old network is in deletion process
+	// this problem only occur only recreating application
+	// in that case, old network was not deleted and we try to create a new network already
+	slog.Info("waiting for 5 seconds, if old network is in deletion process")
+	time.Sleep(5 * time.Second)
 
 	for _, network := range nets {
 		if network.Name == networkName {
 			slog.Info("Network already exists")
-
-			randString, err := base58.New(5)
-			if err != nil {
-				slog.Error(err.Error())
-				return "", err
-			}
-
-			networkName += fmt.Sprintf("_%s", randString)
-
-			slog.Info("Using new network name", "name", networkName)
+			return network.ID, nil
 		}
 	}
 
