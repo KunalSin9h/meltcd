@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	D_MAX        = 100              // nolint
+	D_MAX        = 150              // nolint
 	D_EXPIRATION = 30 * time.Second // nolint
 )
 
