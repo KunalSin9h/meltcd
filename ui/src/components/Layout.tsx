@@ -71,7 +71,7 @@ export default function Layout() {
 		};
 
 		getUser();
-	}, [navigate]);
+	});
 
 	if (!username) {
 		return (
