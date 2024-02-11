@@ -329,22 +329,23 @@ func createNetwork(cli *client.Client, appName string) (string, error) {
 	slog.Info("Creating network")
 	networkName := appName + "_default"
 
-	nets, err := cli.NetworkList(context.Background(), types.NetworkListOptions{})
-	if err != nil {
-		return "", err
-	}
-	// waiting for 5 seconds, if old network is in deletion process
-	// this problem only occur only recreating application
-	// in that case, old network was not deleted and we try to create a new network already
-	slog.Info("waiting for 5 seconds, if old network is in deletion process")
-	time.Sleep(5 * time.Second)
+	// nets, err := cli.NetworkList(context.Background(), types.NetworkListOptions{})
+	// if err != nil {
+	// 	return "", err
+	// }
+	// // waiting for 5 seconds, if old network is in deletion process
+	// // this problem only occur only recreating application
+	// // in that case, old network was not deleted and we try to create a new network already
+	// // slog.Info("waiting for 5 seconds, if old network is in deletion process")
+	// // time.Sleep(5 * time.Second)
 
-	for _, network := range nets {
-		if network.Name == networkName {
-			slog.Info("Network already exists")
-			return network.ID, nil
-		}
-	}
+	// for _, network := range nets {
+	// 	slog.Info(network.Name)
+	// 	if network.Name == networkName {
+	// 		slog.Info("Network already exists")
+	// 		return network.ID, nil
+	// 	}
+	// }
 
 	net, err := cli.NetworkCreate(context.Background(), networkName, types.NetworkCreate{
 		Scope: "swarm",
