@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import toast, { Toaster } from "react-hot-toast";
 import { createContext, useEffect, useState } from "react";
@@ -35,6 +35,7 @@ export default function Layout() {
 	const [openHelpPanel, setOpenHelpPanel] = useState(false);
 	const [username, setUsername] = useState<string | null>(null);
 	const navigate = useNavigate();
+	const location = useLocation();
 
 	// check login here
 	// and if not authorized then redirect to /login
@@ -55,6 +56,10 @@ export default function Layout() {
 					}
 
 					setUsername(username);
+
+					if (location.pathname === "/") {
+						navigate("/apps");
+					}
 				} else {
 					toast.error(
 						"Something wend wrong, server does not respond with 200"
