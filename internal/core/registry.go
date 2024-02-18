@@ -167,6 +167,7 @@ func loadRegistryData(d *[]byte) error {
 }
 
 func RemoveApplication(appName string) error {
+	slog.Info("Removing application", "app name", appName)
 	go makeAppStatusProcessing(appName)
 
 	cli, err := client.NewClientWithOpts(client.FromEnv)
@@ -276,7 +277,6 @@ func checkNetworkExists(ctx context.Context, networkID string, cli *client.Clien
 			return true
 		}
 	}
-
 	// network is absent
 	return false
 }

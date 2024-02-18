@@ -329,12 +329,6 @@ func createNetwork(cli *client.Client, appName string) (string, error) {
 	slog.Info("Creating network")
 	networkName := appName + "_default"
 
-	// // waiting for 10 seconds, if old network is in deletion process
-	// // this problem only occur only recreating application
-	// // in that case, old network was not deleted and we try to create a new network already
-	// slog.Info("waiting for 10 seconds, if old network is in deletion process")
-	// time.Sleep(10 * time.Second)
-
 	nets, err := cli.NetworkList(context.Background(), types.NetworkListOptions{})
 	if err != nil {
 		return "", err
