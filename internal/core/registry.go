@@ -167,6 +167,8 @@ func loadRegistryData(d *[]byte) error {
 }
 
 func RemoveApplication(appName string) error {
+	go makeAppStatusProcessing(appName)
+
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		return err
@@ -234,6 +236,14 @@ func removeSvcFromApps(appName string) {
 	}
 
 	Applications = tmp
+}
+
+func makeAppStatusProcessing(appName string) {
+	for _, app := range Applications {
+		if app.Name == appName {
+			app.Health = application.Progressing
+		}
+	}
 }
 
 func Recreate(appName string) error {
