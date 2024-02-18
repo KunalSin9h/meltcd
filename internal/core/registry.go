@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/docker/docker/api/types"
@@ -166,8 +167,6 @@ func loadRegistryData(d *[]byte) error {
 }
 
 func RemoveApplication(appName string) error {
-	go removeSvcFromApps(appName)
-
 	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		return err
@@ -196,12 +195,32 @@ func RemoveApplication(appName string) error {
 		}
 	}
 
+	var wg sync.WaitGroup
+
 	for networkID := range networksToRemove {
-		if err := cli.NetworkRemove(context.Background(), networkID); err != nil {
-			return err
-		}
+		wg.Add(1)
+
+		go func(nid string) {
+			defer wg.Done()
+
+			if err := cli.NetworkRemove(context.Background(), nid); err != nil {
+				slog.Error(err.Error())
+			}
+
+			for {
+				time.Sleep(2 * time.Second)
+
+				// if not exists (!exists) then break
+				if exists := checkNetworkExists(context.Background(), nid, cli); !exists {
+					break
+				}
+			}
+		}(networkID)
 	}
 
+	wg.Wait()
+
+	removeSvcFromApps(appName)
 	return nil
 }
 
@@ -230,4 +249,24 @@ func Recreate(appName string) error {
 	slog.Info("Removed application", "app_name", appName)
 
 	return Register(&data)
+}
+
+func checkNetworkExists(ctx context.Context, networkID string, cli *client.Client) bool {
+	networks, err := cli.NetworkList(ctx, types.NetworkListOptions{})
+	if err != nil {
+		slog.Error(err.Error())
+		// network found (i know his is confusing but we need to send network found
+		// when error comes so that the wait is not over)
+		return true
+	}
+
+	for _, net := range networks {
+		if net.ID == networkID {
+			// its present
+			return true
+		}
+	}
+
+	// network is absent
+	return false
 }
