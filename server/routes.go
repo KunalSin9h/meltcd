@@ -49,12 +49,6 @@ import (
 //go:embed static/*
 var frontendSource embed.FS
 
-var defaultAllowOrigins = []string{
-	"localhost",
-	"127.0.0.1",
-	"0.0.0.0",
-}
-
 type LogWriter struct {
 	LogFile *os.File
 	Stream  *core.LogsStreamSessions
@@ -108,14 +102,6 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 		return err
 	}
 
-	config := cors.ConfigDefault
-
-	for _, o := range defaultAllowOrigins {
-		origins = fmt.Sprintf("%s, http://%s, https://%s, http://%s:*, https://%s:*", origins, o, o, o, o)
-	}
-
-	config.AllowOrigins = origins
-
 	app := fiber.New(fiber.Config{
 		AppName: fmt.Sprintf("MeltCD Server v%s", version.Version),
 
@@ -128,6 +114,8 @@ func Serve(ln net.Listener, origins string, verboseOutput bool) error {
 		},
 	})
 
+	config := cors.ConfigDefault
+	config.AllowOrigins = origins
 	app.Use(cors.New(config))
 	app.Use(recover.New())
 
