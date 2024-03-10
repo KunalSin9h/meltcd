@@ -17,6 +17,7 @@ limitations under the License.
 package repository
 
 import (
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -24,6 +25,8 @@ import (
 
 	"log/slog"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/go-git/go-billy/v5/memfs"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
@@ -31,14 +34,18 @@ import (
 )
 
 type Repository struct {
-	URL, Secret string
-	Reachable   bool
+	URL, ImageRef, Secret string
+	Reachable             bool
 }
 
 var repositories []*Repository
 
 func (r *Repository) saveCredential(username, password string) {
 	r.Secret = base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
+}
+
+func (r *Repository) getSecret() string {
+	return r.Secret
 }
 
 func (r *Repository) getCredential() (username, password string) {
@@ -61,31 +68,55 @@ func (r *Repository) getCredential() (username, password string) {
 }
 
 func (r *Repository) checkReachability(username, password string) {
-	fs := memfs.New()
-	storage := memory.NewStorage()
+	if r.URL != "" {
+		fs := memfs.New()
+		storage := memory.NewStorage()
 
-	_, err := git.Clone(storage, fs, &git.CloneOptions{
-		URL:          r.URL,
-		SingleBranch: true,
-		Depth:        1,
-		Auth: &http.BasicAuth{
-			Username: username,
-			Password: password,
-		},
-	})
+		_, err := git.Clone(storage, fs, &git.CloneOptions{
+			URL:          r.URL,
+			SingleBranch: true,
+			Depth:        1,
+			Auth: &http.BasicAuth{
+				Username: username,
+				Password: password,
+			},
+		})
 
-	if err != nil {
-		r.Reachable = false
+		if err != nil {
+			r.Reachable = false
+		}
+	} else if r.ImageRef != "" {
+		cli, err := client.NewClientWithOpts(client.FromEnv)
+		if err != nil {
+			slog.Error(err.Error())
+			r.Reachable = false
+			return
+		}
+
+		_, err = cli.ImagePull(context.Background(), r.ImageRef, types.ImagePullOptions{
+			RegistryAuth: r.getSecret(),
+		})
+
+		if err != nil {
+			slog.Error(err.Error())
+			r.Reachable = false
+			return
+		}
+
+		r.Reachable = true
+	} else {
+		slog.Error("Both url and image ref is empty")
 	}
 }
 
-func Add(url, username, password string) error {
+func Add(url, imageRef, username, password string) error {
 	repo, found := findRepo(url)
 	if found {
 		return errors.New("repository with same url already exists")
 	}
 
 	repo.URL = url
+	repo.ImageRef = imageRef
 	repo.saveCredential(username, password)
 	repo.Reachable = true
 

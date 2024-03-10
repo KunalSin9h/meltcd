@@ -26,6 +26,7 @@ import (
 
 type PrivateRepoDetails struct {
 	URL      string `json:"url"`
+	ImageRef string `json:"image_ref"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
@@ -51,15 +52,15 @@ func Add(c *fiber.Ctx) error { // nolint:all
 		})
 	}
 
-	if payload.URL == "" || payload.Username == "" || payload.Password == "" {
+	if (payload.URL == "" && payload.ImageRef == "") || payload.Username == "" || payload.Password == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(app.GlobalResponse{
-			Message: "missing url, username or password in request body",
+			Message: "missing url or imageRef, username or password in request body",
 		})
 	}
 
 	url, _ := strings.CutSuffix(payload.URL, "/")
 
-	if err := repository.Add(url, payload.Username, payload.Password); err != nil {
+	if err := repository.Add(url, payload.ImageRef, payload.Username, payload.Password); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(app.GlobalResponse{
 			Message: err.Error(),
 		})

@@ -274,6 +274,19 @@ func (app *Application) Apply(targetState string) error {
 	}
 
 	for _, service := range services {
+		// Checking if docker image is pullabel, if not then making the app health degraded.
+		go func(cli *client.Client, a *Application) {
+			// docker will not work if image is not reacheble
+			_, err = cli.ImagePull(context.TODO(), service.TaskTemplate.ContainerSpec.Image, types.ImagePullOptions{
+				RegistryAuth: "",
+			})
+
+			if err != nil {
+				slog.Error("Failed to pull docker image, registry auth is required")
+				a.Health = Degraded
+			}
+		}(cli, app)
+
 		// check if already exists then only update
 		if svc, exists := checkServiceAlreadyExist(service.Name, &allServicesRunning); exists {
 			slog.Info("Service already running", "name", service.Name)

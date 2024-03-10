@@ -161,12 +161,14 @@ func NewCLI() *cobra.Command {
 
 	// meltcd  repo add https://github.com/... --username "" --password ""
 	repoAddCmd := &cobra.Command{
-		Use:   "add REPO_URL",
-		Short: "Add a private git repository",
+		Use:   "add REPO",
+		Short: "Add a private git repository (--git) or image registry (--image)",
 		Args:  cobra.ExactArgs(1), // the git repo url
-		RunE:  addPrivateGitRepository,
+		RunE:  addPrivateRepository,
 	}
 
+	repoAddCmd.Flags().Bool("git", false, "if private repo is a git repository")
+	repoAddCmd.Flags().Bool("image", false, "if private repo is a docker image")
 	repoAddCmd.Flags().String("username", "", "username for basic auth")
 	repoAddCmd.MarkFlagRequired("username")
 	repoAddCmd.Flags().String("password", "", "password for basic auth")

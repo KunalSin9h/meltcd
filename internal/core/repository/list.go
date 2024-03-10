@@ -17,6 +17,7 @@ limitations under the License.
 package repository
 
 type RepoData struct {
+	ImageRef  string `json:"image_ref"`
 	URL       string `json:"url"`
 	Reachable bool   `json:"reachable"`
 }
@@ -27,6 +28,7 @@ func List() []RepoData {
 	for _, repo := range repositories {
 		res = append(res, RepoData{
 			URL:       repo.URL,
+			ImageRef:  repo.ImageRef,
 			Reachable: repo.Reachable,
 		})
 	}
