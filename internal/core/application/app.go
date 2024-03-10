@@ -290,7 +290,7 @@ func (app *Application) Apply(targetState string) error {
 
 		// Checking if docker image is pullabel, if not then making the app health degraded.
 		go func(cli *client.Client, a *Application) {
-			// docker will not work if image is not reacheble
+			// docker will not work if image is not reacheble\
 			_, err = cli.ImagePull(context.TODO(), service.TaskTemplate.ContainerSpec.Image, types.ImagePullOptions{
 				RegistryAuth: auth,
 			})

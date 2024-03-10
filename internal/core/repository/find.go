@@ -18,6 +18,7 @@ package repository
 
 import (
 	"log/slog"
+	"strings"
 )
 
 func FindCreds(repoName string) (string, string) {
@@ -38,7 +39,13 @@ func FindCreds(repoName string) (string, string) {
 
 func FindRepo(name string) (*Repository, bool) {
 	for _, x := range repositories {
-		if x.URL == name || x.URL+".git" == name || x.URL == name+".git" || x.ImageRef == name {
+		var image string
+		imageWithOutTags := strings.Split(name, ":")
+		if len(imageWithOutTags) >= 1 {
+			image = imageWithOutTags[0]
+		}
+
+		if x.URL == name || x.URL+".git" == name || x.URL == name+".git" || x.ImageRef == image {
 			return x, true
 		}
 	}
