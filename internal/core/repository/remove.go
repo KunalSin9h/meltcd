@@ -16,15 +16,11 @@ limitations under the License.
 
 package repository
 
-import "strings"
-
-func Remove(repoURL string) error {
-	repoURL, _ = strings.CutSuffix(repoURL, "/")
-
+func Remove(repoName string) error {
 	tmp := make([]*Repository, 0)
 
 	for _, repo := range repositories {
-		if repo.URL != repoURL {
+		if repo.URL != repoName && repo.ImageRef != repoName {
 			tmp = append(tmp, repo)
 		}
 	}
