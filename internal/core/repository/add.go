@@ -109,8 +109,11 @@ func (r *Repository) checkReachability(username, password string) {
 	}
 }
 
+// url is git url or container image name
 func Add(url, imageRef, username, password string) error {
-	repo, found := findRepo(url)
+	// since eight url is there of imageRef,
+	name := url + imageRef
+	repo, found := findRepo(name)
 	if found {
 		return errors.New("repository with same url already exists")
 	}

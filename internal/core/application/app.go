@@ -20,6 +20,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -176,7 +177,7 @@ func (app *Application) GetState() (string, error) {
 	// defer clear storage, i (kunal singh) think that when storage goes out-of-scope
 	// it is cleared
 
-	username, password := repository.Find(app.Source.RepoURL)
+	username, password, _ := repository.Find(app.Source.RepoURL)
 
 	// TODO: Improvement
 	// GET the name and commit also
@@ -276,9 +277,12 @@ func (app *Application) Apply(targetState string) error {
 	for _, service := range services {
 		// Checking if docker image is pullabel, if not then making the app health degraded.
 		go func(cli *client.Client, a *Application) {
+			_, _, encodedAuth := repository.Find(service.TaskTemplate.ContainerSpec.Image)
+			fmt.Println(encodedAuth)
+
 			// docker will not work if image is not reacheble
 			_, err = cli.ImagePull(context.TODO(), service.TaskTemplate.ContainerSpec.Image, types.ImagePullOptions{
-				RegistryAuth: "",
+				RegistryAuth: encodedAuth,
 			})
 
 			if err != nil {

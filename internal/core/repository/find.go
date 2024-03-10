@@ -17,32 +17,28 @@ limitations under the License.
 package repository
 
 import (
-	"strings"
-
 	"log/slog"
 )
 
-func Find(repoURL string) (string, string) {
-	repoURL, _ = strings.CutSuffix(repoURL, "/")
-
-	repo, found := findRepo(repoURL)
+func Find(repoName string) (string, string, string) {
+	repo, found := findRepo(repoName)
 	if !found {
-		return "", ""
+		return "", "", ""
 	}
 
 	username, password := repo.getCredential()
 
 	if username == "" || password == "" {
 		slog.Error("username and password not found in secret")
-		return "", ""
+		return "", "", ""
 	}
 
-	return username, password
+	return username, password, repo.Secret
 }
 
-func findRepo(url string) (*Repository, bool) {
+func findRepo(name string) (*Repository, bool) {
 	for _, x := range repositories {
-		if x.URL == url || x.URL+".git" == url || x.URL == url+".git" {
+		if x.URL == name || x.URL+".git" == name || x.URL == name+".git" || x.ImageRef == name {
 			return x, true
 		}
 	}
