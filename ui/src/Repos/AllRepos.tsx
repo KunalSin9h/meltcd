@@ -90,6 +90,8 @@ export default function AllRepos(props: AllReposProps) {
           >
             <div className="flex items-center justify-between gap-2">
               <div>
+              <span className={`mr-4 text-xs rounded-xl px-1 py-0 border-2 border-cyan-300 bg-cyan-300/40
+                  ${repo.image_ref === "" && "hidden"}`}>Container Image</span>
                 <span className="font-semibold mr-4">{repo.url || repo.image_ref}</span>
                 <span>
                   {repo.reachable ? (
@@ -113,11 +115,10 @@ export default function AllRepos(props: AllReposProps) {
                   )}
                 </span>
 
-                <span className={`ml-8 text-xs rounded-xl px-1 py-0 border-1 border-blue-300 bg-blue-300/40
-                  ${repo.image_ref === "" && "hidden"}`}>Container Image</span>
+
 
               </div>
-              <EditRepo repoURL={repo.url} refetch={refetch} />
+              <EditRepo repoURL={repo.url + repo.image_ref} refetch={refetch} />
             </div>
           </li>
         );
@@ -169,7 +170,7 @@ function EditRepo(props: { repoURL: string; refetch: () => void }) {
                       setDeleteOpen(false);
                       props.refetch();
                     } else {
-                      toast.success("something went wrong, try again");
+                      toast.error("something went wrong, try again");
                     }
                     return "Executing task";
                   },
