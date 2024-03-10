@@ -9,8 +9,14 @@ interface NewRepositoryProps {
   setRefreshSignal: (b: boolean) => void;
 }
 
+enum RepoInputType {
+  GitRepo,
+  ContainerImage
+}
+
 export default function NewRepository(props: NewRepositoryProps) {
-  const [repoURL, setRepoURL] = useState("");
+  const [inputType, setInputType] = useState<RepoInputType>(RepoInputType.GitRepo)
+  const [repoInput, setRepoInput] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [processing, setProcessing] = useState(false);
@@ -21,17 +27,28 @@ export default function NewRepository(props: NewRepositoryProps) {
             ${!props.newRepoOpen ? "hidden" : ""}
           `}
     >
+      <div className="flex items-center justify-around">
+        <button className={`px-4 py-2 hover:bg-green-300 rounded 
+          ${inputType === RepoInputType.GitRepo && "shadow bg-green-400/40"}
+        `}
+          onClick={() => setInputType(RepoInputType.GitRepo)}>Git Repository</button>
+
+        <button className={`px-4 py-2 hover:bg-green-300 rounded 
+          ${inputType === RepoInputType.ContainerImage && "shadow bg-green-400/40"}
+        `}
+          onClick={() => setInputType(RepoInputType.ContainerImage)}>Container Image</button>
+      </div>
       <label className="flex flex-col">
-        <span className="font-bold">Repository Url</span>
+        <span className="font-bold">{inputType === RepoInputType.GitRepo ? "Repository URL" : "Container Image"}</span>
         <input
-          placeholder="https://github.com/k9exp/infra-test"
+          placeholder={`${ inputType === RepoInputType.GitRepo ? "https://github.com/k9exp/infra-test" : "ghcr.io/meltred/meltcd"}`}
           className="bg-white border p-2 rounded mt-1"
           onChange={(e) => {
-            setRepoURL(
+            setRepoInput(
               normalizeInput(e.target.value, [":", "/", ".", "_", "-"], true)
             );
           }}
-          value={repoURL}
+          value={repoInput}
         />
       </label>
       <div className="text-center">
@@ -78,7 +95,8 @@ export default function NewRepository(props: NewRepositoryProps) {
             body: JSON.stringify({
               username,
               password,
-              url: repoURL,
+              url: inputType === RepoInputType.GitRepo ? repoInput : "",
+              image_ref: inputType === RepoInputType.ContainerImage ? repoInput : ""
             }),
           });
 

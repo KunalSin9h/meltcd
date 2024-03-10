@@ -17,15 +17,12 @@ limitations under the License.
 package repository
 
 import (
-	"strings"
-
 	"log/slog"
+	"strings"
 )
 
-func Find(repoURL string) (string, string) {
-	repoURL, _ = strings.CutSuffix(repoURL, "/")
-
-	repo, found := findRepo(repoURL)
+func FindCreds(repoName string) (string, string) {
+	repo, found := FindRepo(repoName)
 	if !found {
 		return "", ""
 	}
@@ -40,9 +37,15 @@ func Find(repoURL string) (string, string) {
 	return username, password
 }
 
-func findRepo(url string) (*Repository, bool) {
+func FindRepo(name string) (*Repository, bool) {
 	for _, x := range repositories {
-		if x.URL == url || x.URL+".git" == url || x.URL == url+".git" {
+		var image string
+		imageWithOutTags := strings.Split(name, ":")
+		if len(imageWithOutTags) >= 1 {
+			image = imageWithOutTags[0]
+		}
+
+		if x.URL == name || x.URL+".git" == name || x.URL == name+".git" || x.ImageRef == image {
 			return x, true
 		}
 	}

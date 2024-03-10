@@ -33,17 +33,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func addPrivateGitRepository(cmd *cobra.Command, args []string) error {
-	repoURL := args[0]
-	repoURL, _ = strings.CutSuffix(repoURL, "/")
+func addPrivateRepository(cmd *cobra.Command, args []string) error {
+	repoName := args[0]
 
+	git, _ := cmd.Flags().GetBool("git")
+	image, _ := cmd.Flags().GetBool("image")
 	username, _ := cmd.Flags().GetString("username")
 	password, _ := cmd.Flags().GetString("password")
 
 	payload := repo.PrivateRepoDetails{
-		URL:      repoURL,
 		Username: username,
 		Password: password,
+	}
+
+	// if not git then if image is also false, then default is git
+	if git || (!git && !image) {
+		repoName, _ = strings.CutSuffix(repoName, "/")
+		payload.URL = repoName
+	} else if image {
+		payload.ImageRef = repoName
 	}
 
 	buf := new(bytes.Buffer)
@@ -99,14 +107,26 @@ func getAllRepoAdded(_ *cobra.Command, _ []string) error {
 		return err
 	}
 
-	table := table.New("S.NO", "Repository URL", "Reachable")
-	table.WithHeaderFormatter(util.HeaderFmt).WithFirstColumnFormatter(util.ColumnFmt)
+	tableRepositoryGit := table.New("S.NO", "Repository URL", "Reachable")
+	tableRepositoryGit.WithHeaderFormatter(util.HeaderFmt).WithFirstColumnFormatter(util.ColumnFmt)
 
-	for idx, repo := range resData.Data {
-		table.AddRow(idx, repo.URL, repo.Reachable)
+	tableContainerImage := table.New("S.NO", "Container Image", "Reachable")
+	tableContainerImage.WithHeaderFormatter(util.HeaderFmt).WithFirstColumnFormatter(util.ColumnFmt)
+
+	i, j := 1, 1
+	for _, repo := range resData.Data {
+		if repo.URL != "" {
+			tableRepositoryGit.AddRow(i, repo.URL, repo.Reachable)
+			i++
+		} else {
+			tableContainerImage.AddRow(j, repo.ImageRef, repo.Reachable)
+			j++
+		}
 	}
 
-	table.Print()
+	tableRepositoryGit.Print()
+	fmt.Println()
+	tableContainerImage.Print()
 	return nil
 }
 
