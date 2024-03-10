@@ -21,7 +21,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strings"
 
 	"log/slog"
@@ -107,7 +106,6 @@ func (r *Repository) checkReachability(username, password string) {
 		}
 
 		auth, err := r.GetRegistryAuth()
-		fmt.Println(auth)
 		if err != nil {
 			slog.Error(err.Error())
 			r.Reachable = false

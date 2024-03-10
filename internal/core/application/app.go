@@ -274,12 +274,25 @@ func (app *Application) Apply(targetState string) error {
 	}
 
 	for _, service := range services {
+		repo, found := repository.FindRepo(service.TaskTemplate.ContainerSpec.Image)
+		auth := ""
+
+		if !found {
+			slog.Error("Repository not found in private image registries")
+		} else {
+			authString, err := repo.GetRegistryAuth()
+			if err != nil {
+				slog.Error(err.Error())
+			} else {
+				auth = authString
+			}
+		}
+
 		// Checking if docker image is pullabel, if not then making the app health degraded.
 		go func(cli *client.Client, a *Application) {
-
 			// docker will not work if image is not reacheble
 			_, err = cli.ImagePull(context.TODO(), service.TaskTemplate.ContainerSpec.Image, types.ImagePullOptions{
-				RegistryAuth: "",
+				RegistryAuth: auth,
 			})
 
 			if err != nil {
@@ -291,7 +304,9 @@ func (app *Application) Apply(targetState string) error {
 		// check if already exists then only update
 		if svc, exists := checkServiceAlreadyExist(service.Name, &allServicesRunning); exists {
 			slog.Info("Service already running", "name", service.Name)
-			res, err := cli.ServiceUpdate(context.Background(), svc.ID, svc.Version, service, types.ServiceUpdateOptions{})
+			res, err := cli.ServiceUpdate(context.Background(), svc.ID, svc.Version, service, types.ServiceUpdateOptions{
+				EncodedRegistryAuth: auth,
+			})
 			if err != nil {
 				app.Health = Degraded
 				slog.Error("Not able to update a running service", "error", err.Error())
@@ -306,7 +321,9 @@ func (app *Application) Apply(targetState string) error {
 		}
 
 		slog.Info("Creating new service")
-		res, err := cli.ServiceCreate(context.Background(), service, types.ServiceCreateOptions{})
+		res, err := cli.ServiceCreate(context.Background(), service, types.ServiceCreateOptions{
+			EncodedRegistryAuth: auth,
+		})
 		if err != nil {
 			app.Health = Degraded
 			slog.Error("Not able to create a new service", "error", err.Error())
