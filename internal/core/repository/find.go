@@ -20,23 +20,23 @@ import (
 	"log/slog"
 )
 
-func Find(repoName string) (string, string, string) {
-	repo, found := findRepo(repoName)
+func FindCreds(repoName string) (string, string) {
+	repo, found := FindRepo(repoName)
 	if !found {
-		return "", "", ""
+		return "", ""
 	}
 
 	username, password := repo.getCredential()
 
 	if username == "" || password == "" {
 		slog.Error("username and password not found in secret")
-		return "", "", ""
+		return "", ""
 	}
 
-	return username, password, repo.Secret
+	return username, password
 }
 
-func findRepo(name string) (*Repository, bool) {
+func FindRepo(name string) (*Repository, bool) {
 	for _, x := range repositories {
 		if x.URL == name || x.URL+".git" == name || x.URL == name+".git" || x.ImageRef == name {
 			return x, true

@@ -21,6 +21,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 
 	"log/slog"
@@ -44,8 +45,20 @@ func (r *Repository) saveCredential(username, password string) {
 	r.Secret = base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
 }
 
-func (r *Repository) getSecret() string {
-	return r.Secret
+func (r *Repository) GetRegistryAuth() (string, error) {
+	username, password := r.getCredential()
+
+	payload := map[string]string{
+		"username": username,
+		"password": password,
+	}
+
+	d, err := json.Marshal(payload)
+	if err != nil {
+		return "", err
+	}
+
+	return base64.URLEncoding.EncodeToString(d), nil
 }
 
 func (r *Repository) getCredential() (username, password string) {
@@ -93,8 +106,16 @@ func (r *Repository) checkReachability(username, password string) {
 			return
 		}
 
+		auth, err := r.GetRegistryAuth()
+		fmt.Println(auth)
+		if err != nil {
+			slog.Error(err.Error())
+			r.Reachable = false
+			return
+		}
+
 		_, err = cli.ImagePull(context.Background(), r.ImageRef, types.ImagePullOptions{
-			RegistryAuth: r.getSecret(),
+			RegistryAuth: auth,
 		})
 
 		if err != nil {
@@ -113,7 +134,7 @@ func (r *Repository) checkReachability(username, password string) {
 func Add(url, imageRef, username, password string) error {
 	// since eight url is there of imageRef,
 	name := url + imageRef
-	repo, found := findRepo(name)
+	repo, found := FindRepo(name)
 	if found {
 		return errors.New("repository with same url already exists")
 	}

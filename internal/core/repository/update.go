@@ -21,7 +21,7 @@ import (
 )
 
 func Update(url, username, password string) error {
-	repo, found := findRepo(url)
+	repo, found := FindRepo(url)
 	if !found {
 		return errors.New("repository does not exists")
 	}
