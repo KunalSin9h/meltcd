@@ -8,8 +8,7 @@
 
 ![Discord](https://img.shields.io/discord/1086894797622624257)
 
-> [!Caution]
-> `meltcd` is very far from production use, unless we achieve **1.0.0**
+> [!Caution] > `meltcd` is very far from production use, unless we achieve **1.0.0**
 
 Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
@@ -87,6 +86,10 @@ make run
 ```
 
 This will start the server on port `11771`
+
+> [!TIP]
+> If you get error saying **"Error response from daemon: This node is not a swarm manager. Use \"docker swarm init\" or \"docker swarm join\" to connect this node to swarm and try again."**
+> This means you have docker working but the node is not a `Docker Swarm` Node, to make it run `docker swarm init`.
 
 Go to **Developer Docs** for more info. [Developer Docs](https://github.com/meltred/meltcd/tree/main/docs/dev)
 

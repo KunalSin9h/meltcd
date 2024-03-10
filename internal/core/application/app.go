@@ -99,6 +99,8 @@ func (app *Application) Run() {
 	ticker := time.NewTicker(time.Minute * 3)
 	defer ticker.Stop()
 
+	// updateTicker is for updating the refresh timer, since app settings
+	// can be changed at run time (Run() function) so we have to update the timer in every loop.
 	if err := updateTicker(app.RefreshTimer, ticker); err != nil {
 		slog.Error(err.Error())
 		app.Health = Suspended
