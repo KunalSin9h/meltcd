@@ -6,7 +6,6 @@ linters:
     - dupl
     - exportloopref
     - goconst
-    - gocritic
     - gocyclo
     - gofmt
     - goimports
