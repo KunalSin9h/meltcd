@@ -196,6 +196,8 @@ func NewCLI() *cobra.Command {
 		RunE:  updatePrivateRepo,
 	}
 
+	repoUpdateCmd.Flags().Bool("git", false, "if private repo is a git repository")
+	repoUpdateCmd.Flags().Bool("image", false, "if private repo is a docker image")
 	repoUpdateCmd.Flags().String("username", "", "username for basic auth")
 	repoUpdateCmd.MarkFlagRequired("username")
 	repoUpdateCmd.Flags().String("password", "", "password for basic auth")

@@ -169,14 +169,26 @@ func removePrivateRepo(_ *cobra.Command, args []string) error {
 }
 
 func updatePrivateRepo(cmd *cobra.Command, args []string) error {
-	repoURL := args[0]
-	repoURL, _ = strings.CutSuffix(repoURL, "/")
+	repoName := args[0]
 
+	git, _ := cmd.Flags().GetBool("git")
+	image, _ := cmd.Flags().GetBool("image")
 	username, _ := cmd.Flags().GetString("username")
 	password, _ := cmd.Flags().GetString("password")
 
+	gitRepo, imageRepo := "", ""
+
+	if git {
+		gitRepo = repoName
+	}
+
+	if image {
+		imageRepo = repoName
+	}
+
 	payload := repo.PrivateRepoDetails{
-		URL:      repoURL,
+		URL:      gitRepo,
+		ImageRef: imageRepo,
 		Username: username,
 		Password: password,
 	}

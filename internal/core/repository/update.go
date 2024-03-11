@@ -20,8 +20,10 @@ import (
 	"errors"
 )
 
-func Update(url, username, password string) error {
-	repo, found := FindRepo(url)
+func Update(url, image, username, password string) error {
+	// eight url is empty or image is empty
+	// so combining them will give the name
+	repo, found := FindRepo(url + image)
 	if !found {
 		return errors.New("repository does not exists")
 	}

@@ -12,7 +12,7 @@ meltcd login --show-token
 1. Create a new `Application` [DONE]
 
 ```bash
-meltcd app create <app-name> --repo <repo-url> --path <path-to-spec>
+meltcd app create <app-name> --repo <repo> --path <path-to-spec>
 ```
 
 2. Create a new `Application` with file [DONE]
@@ -24,7 +24,7 @@ meltcd app create --file <path-to-file>
 3. Update existing `Application` [DONE]
 
 ```bash
-meltcd app update <app-name> --repo <repo-url> --path <path-to-spec>
+meltcd app update <app-name> --repo <repo> --path <path-to-spec>
 
 # Or using file
 
@@ -81,8 +81,12 @@ meltcd app rm <app-name>
 1. Add a private repository auth credentials [DONE]
 
 ```bash
-meltcd repo add <repo-url> --username <username> --password <password>
+meltcd repo add <repo> --git --username <username> --password <password>
 ```
+
+Options
+`--git` if repo is the git repository
+`--image` if repo is Container image
 
 2. List all added repositories [DONE]
 
@@ -97,23 +101,15 @@ meltcd repo list
 3. Remove a repository [DONE]
 
 ```bash
-meltcd repo rm <repo-url>
+meltcd repo rm <repo>
 
 # or
 
-meltcd repo remove <repo-url>
+meltcd repo remove <repo>
 ```
 
 4. Update a repository [DONE]
 
 ```bash
-meltcd repo update <repo-url> --username <username> --password <password>
-```
-
-# Private Image
-
-1. Add a image auth credentials [TODO]
-
-```bash
-meltcd image add <image-name> --username <username> --password <password>
+meltcd repo update <repo> --git --username <username> --password <password>
 ```
