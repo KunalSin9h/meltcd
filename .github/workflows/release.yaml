@@ -53,26 +53,3 @@ jobs:
           args: release --clean --skip=validate
         env:
           GITHUB_TOKEN: ${{ secrets.GHCR_TOKEN }}
-
-      - name: build docker image
-        run: |
-          docker build -t meltred/meltcd:${{ steps.vars.outputs.latest_tag }} .
-
-      - name: push docker image
-        run: |
-          echo ${{ secrets.DOCKER_HUB }} | docker login -u "meltred" --password-stdin
-
-          docker push meltred/meltcd:${{ steps.vars.outputs.latest_tag }}
-
-          docker image tag  meltred/meltcd:${{ steps.vars.outputs.latest_tag }} meltred/meltcd:latest
-          docker push meltred/meltcd:latest
-
-          docker logout
-
-          echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u "kunalsin9h" --password-stdin
-
-          docker image tag  meltred/meltcd:latest ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }}
-          docker push ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }}
-
-          docker image tag  ghcr.io/meltred/meltcd:${{ steps.vars.outputs.latest_tag }} ghcr.io/meltred/meltcd:latest
-          docker push ghcr.io/meltred/meltcd:latest

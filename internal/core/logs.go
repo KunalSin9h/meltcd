@@ -27,7 +27,7 @@ func (l *LogsStreamSessions) RemoveSession(s *chan []byte) {
 	if idx != -1 {
 		l.MU.Lock()
 
-		l.Sessions[idx] = nil
+		l.Sessions[idx] = nil // To Be Garbage Collected
 		l.Sessions = slices.Delete(l.Sessions, idx, idx+1)
 
 		l.MU.Unlock()
