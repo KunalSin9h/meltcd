@@ -1,5 +1,5 @@
 /*
-Copyright 2023 - PRESENT Meltred
+Copyright 2023 - PRESENT kunalsin9h
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package meltcd
 import (
 	"log"
 
-	"github.com/meltred/meltcd/cmd/meltcd/app"
-	"github.com/meltred/meltcd/version"
+	"github.com/kunalsin9h/meltcd/cmd/meltcd/app"
+	"github.com/kunalsin9h/meltcd/version"
 
 	"github.com/spf13/cobra"
 )

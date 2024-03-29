@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/fatih/color"
-	"github.com/meltred/meltcd/internal/core"
+	"github.com/kunalsin9h/meltcd/internal/core"
 )
 
 func HTTPRequestWithBearerToken(method, url string, body io.Reader, json bool) (*http.Request, *http.Client, error) {

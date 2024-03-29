@@ -1,5 +1,5 @@
 /*
-Copyright 2023 - PRESENT Meltred
+Copyright 2023 - PRESENT kunalsin9h
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,5 +18,5 @@ package version
 
 // Version will be altered at CI step when new version release
 // using ldflags we can change the version at compile time
-// go build -ldflags "-X github.com/meltred/meltcd/version.Version=0.3.1" main.go
+// go build -ldflags "-X github.com/kunalsin9h/meltcd/version.Version=0.3.1" main.go
 var Version string = "dev" // nolint:all

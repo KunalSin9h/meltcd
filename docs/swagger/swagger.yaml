@@ -122,6 +122,8 @@ definitions:
     type: object
   repo.PrivateRepoDetails:
     properties:
+      image_ref:
+        type: string
       password:
         type: string
       url:
@@ -136,6 +138,8 @@ definitions:
     type: object
   repository.RepoData:
     properties:
+      image_ref:
+        type: string
       reachable:
         type: boolean
       url:
@@ -143,14 +147,14 @@ definitions:
     type: object
 externalDocs:
   description: Meltcd Docs
-  url: https://cd.meltred.tech/docs
+  url: https://cd.kunalsin9h.tech/docs
 host: localhost:11771
 info:
   contact: {}
   description: Argo-cd like GitDevOps Continuous Development platform for docker swarm.
   license:
     name: Apache 2.0
-    url: https://github.com/meltred/meltcd/blob/main/LICENSE
+    url: https://github.com/kunalsin9h/meltcd/blob/main/LICENSE
   title: Meltcd API
   version: "0.6"
 paths:

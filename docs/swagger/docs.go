@@ -12,7 +12,7 @@ const docTemplate = `{
         "contact": {},
         "license": {
             "name": "Apache 2.0",
-            "url": "https://github.com/meltred/meltcd/blob/main/LICENSE"
+            "url": "https://github.com/kunalsin9h/meltcd/blob/main/LICENSE"
         },
         "version": "{{.Version}}"
     },
@@ -884,6 +884,9 @@ const docTemplate = `{
         "repo.PrivateRepoDetails": {
             "type": "object",
             "properties": {
+                "image_ref": {
+                    "type": "string"
+                },
                 "password": {
                     "type": "string"
                 },
@@ -906,6 +909,9 @@ const docTemplate = `{
         "repository.RepoData": {
             "type": "object",
             "properties": {
+                "image_ref": {
+                    "type": "string"
+                },
                 "reachable": {
                     "type": "boolean"
                 },
@@ -927,7 +933,7 @@ const docTemplate = `{
     },
     "externalDocs": {
         "description": "Meltcd Docs",
-        "url": "https://cd.meltred.tech/docs"
+        "url": "https://cd.kunalsin9h.tech/docs"
     }
 }`
 

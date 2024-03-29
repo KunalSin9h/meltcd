@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"time"
 
-	authPass "github.com/meltred/meltcd/internal/core/auth/password"
+	authPass "github.com/kunalsin9h/meltcd/internal/core/auth/password"
 )
 
 type User struct {

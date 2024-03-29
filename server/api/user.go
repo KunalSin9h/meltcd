@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/meltred/meltcd/internal/core/auth"
+	"github.com/kunalsin9h/meltcd/internal/core/auth"
 )
 
 // GetUsername godoc

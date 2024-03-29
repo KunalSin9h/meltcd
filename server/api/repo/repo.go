@@ -1,5 +1,5 @@
 /*
-Copyright 2023 - PRESENT Meltred
+Copyright 2023 - PRESENT kunalsin9h
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/meltred/meltcd/internal/core/repository"
-	"github.com/meltred/meltcd/server/api/app"
+	"github.com/kunalsin9h/meltcd/internal/core/repository"
+	"github.com/kunalsin9h/meltcd/server/api/app"
 )
 
 type PrivateRepoDetails struct {

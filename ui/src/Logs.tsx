@@ -1,5 +1,5 @@
 /*
-Copyright 2023 - PRESENT Meltred
+Copyright 2023 - PRESENT kunalsin9h
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ type LogData = {
   level: string;
   msg: string;
   [k: string]: string;
-}
+};
 
 export default function Logs() {
   const listRef = useRef<HTMLUListElement>(null);
@@ -38,21 +38,21 @@ export default function Logs() {
     const source = new EventSource(liveLogsURL);
 
     source.addEventListener("log", (e) => {
-      const ld = JSON.parse(e.data) as LogData
-      setLogs([...logs, ld])
+      const ld = JSON.parse(e.data) as LogData;
+      setLogs([...logs, ld]);
 
-      listRef.current?.lastElementChild?.scrollIntoView()
-    })
+      listRef.current?.lastElementChild?.scrollIntoView();
+    });
 
     return () => {
-      source.close()
-    }
+      source.close();
+    };
   });
 
-  if (logs.length === 0){
+  if (logs.length === 0) {
     return <MessageWithIcon icon={<WarningIcon />} message="No Logs Records" />;
   }
- 
+
   return (
     <div className="h-full p-8">
       <div className="flex justify-between items-center">
@@ -62,8 +62,8 @@ export default function Logs() {
       <div
         id="logs-list"
         className="bg-sidebar h-[96%] my-4 rounded overflow-auto transition-all"
-       >
-        <ul className="h-full"  ref={listRef}>
+      >
+        <ul className="h-full" ref={listRef}>
           {logs.map((ld, index) => (
             <li
               key={index}
@@ -83,8 +83,8 @@ export default function Logs() {
 }
 
 function getTime(time: string): string {
-  const d = new Date(time)
-  return d.toLocaleString()
+  const d = new Date(time);
+  return d.toLocaleString();
 }
 
 function getStyleForLevel(level: string): string {

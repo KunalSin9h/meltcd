@@ -5,7 +5,7 @@ import (
 	"runtime"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/meltred/meltcd/internal/core"
+	"github.com/kunalsin9h/meltcd/internal/core"
 )
 
 // LiveLogs godoc

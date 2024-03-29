@@ -1,15 +1,14 @@
 <div align="center">
-    <img alt="MeltCD Logo" height="200px" src="https://github.com/meltred/meltcd/assets/82411321/9065c92d-79a5-44ff-aa53-3e0bd40f0080">
+    <img alt="MeltCD Logo" height="200px" src="https://github.com/kunalsin9h/meltcd/assets/82411321/9065c92d-79a5-44ff-aa53-3e0bd40f0080">
 </div>
 
 # meltcd
 
-#### Docs: https://cd.meltred.tech/docs
+#### Docs: https://cd.kunalsin9h.tech/docs
 
 ![Discord](https://img.shields.io/discord/1086894797622624257)
 
-> [!Caution]
-> `meltcd` is very far from production use, unless we achieve **1.0.0**
+> [!Caution] > `meltcd` is very far from production use, unless we achieve **1.0.0**
 
 Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
@@ -22,22 +21,22 @@ Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 #### Linux, MacOS and WSL.
 
 ```bash
-curl -s https://install.meltred.tech/meltcd | bash
+curl -s https://install.kunalsin9h.tech/meltcd | bash
 ```
 
 #### Windows
 
-Download From [latest release](https://github.com/meltred/meltcd/releases/latest)
+Download From [latest release](https://github.com/kunalsin9h/meltcd/releases/latest)
 
 #### Go Install
 
 ```bash
-go install github.com/meltred/meltcd@latest
+go install github.com/kunalsin9h/meltcd@latest
 ```
 
 ## Architecture
 
-![architecture](https://github.com/meltred/meltcd/assets/82411321/f73f80a5-a533-420d-aee9-6a06e2b13976)
+![architecture](https://github.com/kunalsin9h/meltcd/assets/82411321/f73f80a5-a533-420d-aee9-6a06e2b13976)
 
 ## Local Setup
 
@@ -92,18 +91,18 @@ This will start the server on port `11771`
 > If you get error saying **"Error response from daemon: This node is not a swarm manager. Use \"docker swarm init\" or \"docker swarm join\" to connect this node to swarm and try again."**
 > This means you have docker working but the node is not a `Docker Swarm` Node, to make it run `docker swarm init`.
 
-Go to **Developer Docs** for more info. [Developer Docs](https://github.com/meltred/meltcd/tree/main/docs/dev)
+Go to **Developer Docs** for more info. [Developer Docs](https://github.com/kunalsin9h/meltcd/tree/main/docs/dev)
 
 ## Contributing
 
 We welcome contributions to `meltcd` in many forms. There's always plenty to do!
 
-See the [Contribution Guide](https://github.com/meltred/meltcd/blob/main/CONTRIBUTING.md) for more information.
+See the [Contribution Guide](https://github.com/kunalsin9h/meltcd/blob/main/CONTRIBUTING.md) for more information.
 
 ---
 
-# About Meltred
+# About kunalsin9h
 
-This project is sponsored and maintained by [Meltred](https://meltred.com). Meltred builds tools to manage software.
+This project is sponsored and maintained by [kunalsin9h](https://kunalsin9h.com). kunalsin9h builds tools to manage software.
 
-<a href="https://meltred.com"><img src="https://i.imgur.com/Lq1q7vO.png" alt="Meltred Logo" loading="lazy" height="50px" /></a>
+<a href="https://kunalsin9h.com"><img src="https://i.imgur.com/Lq1q7vO.png" alt="kunalsin9h Logo" loading="lazy" height="50px" /></a>

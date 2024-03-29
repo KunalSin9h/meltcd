@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/meltred/meltcd/internal/core/auth"
-	"github.com/meltred/meltcd/internal/core/base58"
+	"github.com/kunalsin9h/meltcd/internal/core/auth"
+	"github.com/kunalsin9h/meltcd/internal/core/base58"
 )
 
 // Login godoc

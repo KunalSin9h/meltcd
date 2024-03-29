@@ -1,5 +1,5 @@
 /*
-Copyright 2023 - PRESENT Meltred
+Copyright 2023 - PRESENT kunalsin9h
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ package main
 import (
 	"context"
 
-	"github.com/meltred/meltcd/cmd/meltcd"
-	_ "github.com/meltred/meltcd/docs/swagger"
+	"github.com/kunalsin9h/meltcd/cmd/meltcd"
+	_ "github.com/kunalsin9h/meltcd/docs/swagger"
 
 	"github.com/spf13/cobra"
 )
@@ -32,9 +32,9 @@ import (
 // @basePath					/api
 // @schemes					http
 // @license.name				Apache 2.0
-// @license.url				https://github.com/meltred/meltcd/blob/main/LICENSE
+// @license.url				https://github.com/kunalsin9h/meltcd/blob/main/LICENSE
 // @externalDocs.description	Meltcd Docs
-// @externalDocs.url			https://cd.meltred.tech/docs
+// @externalDocs.url			https://cd.kunalsin9h.tech/docs
 // @securityDefinitions.basic	BasicAuth
 // @securityDefinitions.apikey	ApiKeyAuth
 // @in							header

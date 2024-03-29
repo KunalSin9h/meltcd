@@ -1,5 +1,5 @@
 /*
-Copyright 2023 - PRESENT Meltred
+Copyright 2023 - PRESENT kunalsin9h
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,12 +29,12 @@ import (
 
 	"log/slog"
 
-	"github.com/meltred/meltcd/internal/core"
-	Api "github.com/meltred/meltcd/server/api"
-	appApi "github.com/meltred/meltcd/server/api/app"
-	repoApi "github.com/meltred/meltcd/server/api/repo"
-	"github.com/meltred/meltcd/server/middleware"
-	"github.com/meltred/meltcd/version"
+	"github.com/kunalsin9h/meltcd/internal/core"
+	Api "github.com/kunalsin9h/meltcd/server/api"
+	appApi "github.com/kunalsin9h/meltcd/server/api/app"
+	repoApi "github.com/kunalsin9h/meltcd/server/api/repo"
+	"github.com/kunalsin9h/meltcd/server/middleware"
+	"github.com/kunalsin9h/meltcd/version"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"

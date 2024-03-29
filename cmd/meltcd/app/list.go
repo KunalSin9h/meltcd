@@ -1,5 +1,5 @@
 /*
-Copyright 2023 - PRESENT Meltred
+Copyright 2023 - PRESENT kunalsin9h
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/meltred/meltcd/internal/core"
-	"github.com/meltred/meltcd/server"
-	"github.com/meltred/meltcd/util"
+	"github.com/kunalsin9h/meltcd/internal/core"
+	"github.com/kunalsin9h/meltcd/server"
+	"github.com/kunalsin9h/meltcd/util"
 	"github.com/rodaine/table"
 	"github.com/spf13/cobra"
 )
