@@ -4,11 +4,12 @@
 
 # meltcd
 
-#### Docs: https://cd.kunalsin9h.tech/docs
+#### Docs: https://cd.meltred.tech/docs
 
 ![Discord](https://img.shields.io/discord/1086894797622624257)
 
-> [!Caution] > `meltcd` is very far from production use, unless we achieve **1.0.0**
+> [!Caution]
+> `meltcd` is very far from production use, unless we achieve **1.0.0**
 
 Argo-cd like GitDevOps Continuous Development platform for docker swarm.
 
