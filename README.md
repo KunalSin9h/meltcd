@@ -4,7 +4,7 @@
 
 # meltcd
 
-#### Docs: https://cd.meltred.tech/docs
+#### Docs: https://cd.kunalsin9h.com/docs
 
 ![Discord](https://img.shields.io/discord/1086894797622624257)
 
