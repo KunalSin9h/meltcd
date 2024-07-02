@@ -3,7 +3,7 @@ module github.com/kunalsin9h/meltcd
 go 1.22.0
 
 require (
-	github.com/docker/docker v24.0.7+incompatible
+	github.com/docker/docker v24.0.9+incompatible
 	github.com/go-git/go-billy/v5 v5.5.0
 	github.com/go-git/go-git/v5 v5.11.0
 	github.com/gofiber/swagger v0.1.14
