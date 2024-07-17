@@ -101,9 +101,3 @@ We welcome contributions to `meltcd` in many forms. There's always plenty to do!
 See the [Contribution Guide](https://github.com/kunalsin9h/meltcd/blob/main/CONTRIBUTING.md) for more information.
 
 ---
-
-# About kunalsin9h
-
-This project is sponsored and maintained by [kunalsin9h](https://kunalsin9h.com). kunalsin9h builds tools to manage software.
-
-<a href="https://kunalsin9h.com"><img src="https://i.imgur.com/Lq1q7vO.png" alt="kunalsin9h Logo" loading="lazy" height="50px" /></a>
