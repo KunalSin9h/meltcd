@@ -85,7 +85,6 @@ go run main.go serve --verbose
 # Using `gnu make`
 make run
 ```
-
 This will start the server on port `1771`
 
 > [!TIP]
@@ -99,5 +98,3 @@ Go to **Developer Docs** for more info. [Developer Docs](https://github.com/kuna
 We welcome contributions to `meltcd` in many forms. There's always plenty to do!
 
 See the [Contribution Guide](https://github.com/kunalsin9h/meltcd/blob/main/CONTRIBUTING.md) for more information.
-
----
