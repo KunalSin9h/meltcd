@@ -34,7 +34,7 @@ import (
 // @license.name				Apache 2.0
 // @license.url				https://github.com/kunalsin9h/meltcd/blob/main/LICENSE
 // @externalDocs.description	Meltcd Docs
-// @externalDocs.url			https://cd.kunalsin9h.tech/docs
+// @externalDocs.url			https://cd.kunalsin9h.com/docs
 // @securityDefinitions.basic	BasicAuth
 // @securityDefinitions.apikey	ApiKeyAuth
 // @in							header

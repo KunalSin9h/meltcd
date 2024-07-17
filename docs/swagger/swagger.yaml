@@ -147,7 +147,7 @@ definitions:
     type: object
 externalDocs:
   description: Meltcd Docs
-  url: https://cd.kunalsin9h.tech/docs
+  url: https://cd.kunalsin9h.com/docs
 host: localhost:1771
 info:
   contact: {}

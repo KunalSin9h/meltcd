@@ -933,7 +933,7 @@ const docTemplate = `{
     },
     "externalDocs": {
         "description": "Meltcd Docs",
-        "url": "https://cd.kunalsin9h.tech/docs"
+        "url": "https://cd.kunalsin9h.com/docs"
     }
 }`
 

@@ -28,7 +28,7 @@ This is a guide for you to get started with contributing to Meltcd. Please read 
 
 Before we start, here are the important links you should know:
 
-- [docs](https://cd.kunalsin9h.tech/docs)
+- [docs](https://cd.kunalsin9h.com/docs)
 - [to file an **issues**](https://github.com/kunalsin9h/meltcd/issues)
 - [chat](https://discord.gg/Y2C6mEhhf3)
 
@@ -133,7 +133,7 @@ swag init --output ./docs/swagger
 go run main.go server --verbose
 ```
 
-The server will be running at post `1771` unless changed using environment variable, see the [docs](https://cd.kunalsin9h.tech/docs) for more information.
+The server will be running at post `1771` unless changed using environment variable, see the [docs](https://cd.kunalsin9h.com/docs) for more information.
 
 The api will be served at `http://localhost:1771/api`.
 
@@ -162,7 +162,7 @@ go run main.go server --verbose
 
 So to work on frontend, after changing the code, you need to build the frontend and start the server.
 
-**Deploying application**: Head over to [docs](https://cd.kunalsin9h.tech/docs/) to see how to deploy the application.
+**Deploying application**: Head over to [docs](https://cd.kunalsin9h.com/docs/) to see how to deploy the application.
 
 ### CLI
 
@@ -174,7 +174,7 @@ You can run the CLI using
 go run main.go app ls
 ```
 
-For other CLI command see [docs](https://cd.kunalsin9h.tech/docs/).
+For other CLI command see [docs](https://cd.kunalsin9h.com/docs/).
 
 While the server is running, you can update the CLI code and test it.
 

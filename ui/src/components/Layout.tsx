@@ -108,7 +108,7 @@ export default function Layout() {
             ${openHelpPanel ? "" : "hidden"}
           `}
         >
-          <Linker name="Documentation" url="https://cd.kunalsin9h.tech/docs" />
+          <Linker name="Documentation" url="https://cd.kunalsin9h.com/docs" />
           <Linker
             name="File bug or issue"
             url="https://github.com/kunalsin9h/meltcd/issues"
