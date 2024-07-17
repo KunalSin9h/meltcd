@@ -99,7 +99,7 @@ $SUDO install -o0 -g0 -m755 -d $BINDIR
 $SUDO install -o0 -g0 -m755 $TEMP_DIR/meltcd $BINDIR/meltcd
 
 install_success() { 
-    [[ "$OS" = "Linux" ]] && success 'The MeltCD Server is running at 0.0.0.0:11771.'
+    [[ "$OS" = "Linux" ]] && success 'The MeltCD Server is running at 0.0.0.0:1771.'
     success 'Install complete. Run "meltcd" from the command line.'
 }
 trap install_success EXIT

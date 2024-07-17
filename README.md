@@ -79,14 +79,14 @@ This will update the latest frontend to `server/static`
 
 7. run the app
 
-```bash
+_```bash
 go run main.go serve --verbose
 
 # Using `gnu make`
 make run
-```
+```_
 
-This will start the server on port `11771`
+This will start the server on port `1771`
 
 > [!TIP]
 > If you get error saying **"Error response from daemon: This node is not a swarm manager. Use \"docker swarm init\" or \"docker swarm join\" to connect this node to swarm and try again."**

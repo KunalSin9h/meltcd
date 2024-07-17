@@ -148,7 +148,7 @@ definitions:
 externalDocs:
   description: Meltcd Docs
   url: https://cd.kunalsin9h.tech/docs
-host: localhost:11771
+host: localhost:1771
 info:
   contact: {}
   description: Argo-cd like GitDevOps Continuous Development platform for docker swarm.

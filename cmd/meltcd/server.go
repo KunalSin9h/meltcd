@@ -35,7 +35,7 @@ func RunServer(cmd *cobra.Command, _ []string) error {
 	if err != nil {
 		fmt.Println(err.Error())
 
-		host, port = "127.0.0.1", "11771"
+		host, port = "127.0.0.1", "1771"
 		if ip := net.ParseIP(strings.Trim(baseURL, "[]")); ip != nil {
 			host = ip.String()
 		}

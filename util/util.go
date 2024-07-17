@@ -29,7 +29,7 @@ var HeaderFmt = color.New(color.FgGreen, color.Underline).SprintfFunc()
 var ColumnFmt = color.New(color.FgYellow).SprintfFunc()
 
 func GetServer() string {
-	server := "http://127.0.0.1:11771"
+	server := "http://127.0.0.1:1771"
 	serverEnvVar := os.Getenv("MELTCD_SERVER")
 	if serverEnvVar != "" {
 		server, _ = strings.CutSuffix(serverEnvVar, "/")

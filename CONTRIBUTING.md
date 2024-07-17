@@ -59,7 +59,7 @@ Meltcd is a monorepo, which have three things in it:
 
 The application is build as a CLI, where Server can be started using `meltcd server` command.
 
-The server will server the API on `http://localhost:11771/api` and the web client on `http://localhost:11771`.
+The server will server the API on `http://localhost:1771/api` and the web client on `http://localhost:1771`.
 
 #### Using GNU Make
 
@@ -110,7 +110,7 @@ go run main.go app ls
 
 8. Using WEB Client
 
-Open https://localhost:11771 in your browser.
+Open https://localhost:1771 in your browser.
 
 ## Contributing to different parts of the project
 
@@ -118,7 +118,7 @@ Open https://localhost:11771 in your browser.
 
 To contribute to the server, work in the `server` directory. Save the changes and run the server using `go run main.go server --verbose`.
 
-Server also embeds `swagger spec` and `swagger ui` which can be accessed at `http://localhost:11771/swagger/index.html`.
+Server also embeds `swagger spec` and `swagger ui` which can be accessed at `http://localhost:1771/swagger/index.html`.
 
 To update the swagger spec, run
 
@@ -133,9 +133,9 @@ swag init --output ./docs/swagger
 go run main.go server --verbose
 ```
 
-The server will be running at post `11771` unless changed using environment variable, see the [docs](https://cd.kunalsin9h.tech/docs) for more information.
+The server will be running at post `1771` unless changed using environment variable, see the [docs](https://cd.kunalsin9h.tech/docs) for more information.
 
-The api will be served at `http://localhost:11771/api`.
+The api will be served at `http://localhost:1771/api`.
 
 ### Web Client
 
