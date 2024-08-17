@@ -91,6 +91,14 @@ This will start the server on port `1771`
 > If you get error saying **"Error response from daemon: This node is not a swarm manager. Use \"docker swarm init\" or \"docker swarm join\" to connect this node to swarm and try again."**
 > This means you have docker working but the node is not a `Docker Swarm` Node, to make it run `docker swarm init`.
 
+> [!TIP]
+> If applications are unable to run, there might be a case of `root` privilege. To allow docker run without `sudo` do..
+> ```bash
+> sudo groupadd docker
+> sudo usermod -aG docker $USER
+> newgrp docker
+> ```
+
 Go to **Developer Docs** for more info. [Developer Docs](https://github.com/kunalsin9h/meltcd/tree/main/docs/dev)
 
 ## Contributing
