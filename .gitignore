@@ -23,3 +23,6 @@ go.work
 dist/
 
 node_modules/
+
+# Jetbrains
+.idea
