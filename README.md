@@ -11,7 +11,7 @@
 > [!Caution]
 > `meltcd` is not ready for production use, unless we achieve **1.0.0**
 
-Argo-cd like GitDevOps Continuous Development platform for docker swarm.
+Argo-cd like GitDevOps Continuous Delivery platform for docker swarm.
 
 <div align="center">
     <img alt="MeltCD Demo Page" src="https://i.imgur.com/LxaD7qM.png">
