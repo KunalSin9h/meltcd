@@ -5,6 +5,7 @@
 # meltcd
 
 #### Docs: https://cd.kunalsin9h.com/docs
+#### AI Docs: https://deepwiki.com/KunalSin9h/meltcd
 
 ![Discord](https://img.shields.io/discord/1086894797622624257)
 
