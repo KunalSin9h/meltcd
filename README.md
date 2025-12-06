@@ -22,7 +22,7 @@ Argo-cd like GitDevOps Continuous Delivery platform for docker swarm.
 #### Linux, MacOS and WSL.
 
 ```bash
-curl -s https://install.kunalsin9h.com/meltcd | bash
+curl -s https://install-meltcd.knl.co.in | bash
 ```
 
 #### Windows
