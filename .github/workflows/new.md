@@ -5,8 +5,16 @@ permissions:
   pull-requests: read
 safe-outputs:
   add-comment:
-    target: "triggering" # Ensures the comment is posted on the PR that started the workflow [4, 5]
+    target: "triggering" # Ensures the comment is posted on the PR that started the workflow
+mcp-servers:
+  safedep:
+    url: "https://mcp.safedep.io/model-context-protocol/threats/v1/mcp"
+    headers:
+      Authorization: "${{ secrets.API_TOKEN }}"
+      X-Tenant-ID: "${{ secrets.TENANT }}"
+    allowed: ["*"]
 ---
 
-# Pull Request Commenter Agent
-You are an assistant that reviews pull requests and provides a helpful summary for 
+# SafeDep Security Check
+
+Your task is to, using SafeDep security checks, find if the OSS pacakges introduced / updated in the Pull Reqeust is safe to merge. 
