@@ -2,7 +2,7 @@
     <img alt="MeltCD Logo" height="200px" src="https://github.com/kunalsin9h/meltcd/assets/82411321/9065c92d-79a5-44ff-aa53-3e0bd40f0080">
 </div>
 
-# meltcd
+# `meltcd`
 
 #### Docs: https://deepwiki.com/KunalSin9h/meltcd
 
